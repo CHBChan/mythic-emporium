@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
 
 export async function connect() {
+    dotenv.config();
     try {
-        mongoose.connect(process.env.MONGO_URL!);
+        mongoose.connect(process.env.MONGO_URI!);
         
         const connection = mongoose.connection;
 

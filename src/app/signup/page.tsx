@@ -4,12 +4,11 @@ import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation"
 import axios from "axios";
-import { Field, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 
 function Signup() {
     const router = useRouter();
     const [user, setUser] = React.useState({
-        email: '',
         password: '',
         username: '',
     });
@@ -27,8 +26,9 @@ function Signup() {
     }
 
     React.useEffect(() => {
-        if(user.email.length > 0 && user.password.length > 0 && user.username.length > 0) {
+        if(user.password.length > 0 && user.username.length > 0) {
             setButtonDisabled(false);
+            onSignup();
         }
         else {
             setButtonDisabled(true);
@@ -39,24 +39,28 @@ function Signup() {
         <div className='flex flex-col items-center'>
             <Formik
             initialValues={{
-                email: '',
                 username: '',
                 password: ''
             }}
-            onSubmit={(values, {setSubmitting}) => {
-                console.log(values);
+            onSubmit={(values) => {
+                console.log('password: ' + values.password);
+                setUser({
+                    username: values.username,
+                    password: values.password
+                });
             }}>
-            <form 
+            <Form 
                 className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                 <h1 className='font-bold'>USER REGISTRATION</h1>
-                <Field type='text' name='email' />
+                <label htmlFor='username'>Credentials</label>
                 <Field type='text' name='username' />
-                <Field type='text' name='password' />
-                <button type='submit' className='border-solid border-2 border-black'>
+                <label htmlFor='password'>Passcode</label>
+                <Field type='password' name='password' />
+                <button type='submit' className='border-solid border-2 border-black rounded'>
                     Sign up
                 </button>
                 <Link href='/login'>Login Page</Link>
-            </form>
+            </Form>
         </Formik>
         </div>
     )

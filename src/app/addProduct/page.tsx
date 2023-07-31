@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Field, Formik } from 'formik'
+import { Field, Form, Formik } from 'formik'
 
 const addProduct = () => {
   return (
@@ -12,10 +12,10 @@ const addProduct = () => {
                 quantity: 1,
                 description: ''
             }}
-            onSubmit={(values, {setSubmitting}) => {
+            onSubmit={(values) => {
                 console.log(values);
             }}>
-            <form 
+            <Form 
                 className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                 <h1 className='font-bold'>ADD PRODUCT</h1>
                 <Field type='text' name='product' />
@@ -24,7 +24,7 @@ const addProduct = () => {
                 <button type='submit'>
                     Add product
                 </button>
-            </form>
+            </Form>
         </Formik>
     </div>
   )
