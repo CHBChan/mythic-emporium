@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 
-export async function connect() {
-    dotenv.config();
+dotenv.config();
+
+const MongoConnect = async() => {
     try {
         mongoose.connect(process.env.MONGO_URI!);
         
@@ -21,4 +22,6 @@ export async function connect() {
         console.log('Error');
         console.log(error);
     }
-}
+};
+
+export { MongoConnect }

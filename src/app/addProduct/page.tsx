@@ -14,16 +14,19 @@ function AddProduct() {
     const [formType, setFormType] = React.useState(formTypeOpt.AddProduct);
     const [fetched, setFetched] = React.useState(false);
     const [product, setProduct] = React.useState({
-        id: 0,
-        product: '',
-        description: '',
-        origin: '',
-        price: 0,
-        quantity: 1
+        product_id: 0,
+        product_name: '',
+        product_desc: '',
+        product_category: '',
+        product_brand: '',
+        product_origin: '',
+        product_price: 0,
+        product_quantity: 1
     });
 
     const addNewProduct = async () => {
         try {
+            console.log('In addNewProduct');
             console.log(product);
             const response = await axios.post("api/products/addProduct", product);
             console.log("Product added successfully", response.data);
@@ -65,13 +68,13 @@ function AddProduct() {
     React.useEffect(() => {
         switch(formType) {
             case formTypeOpt.AddProduct:
-                if(product.product.length > 0 && product.description.length > 0) {
+                if(product.product_name.length > 0 && product.product_desc.length > 0) {
                     addNewProduct();
                 }
                 break;
 
             case formTypeOpt.UpdateProduct:
-                if(product.product.length > 0 && product.description.length > 0) {
+                if(product.product_name.length > 0 && product.product_desc.length > 0) {
                     updateProduct();
                 }
                 break;
@@ -89,7 +92,18 @@ function AddProduct() {
         console.log('Changing form type');
         setFormType(type);
         setFetched(false);
-    }
+    };
+
+    const defaultValues={
+        product_id: 0,
+        product_name: '',
+        product_desc: '',
+        product_category: '',
+        product_brand: '',
+        product_origin: '',
+        product_price: 0,
+        product_quantity: 1
+    };
 
     return (
         <div className='flex flex-col items-center'>
@@ -105,40 +119,38 @@ function AddProduct() {
             { // Add Product Form
             formType == formTypeOpt.AddProduct &&
             <Formik
-                initialValues={{
-                    id: 0,
-                    product: '',
-                    description: '',
-                    origin: '',
-                    price: 0,
-                    quantity: 1
-                }}
+                initialValues={defaultValues}
                 onSubmit={(values) => {
-                    console.log(values);
                     setProduct({
-                        id: values.id,
-                        product: values.product,
-                        description: values.description,
-                        origin: values.origin,
-                        price: values.price,
-                        quantity: values.quantity
+                        product_id: values.product_id,
+                        product_name: values.product_name,
+                        product_desc: values.product_desc,
+                        product_category: values.product_category,
+                        product_brand: values.product_brand,
+                        product_origin: values.product_origin,
+                        product_price: values.product_price,
+                        product_quantity: values.product_quantity
                     });
                 }}>
                 <Form 
                     className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                     <h1 className='font-bold'>ADD PRODUCT</h1>
                     <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='id' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' />
                     <label htmlFor='product'>Product name</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product' />
-                    <label htmlFor='description'>Production description</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='description' />
-                    <label htmlFor='origin'>Production origin</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='origin' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' />
+                    <label htmlFor='description'>Product description</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='product_desc' />
+                    <label htmlFor='category'>Product category</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_category' />
+                    <label htmlFor='brand'>Product brand</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_brand' />
+                    <label htmlFor='origin'>Product origin</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
                     <label htmlFor='price'>Product price</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='price' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' min='0' />
                     <label htmlFor='quantity'>Product quantity</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='quantity' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_quantity' min='0' />
                     <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
                         Add product
                     </button>
@@ -147,30 +159,24 @@ function AddProduct() {
             { // Update Product Form
                 formType == formTypeOpt.UpdateProduct &&
                 <Formik
-                initialValues={{
-                    id: 0,
-                    product: '',
-                    description: '',
-                    origin: '',
-                    price: 0,
-                    quantity: 1
-                }}
+                initialValues={defaultValues}
                 onSubmit={(values) => {
-                    console.log(values);
                     setProduct({
-                        id: values.id,
-                        product: values.product,
-                        description: values.description,
-                        origin: values.origin,
-                        price: values.price,
-                        quantity: values.quantity
+                        product_id: values.product_id,
+                        product_name: values.product_name,
+                        product_desc: values.product_desc,
+                        product_category: values.product_category,
+                        product_brand: values.product_brand,
+                        product_origin: values.product_origin,
+                        product_price: values.product_price,
+                        product_quantity: values.product_quantity
                     });
                 }}>
                 <Form 
                     className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                     <h1 className='font-bold'>UPDATE PRODUCT</h1>
                     <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='id' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' />
 
                     { !fetched &&
                     <button className='p-2 border-solid border-2 border-black rounded' type='button' onClick={() => fetchProduct()}>
@@ -180,15 +186,19 @@ function AddProduct() {
                     { fetched && 
                     <>
                     <label htmlFor='product'>Product name</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' />
                     <label htmlFor='description'>Production description</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='description' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='product_desc' />
+                    <label htmlFor='category'>Product category</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_category' />
+                    <label htmlFor='brand'>Product brand</label>
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_brand' />
                     <label htmlFor='origin'>Production origin</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='origin' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
                     <label htmlFor='price'>Product price</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='price' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' min='0' />
                     <label htmlFor='quantity'>Product quantity</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='quantity' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_quantity' min='0' />
                     <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
                         Add product
                     </button>
@@ -199,30 +209,24 @@ function AddProduct() {
             { // Remove Product Form
                 formType == formTypeOpt.RemoveProduct &&
                 <Formik
-                initialValues={{
-                    id: 0,
-                    product: '',
-                    description: '',
-                    origin: '',
-                    price: 0,
-                    quantity: 1
-                }}
+                initialValues={defaultValues}
                 onSubmit={(values) => {
-                    console.log(values);
                     setProduct({
-                        id: values.id,
-                        product: values.product,
-                        description: values.description,
-                        origin: values.origin,
-                        price: values.price,
-                        quantity: values.quantity
+                        product_id: values.product_id,
+                        product_name: values.product_name,
+                        product_desc: values.product_desc,
+                        product_category: values.product_category,
+                        product_brand: values.product_brand,
+                        product_origin: values.product_origin,
+                        product_price: values.product_price,
+                        product_quantity: values.product_quantity
                     });
                 }}>
                 <Form 
                     className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                     <h1 className='font-bold'>REMOVE PRODUCT</h1>
                     <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='id' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' />
 
                     { !fetched &&
                     <button className='p-2 border-solid border-2 border-black rounded' type='button' onClick={() => fetchProduct()}>
@@ -232,7 +236,7 @@ function AddProduct() {
                     { fetched && 
                     <>
                         <label htmlFor='product'>Product name</label>
-                        <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product' disabled={true}/>
+                        <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' disabled={true}/>
                         <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
                             Remove product
                         </button>

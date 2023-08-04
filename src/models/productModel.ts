@@ -9,11 +9,18 @@ const productSchema = new mongoose.Schema({
     product_name: {
         type: String,
         required: [true, "Please provide a product name"],
-        unique: true,
     },
     product_desc: {
         type: String,
         required: [true, "Please provide a description"],
+    },
+    product_category: {
+        type: String,
+        default: 'General goods',
+    },
+    product_brand: {
+        type: String,
+        default: 'Misc. merchant',
     },
     product_origin: {
         type: String,
@@ -27,7 +34,7 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Please provide a quantity"],
     }
-})
+});
 
 const Product = mongoose.models.products || mongoose.model("products", productSchema);
 
