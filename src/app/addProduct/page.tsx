@@ -13,6 +13,7 @@ enum formTypeOpt {
 function AddProduct() {
     const [formType, setFormType] = React.useState(formTypeOpt.AddProduct);
     const [fetched, setFetched] = React.useState(false);
+    const [submit, setSubmit] = React.useState(false);
     const [product, setProduct] = React.useState({
         product_id: 0,
         product_name: '',
@@ -23,6 +24,11 @@ function AddProduct() {
         product_price: 0,
         product_quantity: 1
     });
+
+    const updateProductState = (data : any) => {
+        setProduct(data);
+        console.log('Product state updated');
+    };
 
     const addNewProduct = async () => {
         try {
@@ -36,8 +42,10 @@ function AddProduct() {
         }
     };
 
-    const fetchProduct = async () => {
+    const fetchProduct = async (product_id : number) => {
         try {
+            const response = await axios.post("api/products/fetchProduct", { product_id });
+            updateProductState(response.data.product);
             setFetched(true);
         }
         catch(error : any) {
@@ -55,9 +63,9 @@ function AddProduct() {
         }
     };
 
-    const removeProduct = async () => {
+    const removeProduct = async (product_id : number) => {
         try {
-            const response = await axios.post("api/products/removeProduct", product);
+            const response = await axios.post("api/products/removeProduct", { product_id });
             console.log("Product removed successfully", response.data);
         }
         catch(error : any) {
@@ -66,25 +74,25 @@ function AddProduct() {
     }
 
     React.useEffect(() => {
-        switch(formType) {
-            case formTypeOpt.AddProduct:
-                if(product.product_name.length > 0 && product.product_desc.length > 0) {
-                    addNewProduct();
-                }
-                break;
+        console.log('In useEffect');
+        if(submit) {
+            switch(formType) {
+                case formTypeOpt.AddProduct:
+                    if(product.product_name.length > 0 && product.product_desc.length > 0) {
+                        addNewProduct();
+                    }
+                    break;
+    
+                case formTypeOpt.UpdateProduct:
+                    if(product.product_name.length > 0 && product.product_desc.length > 0) {
+                        updateProduct();
+                    }
+                    break;
 
-            case formTypeOpt.UpdateProduct:
-                if(product.product_name.length > 0 && product.product_desc.length > 0) {
-                    updateProduct();
-                }
-                break;
-
-            case formTypeOpt.RemoveProduct:
-                removeProduct();
-                break;
-
-            default:
-                setFetched(false);
+                default:
+                    break;
+            }
+            setSubmit(true);
         }
     }, [product]);
 
@@ -121,7 +129,7 @@ function AddProduct() {
             <Formik
                 initialValues={defaultValues}
                 onSubmit={(values) => {
-                    setProduct({
+                    updateProductState({
                         product_id: values.product_id,
                         product_name: values.product_name,
                         product_desc: values.product_desc,
@@ -131,6 +139,7 @@ function AddProduct() {
                         product_price: values.product_price,
                         product_quantity: values.product_quantity
                     });
+                    setSubmit(true);
                 }}>
                 <Form 
                     className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
@@ -161,7 +170,7 @@ function AddProduct() {
                 <Formik
                 initialValues={defaultValues}
                 onSubmit={(values) => {
-                    setProduct({
+                    updateProductState({
                         product_id: values.product_id,
                         product_name: values.product_name,
                         product_desc: values.product_desc,
@@ -171,15 +180,16 @@ function AddProduct() {
                         product_price: values.product_price,
                         product_quantity: values.product_quantity
                     });
+                    setSubmit(true);
                 }}>
                 <Form 
                     className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
                     <h1 className='font-bold'>UPDATE PRODUCT</h1>
                     <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' onChange={() => setFetched(false)} />
 
                     { !fetched &&
-                    <button className='p-2 border-solid border-2 border-black rounded' type='button' onClick={() => fetchProduct()}>
+                    <button className='p-2 border-solid border-2 border-black rounded' type='button'>
                         Fetch product
                     </button>}
 
@@ -209,39 +219,50 @@ function AddProduct() {
             { // Remove Product Form
                 formType == formTypeOpt.RemoveProduct &&
                 <Formik
-                initialValues={defaultValues}
+                initialValues={{
+                    product_id: product.product_id,
+                    product_name: product.product_name
+                }}
                 onSubmit={(values) => {
-                    setProduct({
-                        product_id: values.product_id,
-                        product_name: values.product_name,
-                        product_desc: values.product_desc,
-                        product_category: values.product_category,
-                        product_brand: values.product_brand,
-                        product_origin: values.product_origin,
-                        product_price: values.product_price,
-                        product_quantity: values.product_quantity
-                    });
-                }}>
-                <Form 
-                    className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
-                    <h1 className='font-bold'>REMOVE PRODUCT</h1>
-                    <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' />
-
-                    { !fetched &&
-                    <button className='p-2 border-solid border-2 border-black rounded' type='button' onClick={() => fetchProduct()}>
-                        Fetch product
-                    </button>}
-
-                    { fetched && 
-                    <>
-                        <label htmlFor='product'>Product name</label>
-                        <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' disabled={true}/>
-                        <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
-                            Remove product
-                        </button>
-                    </>}
-                </Form>
+                    if(!fetched) {
+                        console.log('submit');
+                        fetchProduct(values.product_id);
+                        setSubmit(true);
+                    }
+                    else {
+                        removeProduct(values.product_id);
+                        setFetched(false);
+                    }
+                }}
+                enableReinitialize={true}>
+                    {({ setFieldValue }) => (
+                        <Form className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
+                            <h1 className='font-bold'>REMOVE PRODUCT</h1>
+                            <label htmlFor='id'>Product ID</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' 
+                            onChange={(event : any) => {
+                                const newFetchId = event.target.value;
+                                setFieldValue('product_id', newFetchId);
+                                setFetched(false);
+                            }} />
+        
+                            { !fetched && 
+                            <button className='p-2 border-solid border-2 border-black rounded' type='submit' >
+                                Fetch product
+                            </button>
+                            }
+        
+                            { fetched &&
+                            <>
+                            <label htmlFor='product'>Product name</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded bg-slate-300' type='text' name='product_name' disabled={true}/>
+                            <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
+                                Remove product
+                            </button>
+                            </>
+                            }
+                        </Form>
+                    )}
             </Formik>}
         </div>
     )
