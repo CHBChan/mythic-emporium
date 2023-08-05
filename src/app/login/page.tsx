@@ -16,7 +16,7 @@ function Login() {
     const onLogin = async () => {
         try {
             const response = await axios.post("api/users/login", user);
-            router.push('/addProduct');
+            router.push('/InventoryManagement');
         }
         catch(error : any) {
             console.log("Login failed", error.message);

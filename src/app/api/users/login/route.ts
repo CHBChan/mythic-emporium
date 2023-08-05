@@ -25,7 +25,8 @@ export async function POST(request : NextRequest) {
 
         const tokenData = {
             id: user._id,
-            username: user.username
+            username: user.username,
+            isAdmin: user.isAdmin
         }
 
         const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: '1h'});

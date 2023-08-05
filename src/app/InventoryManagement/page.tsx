@@ -1,17 +1,28 @@
 'use client'
 
 import React from 'react'
-import { Field, Form, Formik } from 'formik'
 import axios from 'axios';
+import Cookies from 'js-cookie';
+import { Field, Form, Formik, setIn } from 'formik'
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
-enum formTypeOpt {
+import { productType } from '../interface/data';
+
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import { useRouter } from 'next/navigation';
+
+enum modeOpt {
     AddProduct,
     UpdateProduct,
-    RemoveProduct
+    RemoveProduct,
+    ViewInventory
 };
 
-function AddProduct() {
-    const [formType, setFormType] = React.useState(formTypeOpt.AddProduct);
+function InventoryManagement() {
+    const router = useRouter();
+    
+    const [mode, setMode] = React.useState(modeOpt.AddProduct);
     const [fetched, setFetched] = React.useState(false);
     const [submit, setSubmit] = React.useState(false);
     const [product, setProduct] = React.useState({
@@ -24,6 +35,17 @@ function AddProduct() {
         product_price: 0,
         product_quantity: 1
     });
+    const [inventory, setInventory] = React.useState<productType[]>([]);
+
+    async function adminVerification() {
+        try {
+            const response = await axios.get("api/users/roleVerification");
+        }
+        catch(error : any) {
+            console.log("Verification process failed: " + error.message);
+            router.push('/login');
+        }
+    }
 
     const updateProductState = (data : any) => {
         setProduct(data);
@@ -32,8 +54,6 @@ function AddProduct() {
 
     const addNewProduct = async () => {
         try {
-            console.log('In addNewProduct');
-            console.log(product);
             const response = await axios.post("api/products/addProduct", product);
             console.log("Product added successfully", response.data);
         }
@@ -53,9 +73,20 @@ function AddProduct() {
         }
     }
 
-    const updateProduct = async () => {
+    const fetchAllProduct = async () => {
         try {
-            const response = await axios.post("api/products/updateProduct", product);
+            const response = await axios.post("api/products/fetchAllProducts");
+            console.log(response.data.products);
+            setInventory(response.data.products);
+        }
+        catch(error : any) {
+            console.log("Inventory failed to be fetched:  + error.message");
+        }
+    }
+
+    const updateProduct = async (updatedProduct : any) => {
+        try {
+            const response = await axios.post("api/products/updateProduct", updatedProduct);
             console.log("Product updated successfully", response.data);
         }
         catch(error : any) {
@@ -74,31 +105,27 @@ function AddProduct() {
     }
 
     React.useEffect(() => {
-        console.log('In useEffect');
+        //console.log('In useEffect');
+        adminVerification();
+
         if(submit) {
-            switch(formType) {
-                case formTypeOpt.AddProduct:
+            switch(mode) {
+                case modeOpt.AddProduct:
                     if(product.product_name.length > 0 && product.product_desc.length > 0) {
                         addNewProduct();
-                    }
-                    break;
-    
-                case formTypeOpt.UpdateProduct:
-                    if(product.product_name.length > 0 && product.product_desc.length > 0) {
-                        updateProduct();
                     }
                     break;
 
                 default:
                     break;
             }
-            setSubmit(true);
+            setSubmit(false);
         }
     }, [product]);
 
-    function changeFormType(type : formTypeOpt) {
+    function changeMode(type : modeOpt) {
         console.log('Changing form type');
-        setFormType(type);
+        setMode(type);
         setFetched(false);
     };
 
@@ -118,14 +145,28 @@ function AddProduct() {
             <fieldset className='my-2 p-4 text-l font-bold text-center border-solid border-2 border-black rounded'>
                 <legend>Select management mode:</legend>
 
-                <select className='text-l p-4' name='formType'>
-                    <option value={formTypeOpt.AddProduct} onClick={() => {changeFormType(formTypeOpt.AddProduct)}}>Add Product</option>
-                    <option value={formTypeOpt.UpdateProduct} onClick={() => {changeFormType(formTypeOpt.UpdateProduct)}}>Update Product</option>
-                    <option value={formTypeOpt.RemoveProduct} onClick={() => {changeFormType(formTypeOpt.RemoveProduct)}}>Remove Product</option>
+                <select className='text-l p-4' name='mode'>
+                    <option value={modeOpt.AddProduct} 
+                    onClick={() => {
+                        changeMode(modeOpt.AddProduct);
+                    }}>Add Product</option>
+                    <option value={modeOpt.UpdateProduct} 
+                    onClick={() => {
+                        changeMode(modeOpt.UpdateProduct);
+                    }}>Update Product</option>
+                    <option value={modeOpt.RemoveProduct} 
+                    onClick={() => {
+                        changeMode(modeOpt.RemoveProduct);
+                    }}>Remove Product</option>
+                    <option value={modeOpt.ViewInventory} 
+                    onClick={() => {
+                        changeMode(modeOpt.ViewInventory); 
+                        fetchAllProduct();
+                    }}>View Inventory</option>
                 </select>
             </fieldset>
             { // Add Product Form
-            formType == formTypeOpt.AddProduct &&
+            mode == modeOpt.AddProduct &&
             <Formik
                 initialValues={defaultValues}
                 onSubmit={(values) => {
@@ -138,7 +179,7 @@ function AddProduct() {
                         product_origin: values.product_origin,
                         product_price: values.product_price,
                         product_quantity: values.product_quantity
-                    });
+                    })
                     setSubmit(true);
                 }}>
                 <Form 
@@ -157,67 +198,83 @@ function AddProduct() {
                     <label htmlFor='origin'>Product origin</label>
                     <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
                     <label htmlFor='price'>Product price</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' min='0' />
+                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' step='0.01' min='0' />
                     <label htmlFor='quantity'>Product quantity</label>
                     <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_quantity' min='0' />
                     <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
                         Add product
                     </button>
                 </Form>
-            </Formik>}
+            </Formik>
+            }
             { // Update Product Form
-                formType == formTypeOpt.UpdateProduct &&
+                mode == modeOpt.UpdateProduct &&
                 <Formik
-                initialValues={defaultValues}
+                initialValues={{
+                    product_id: product.product_id,
+                    product_name: product.product_name,
+                    product_desc: product.product_desc,
+                    product_category: product.product_category,
+                    product_brand: product.product_brand,
+                    product_origin: product.product_origin,
+                    product_price: product.product_price,
+                    product_quantity: product.product_quantity
+                }}
                 onSubmit={(values) => {
-                    updateProductState({
-                        product_id: values.product_id,
-                        product_name: values.product_name,
-                        product_desc: values.product_desc,
-                        product_category: values.product_category,
-                        product_brand: values.product_brand,
-                        product_origin: values.product_origin,
-                        product_price: values.product_price,
-                        product_quantity: values.product_quantity
-                    });
-                    setSubmit(true);
-                }}>
-                <Form 
-                    className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
-                    <h1 className='font-bold'>UPDATE PRODUCT</h1>
-                    <label htmlFor='id'>Product ID</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0' onChange={() => setFetched(false)} />
+                    console.log('submit');
+                    if(!fetched) {
+                        fetchProduct(values.product_id);
+                        setSubmit(true);
+                    }
+                    else {
+                        updateProduct(values);
+                        setFetched(false);
+                    }
+                }}
+                enableReinitialize={true}>
+                    {({ setFieldValue }) => (
+                        <Form className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
+                            <h1 className='font-bold'>UPDATE PRODUCT</h1>
+                            <label htmlFor='id'>Product ID</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_id' min='0'
+                            onChange={(event : any) => {
+                                const newFetchId = event.target.value;
+                                setFieldValue('product_id', newFetchId);
+                                setFetched(false); 
+                            }}/>
 
-                    { !fetched &&
-                    <button className='p-2 border-solid border-2 border-black rounded' type='button'>
-                        Fetch product
-                    </button>}
+                            { !fetched &&
+                            <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
+                                Fetch product
+                            </button>}
 
-                    { fetched && 
-                    <>
-                    <label htmlFor='product'>Product name</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' />
-                    <label htmlFor='description'>Production description</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='product_desc' />
-                    <label htmlFor='category'>Product category</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_category' />
-                    <label htmlFor='brand'>Product brand</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_brand' />
-                    <label htmlFor='origin'>Production origin</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
-                    <label htmlFor='price'>Product price</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' min='0' />
-                    <label htmlFor='quantity'>Product quantity</label>
-                    <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_quantity' min='0' />
-                    <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
-                        Add product
-                    </button>
-                    </>}
-                </Form>
-            </Formik>}
+                            { fetched && 
+                            <>
+                            <label htmlFor='product'>Product name</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' />
+                            <label htmlFor='description'>Production description</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='product_desc' />
+                            <label htmlFor='category'>Product category</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_category' />
+                            <label htmlFor='brand'>Product brand</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_brand' />
+                            <label htmlFor='origin'>Production origin</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
+                            <label htmlFor='price'>Product price</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' step='0.01' min='0' />
+                            <label htmlFor='quantity'>Product quantity</label>
+                            <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_quantity' min='0' />
+                            <button className='p-2 border-solid border-2 border-black rounded' type='submit'>
+                                Update product
+                            </button>
+                            </>}
+                        </Form>
+                    )}
+                </Formik>
+            }
 
             { // Remove Product Form
-                formType == formTypeOpt.RemoveProduct &&
+                mode == modeOpt.RemoveProduct &&
                 <Formik
                 initialValues={{
                     product_id: product.product_id,
@@ -225,9 +282,7 @@ function AddProduct() {
                 }}
                 onSubmit={(values) => {
                     if(!fetched) {
-                        console.log('submit');
                         fetchProduct(values.product_id);
-                        setSubmit(true);
                     }
                     else {
                         removeProduct(values.product_id);
@@ -263,9 +318,23 @@ function AddProduct() {
                             }
                         </Form>
                     )}
-            </Formik>}
+                </Formik>
+            }
+
+            {   // View Inventory Table
+                mode == modeOpt.ViewInventory &&
+                <DataTable className='border-solid border-2 border-black rounded' value={inventory} tableStyle={{ minWidth: '40rem' }}>
+                    <Column field='product_id' header='ID' />
+                    <Column field='product_name' header='Name' />
+                    <Column field='product_category' header='Category' />
+                    <Column field='product_brand' header='Brand' />
+                    <Column field='product_origin' header='Origin' />
+                    <Column field='product_price' header='Price' />
+                    <Column field='product_quantity' header='Quantity' />
+                </DataTable>
+            }
         </div>
     )
 }
 
-export default AddProduct
+export default InventoryManagement
