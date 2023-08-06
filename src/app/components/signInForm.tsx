@@ -5,7 +5,7 @@ import React from "react";
 import { useRouter } from "next/navigation"
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
-import { accountInfo } from "../interface/data";
+import { accountInfo } from "../interface/interface";
 
 enum formOpt {
     SignUp,
@@ -68,7 +68,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
     }, [user])
 
     return (
-        <div className='absolute flex flex-col items-center bg-white'
+        <div className='absolute flex flex-col items-center'
         onClick={handleFormClick}>
             {   //  Log in form
                 formType == formOpt.LogIn &&
@@ -84,12 +84,12 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
                     });
                 }}>
                     <Form 
-                        className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-violet-500 rounded max-w-[400px] p-4'>
+                        className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-violet-500 bg-white rounded-xl overflow-hidden max-w-[400px] p-4'>
                         <h1 className='font-bold text-violet-500'>USER LOG IN</h1>
                         <label className='text-violet-500' htmlFor='username'>Credentials</label>
-                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded' type='text' name='username' />
+                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='text' name='username' />
                         <label className='text-violet-500' htmlFor='password'>Passcode</label>
-                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded' type='password' name='password' />
+                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='password' name='password' />
                         <button type='submit' className='border-solid border-2 text-violet-500 border-violet-500 rounded'>
                             Log In
                         </button>
@@ -115,12 +115,12 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
                     });
                 }}>
                     <Form 
-                        className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-violet-500 rounded max-w-[400px] p-4'>
+                        className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-violet-500 rounded max-w-[400px] p-4'>
                         <h1 className='font-bold text-violet-500'>USER REGISTRATION</h1>
                         <label className='text-violet-500' htmlFor='username'>Credentials</label>
-                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded' type='text' name='username' />
+                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='text' name='username' />
                         <label className='text-violet-500' htmlFor='password'>Passcode</label>
-                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded' type='password' name='password' />
+                        <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='password' name='password' />
                         <button type='submit' className='border-solid border-2 text-violet-500 border-violet-500 rounded'>
                             Sign up
                         </button>

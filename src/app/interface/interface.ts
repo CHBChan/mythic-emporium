@@ -11,7 +11,8 @@ interface productType {
 
 interface accountInfo {
     user_id: number | null,
-    username: string | null
+    username: string | null,
+    isAdmin: boolean | null
 };
 
 export type { productType, accountInfo }

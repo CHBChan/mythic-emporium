@@ -5,8 +5,9 @@ import Link from "next/link";
 
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
-import { accountInfo } from "./interface/data";
+import { accountInfo } from "./interface/interface";
 import axios from "axios";
+import CategoryNavBar from "./components/categoryNavBar";
 
 enum formOpt {
   SignUp,
@@ -14,7 +15,7 @@ enum formOpt {
 };
 
 export default function Home() {
-  const [userInfo, setUserInfo] = React.useState<accountInfo>({ user_id: null, username: null});
+  const [userInfo, setUserInfo] = React.useState<accountInfo>({ user_id: null, username: null, isAdmin: null });
   const [formType, setFormType] = React.useState<formOpt>(formOpt.LogIn);
   const [showPopup, setShowPopup] = React.useState(false);
 
@@ -35,7 +36,8 @@ export default function Home() {
   const signOut = async () => {
     setUserInfo({
       user_id: null,
-      username: null
+      username: null,
+      isAdmin: null
     });
     const response = await axios.get("api/users/logout");
   };
@@ -63,6 +65,7 @@ export default function Home() {
     <>
     <div className='content max-h-full'>
       <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
+      <CategoryNavBar />
       <div className='inner_content'>
       </div>
     </div>

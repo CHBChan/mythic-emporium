@@ -22,7 +22,8 @@ export async function GET(request : NextRequest) {
         // Construct user info
         const userInfo = {
             user_id: decodedToken.id,
-            username: decodedToken.username
+            username: decodedToken.username,
+            isAdmin: decodedToken.isAdmin
         };
 
         // Return fetched user info

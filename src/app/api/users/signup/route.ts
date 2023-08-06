@@ -37,7 +37,8 @@ export async function POST(request : NextRequest) {
 
         const userInfo = {
             user_id: savedUser._id,
-            username: savedUser.username
+            username: savedUser.username,
+            isAdmin: savedUser.isAdmin
         };
 
         const response = NextResponse.json({

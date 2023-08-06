@@ -7,7 +7,7 @@ import { Field, Form, Formik, setIn } from 'formik'
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-import { productType } from '../interface/data';
+import { productType } from '../interface/interface';
 
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { useRouter } from 'next/navigation';
@@ -43,7 +43,7 @@ function InventoryManagement() {
         }
         catch(error : any) {
             console.log("Verification process failed: " + error.message);
-            router.push('/login');
+            router.push('/');
         }
     }
 

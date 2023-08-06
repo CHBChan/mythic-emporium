@@ -6,7 +6,8 @@ import Image from "next/image";
 import SearchBar from "./searchBar";
 import { BiUser } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { accountInfo } from '../interface/data';
+import { accountInfo } from '../interface/interface';
+import { useRouter } from 'next/navigation';
 
 interface headerProps {
     userInfo: accountInfo,
@@ -15,6 +16,7 @@ interface headerProps {
 }
 
 const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup }) => {
+    const router = useRouter();
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
@@ -32,20 +34,24 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup }) => {
                     <div className='user_btns flex items-center gap-2'>
                         {   // Check if userInfo exists
                             (!userInfo.user_id)?
-                            <button className='text-white bg-violet-500 border-solid border-2 border-violet-500 rounded p-1 max-h-full'
+                            <button className='text-white bg-violet-500 border-solid border border-violet-500 rounded p-1 max-h-full'
                             onClick={() => setPopup()}>
                                 Sign In
                             </button>
                             :
-                            <button className='text-white bg-violet-500 border-solid border-2 border-violet-500 rounded p-1 max-h-full'
+                            <button className='text-white bg-violet-500 border-solid border border-violet-500 rounded p-1 max-h-full'
                             onClick={() => signOut()}>
                                 Sign Out
                             </button>
                         }
-                        <button className='border-solid border-2 text-violet-500 border-violet-500 rounded p-1'>
-                            <BiUser size={24} />
-                        </button>
-                        <button className='border-solid border-2 text-violet-500 border-violet-500 rounded p-1'>
+                        {   // Check if user is an admin
+                            userInfo.isAdmin && 
+                            <button className='border-solid border text-rose-700 border-rose-700 rounded p-1'
+                            onClick={() => router.push('InventoryManagement')}>
+                                <BiUser size={24} />
+                            </button>
+                        }
+                        <button className='border-solid border text-violet-500 border-violet-500 rounded p-1'>
                             <AiOutlineShoppingCart size={24} />
                         </button>
                     </div>
