@@ -1,10 +1,18 @@
+"use client"
+
+import * as React from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import SearchBar from "./searchBar";
+import SignUpForm from './signInForm';
 import { BiUser } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
-export default function Header() {
+interface headerProps {
+    setPopup: () => void;
+}
+
+const Header : React.FC<headerProps> = ({ setPopup }) => {
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
@@ -20,13 +28,14 @@ export default function Header() {
                 <SearchBar />
                 <div className='user_actions flex items-center'>
                     <div className='user_btns flex items-center gap-2'>
-                        <button className='text-white bg-violet-500 border-solid border-2 border-violet-500 rounded p-1 max-h-full'>
+                        <button className='text-white bg-violet-500 border-solid border-2 border-violet-500 rounded p-1 max-h-full'
+                        onClick={() => setPopup()}>
                             Sign In
                         </button>
-                        <button className='border-solid border-2 border-violet-500 rounded p-1'>
+                        <button className='border-solid border-2 text-violet-500 border-violet-500 rounded p-1'>
                             <BiUser size={24} />
                         </button>
-                        <button className='border-solid border-2 border-violet-500 rounded p-1'>
+                        <button className='border-solid border-2 text-violet-500 border-violet-500 rounded p-1'>
                             <AiOutlineShoppingCart size={24} />
                         </button>
                     </div>
@@ -35,3 +44,5 @@ export default function Header() {
         </header>
     )
 }
+
+export default Header;

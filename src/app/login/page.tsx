@@ -42,17 +42,17 @@ function Login() {
                     password: values.password
                 });
             }}>
-            <Form 
-                className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
-                <h1 className='font-bold'>USER LOG IN</h1>
-                <Field type='text' name='username' />
-                <Field type='password' name='password' />
-                <button type='submit' className='border-solid border-2 border-black'>
-                    Log In
-                </button>
-                <Link href='/signup'>Signup Page</Link>
-            </Form>
-        </Formik>
+                <Form 
+                    className='flex flex-col gap-4 justify-center text-center border-solid border-2 border-black rounded max-w-[400px] p-4'>
+                    <h1 className='font-bold'>USER LOG IN</h1>
+                    <Field type='text' name='username' />
+                    <Field type='password' name='password' />
+                    <button type='submit' className='border-solid border-2 border-black'>
+                        Log In
+                    </button>
+                    <Link href='/signup'>Signup Page</Link>
+                </Form>
+            </Formik>
         </div>
     )
 }
