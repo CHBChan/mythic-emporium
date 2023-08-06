@@ -2,11 +2,11 @@ import { MongoConnect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-
+import jwt from "jsonwebtoken";
 
 MongoConnect();
 
-export async function POST(request: NextRequest) {
+export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();
         const { username, password } = reqBody; 
@@ -26,12 +26,31 @@ export async function POST(request: NextRequest) {
         });
 
         const savedUser = await newUser.save();
+        
+        const tokenData = {
+            id: savedUser._id,
+            username: savedUser.username,
+            isAdmin: savedUser.isAdmin
+        };
 
-        return NextResponse.json({
-            message: "User created successfully",
+        const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: '1h'});
+
+        const userInfo = {
+            user_id: savedUser._id,
+            username: savedUser.username
+        };
+
+        const response = NextResponse.json({
+            message: 'Registration successful',
             success: true,
-            savedUser
-        })
+            userInfo: userInfo
+        });
+
+        response.cookies.set("token", token, {
+            httpOnly: true
+        });
+
+        return response;
     }
     catch(error : any) {
         return NextResponse.json({error: error.message},

@@ -7,6 +7,11 @@ interface productType {
     product_origin: string,
     product_price: number,
     product_quantity: number
-}
+};
 
-export type { productType }
+interface accountInfo {
+    user_id: number | null,
+    username: string | null
+};
+
+export type { productType, accountInfo }

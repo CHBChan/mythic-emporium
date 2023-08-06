@@ -5,6 +5,7 @@ import React from "react";
 import { useRouter } from "next/navigation"
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
+import { accountInfo } from "../interface/data";
 
 enum formOpt {
     SignUp,
@@ -12,23 +13,24 @@ enum formOpt {
 };
 
 interface formProps {
+    getUserInfo: (user : accountInfo) => void,
     formType: formOpt,
-    switchForm: () => void;
-}
+    switchForm: () => void,
+    setPopup: () => void
+};
 
-const SignUpForm : React.FC<formProps> = ({ formType, switchForm }) => {
-    const router = useRouter();
+const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, setPopup }) => {
     const [user, setUser] = React.useState({
-        password: '',
         username: '',
+        password: ''
     });
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
     const onSignup = async () => {
         try {
             const response = await axios.post("api/users/signup", user);
-            console.log("Signup success", response.data);
-            router.push("/login");
+            getUserInfo(response.data.userInfo);
+            setPopup();
         }
         catch(error : any) {
             console.log("Signup failed: " + error.message);
@@ -38,7 +40,8 @@ const SignUpForm : React.FC<formProps> = ({ formType, switchForm }) => {
     const onLogin = async () => {
         try {
             const response = await axios.post("api/users/login", user);
-            router.push('/InventoryManagement');
+            getUserInfo(response.data.userInfo);
+            setPopup();
         }
         catch(error : any) {
             console.log("Login failed", error.message);
@@ -51,8 +54,13 @@ const SignUpForm : React.FC<formProps> = ({ formType, switchForm }) => {
 
     React.useEffect(() => {
         if(user.password.length > 0 && user.username.length > 0) {
+            if(formType == formOpt.LogIn) {
+                onLogin();
+            }
+            else {
+                onSignup();
+            }
             setButtonDisabled(false);
-            onSignup();
         }
         else {
             setButtonDisabled(true);
@@ -101,7 +109,6 @@ const SignUpForm : React.FC<formProps> = ({ formType, switchForm }) => {
                     password: ''
                 }}
                 onSubmit={(values) => {
-                    console.log('password: ' + values.password);
                     setUser({
                         username: values.username,
                         password: values.password

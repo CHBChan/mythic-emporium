@@ -2,8 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
+
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
+import { accountInfo } from "./interface/data";
+import axios from "axios";
 
 enum formOpt {
   SignUp,
@@ -11,9 +14,32 @@ enum formOpt {
 };
 
 export default function Home() {
+  const [userInfo, setUserInfo] = React.useState<accountInfo>({ user_id: null, username: null});
   const [formType, setFormType] = React.useState<formOpt>(formOpt.LogIn);
   const [showPopup, setShowPopup] = React.useState(false);
 
+  const getUserInfo = (user : accountInfo) => {
+    setUserInfo(user);
+  };
+
+  const fetchUserFromCookie = async () => {
+    try {
+      const response = await axios.get("api/users/fetchUser");
+      setUserInfo(response.data.userInfo);
+    }
+    catch(error : any) {
+      console.error('Failed to fetch user info from cookie');
+    }
+  };
+
+  const signOut = async () => {
+    setUserInfo({
+      user_id: null,
+      username: null
+    });
+    const response = await axios.get("api/users/logout");
+  };
+  
   const switchForm = () => {
     if(formType == formOpt.LogIn) {
         setFormType(formOpt.SignUp);
@@ -21,17 +47,22 @@ export default function Home() {
     else {
         setFormType(formOpt.LogIn);
     }
-  }
+  };
 
   const setPopup = () => {
     setShowPopup((prevState) => !prevState);
     console.log('Showing/hiding popup')
   };
+
+  React.useEffect(() => {
+    // Retrieve user info from login cookie
+    fetchUserFromCookie();
+  },[]);
   
   return (
     <>
     <div className='content max-h-full'>
-      <Header setPopup={setPopup} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
       <div className='inner_content'>
       </div>
     </div>
@@ -39,7 +70,7 @@ export default function Home() {
       showPopup &&
       <div className='popup_content z-[200] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
       onClick={() => setPopup()}>
-        <SignUpForm formType={formType} switchForm={switchForm} />
+        <SignUpForm getUserInfo={getUserInfo} formType={formType} switchForm={switchForm} setPopup={setPopup} />
       </div>
     }
     </>

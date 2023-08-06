@@ -27,13 +27,19 @@ export async function POST(request : NextRequest) {
             id: user._id,
             username: user.username,
             isAdmin: user.isAdmin
-        }
+        };
 
         const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: '1h'});
 
+        const userInfo = {
+            user_id: user._id,
+            username: user.username
+        };
+
         const response = NextResponse.json({
             message: 'Login successful',
-            success: true
+            success: true,
+            userInfo: userInfo
         });
 
         response.cookies.set("token", token, {
