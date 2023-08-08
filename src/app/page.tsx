@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
-import { accountInfo, filterOpt } from "./interface/interface";
+import { productType, accountInfo, filterOpt } from "./interface/interface";
 import CategoryNavBar from "./components/categoryNavBar";
 import FilterCard from "./components/filterCard";
+import ProductCard from "./components/productCard";
 
 enum formOpt {
   SignUp,
@@ -28,6 +29,7 @@ export default function Home() {
     minPrice: 0,
     maxPrice: 9999,
   });
+  const [productsList, setProductsList] = React.useState<productType[]>([]);
 
   const getUserInfo = (user : accountInfo) => {
     setUserInfo(user);
@@ -40,6 +42,26 @@ export default function Home() {
     }
     catch(error : any) {
       console.error('Failed to fetch user info from cookie');
+    }
+  };
+
+  const fetchAllProducts = async () => {
+    try {
+      const response = await axios.get("api/products/fetchAllProducts");
+      setProductsList(response.data.products);
+    }
+    catch(error : any) {
+      console.error('Failed to fetch products');
+    }
+  };
+
+  const fetchFilteredProducts = async () => {
+    try {
+      const response = await axios.post("api/products/fetchFilteredProducts", filters);
+      setProductsList(response.data.products);
+    }
+    catch(error : any) {
+      console.error('Failed to fetch products');
     }
   };
 
@@ -69,6 +91,9 @@ export default function Home() {
   React.useEffect(() => {
     // Retrieve user info from login cookie
     fetchUserFromCookie();
+
+    // Retrieve all products
+    fetchAllProducts();
   },[]);
 
   const updateFilters = (option : string, value : any) => {
@@ -132,20 +157,22 @@ export default function Home() {
   };
 
   const applyFilters = () => {
-    
+    fetchFilteredProducts();
   };
   
   return (
     <>
-    <div className='content max-h-full'>
+    <div className='content h-full max-h-full'>
       <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
       <CategoryNavBar updateFilter={updateFilters} />
-      <div className='inner_content grid gap-4 p-4'>
+      <section className='inner_content flex row gap-4 p-4 h-full'>
         <FilterCard filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
-        <div className='product_listing'>
-
-        </div>
-      </div>
+        <section className='product_listing grid grid-cols-2 gap-4 w-full'>
+          {productsList.map((product) => (
+            <ProductCard key={product.product_id + '_card'} product={product} />
+          ))}
+        </section>
+      </section>
     </div>
     { // Show popup
       showPopup &&

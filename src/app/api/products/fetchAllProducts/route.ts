@@ -8,6 +8,17 @@ export async function GET(request : NextRequest) {
 
     try{
         const products = await Product.find({});
+
+        const clientProducts = products.map((product) => ({
+            product_id: product.product_id,
+            product_name: product.product_name,
+            product_desc: product.product_desc,
+            product_category: product.product_category,
+            product_brand: product.product_brand,
+            product_origin: product.product_origin,
+            product_price: product.product_price,
+            product_quantity: product.product_quantity
+        }));
         
         if(!products) {
             return NextResponse.json({ Error: 'There is no product in database'}, {status: 450});
@@ -16,7 +27,7 @@ export async function GET(request : NextRequest) {
         return NextResponse.json({
             message: "Inventory fetched successfully",
             success: true,
-            products
+            products: clientProducts
         })
     }
     catch(error : any) {

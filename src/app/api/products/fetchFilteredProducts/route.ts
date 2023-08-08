@@ -4,8 +4,7 @@ import Product from "@/models/productModel";
 
 MongoConnect();
 
-export async function GET(request : NextRequest) {
-
+export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();
         const { category, brand, origin, in_stock, minPrice, maxPrice } = reqBody;
