@@ -5,7 +5,11 @@ import Link from "next/link";
 import { categories } from '../data/data';
 import { BiCaretDown } from 'react-icons/bi';
 
-const CategoryNavBar : React.FC = () => {
+interface navBarProps {
+    updateFilter: (option : string, value : any) => void
+}
+
+const CategoryNavBar : React.FC<navBarProps> = ({ updateFilter }) => {
 
     return (
         <section className='nav_section relative z-[100] block'>
@@ -14,14 +18,11 @@ const CategoryNavBar : React.FC = () => {
                     <div className='nav_start flex items-stretch justify-start mr-auto'>
                         {categories.map((category) => (
                             <div key={category.name + '_menu'} className='relative flex items-stretch grow-0 shrink-0 p-0'>
-                                <span className='flex items-center  gap-2 font-bold text-white cursor-pointer px-4'>
+                                <span className='flex items-center  gap-2 font-bold text-white cursor-pointer px-4'
+                                onClick={() => updateFilter('category', category.name)}>
                                     {category.name}
                                     <BiCaretDown />
                                 </span>
-                                {category.subcategory.map((sub) => (
-                                    <div key={sub+'_dropdown'}>
-                                    </div>
-                                ))}
                             </div>
                         ))}
                     </div>

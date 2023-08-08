@@ -1,12 +1,16 @@
 interface Category {
     name: string,
     subcategory: string[]
-}
+};
 
 const categories : Category[] = [
     {
+        name: 'All',
+        subcategory: []
+    },
+    {
         name: 'General',
-        subcategory: ['a', 'b']
+        subcategory: []
     },
     {
         name: 'Food',
@@ -26,4 +30,14 @@ const categories : Category[] = [
     }
 ];
 
-export { categories };
+const brands : string[] = [
+    'All',
+    'Misc. Vendor',
+];
+
+const origins : string[] = [
+    'All',
+    'Farm Realm',
+];
+
+export { categories, brands, origins };

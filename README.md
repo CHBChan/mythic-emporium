@@ -3,10 +3,10 @@ To do list
 - [x] Implement inventory management system
 - [x] Implement registration & login system
 - [x] Implement head navigation bar
-- [ ] Implement category navigation bar
+- [x] Implement category navigation bar
 - [ ] Implement products grid view
 - [ ] Implement products individual page
-- [ ] Implement category filter
+- [x] Implement category filter
 - [ ] Implement search bar function
 - [ ] Implement shopping cart
 - [ ] Implement mock payment page

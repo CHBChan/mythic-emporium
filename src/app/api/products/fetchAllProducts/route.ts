@@ -4,7 +4,7 @@ import Product from "@/models/productModel";
 
 MongoConnect();
 
-export async function POST(request : NextRequest) {
+export async function GET(request : NextRequest) {
 
     try{
         const products = await Product.find({});

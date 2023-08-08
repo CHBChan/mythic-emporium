@@ -15,4 +15,13 @@ interface accountInfo {
     isAdmin: boolean | null
 };
 
-export type { productType, accountInfo }
+interface filterOpt {
+    category: string | undefined,
+    brand: string | undefined,
+    origin: string | undefined,
+    in_stock: boolean,
+    minPrice: number,
+    maxPrice: number,
+}
+
+export type { productType, accountInfo, filterOpt }
