@@ -11,9 +11,9 @@ const ProductCard : React.FC<cardProps> = ({ product }) => {
     
     return (
         <div className='block'>
-            <div className='relative block rounded h-full shadow overflow-hidden'>
-                <div className='flex flex-row items-center p-3 gap-3 h-full'>
-                    <GrCircleQuestion size={64}/>
+            <div className='relative block rounded h-full shadow overflow-hidden hover:shadow-2xl'>
+                <div className='flex flex-row items-center justify-around p-3 gap-3 h-full'>
+                    <GrCircleQuestion size={72}/>
                     <div className='product_info flex flex-col'>
                         <span>{product.product_name}</span>
                         <span>{product.product_brand}</span>

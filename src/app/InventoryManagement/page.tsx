@@ -75,12 +75,12 @@ function InventoryManagement() {
 
     const fetchAllProduct = async () => {
         try {
-            const response = await axios.post("api/products/fetchAllProducts");
+            const response = await axios.get("api/products/fetchAllProducts");
             console.log(response.data.products);
             setInventory(response.data.products);
         }
         catch(error : any) {
-            console.log("Inventory failed to be fetched:  + error.message");
+            console.log("Inventory failed to be fetched: "  + error.message);
         }
     }
 

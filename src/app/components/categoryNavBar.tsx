@@ -6,10 +6,24 @@ import { categories } from '../data/data';
 import { BiCaretDown } from 'react-icons/bi';
 
 interface navBarProps {
-    updateFilter: (option : string, value : any) => void
+    updateFilters: (option : string, value : any) => void,
+    applyFilters: () => void
 }
 
-const CategoryNavBar : React.FC<navBarProps> = ({ updateFilter }) => {
+const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, applyFilters }) => {
+    const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
+    
+    const handlePress = (category : string) => {
+        updateFilters('category', category);
+        setChangeCategory(true);
+    };
+
+    React.useEffect(() => {
+        if(changeCategory) {
+            applyFilters();
+            setChangeCategory(false);
+        }
+    }, [changeCategory]);
 
     return (
         <section className='nav_section relative z-[100] block'>
@@ -19,7 +33,7 @@ const CategoryNavBar : React.FC<navBarProps> = ({ updateFilter }) => {
                         {categories.map((category) => (
                             <div key={category.name + '_menu'} className='relative flex items-stretch grow-0 shrink-0 p-0'>
                                 <span className='flex items-center  gap-2 font-bold text-white cursor-pointer px-4'
-                                onClick={() => updateFilter('category', category.name)}>
+                                onClick={() => handlePress(category.name)}>
                                     {category.name}
                                     <BiCaretDown />
                                 </span>

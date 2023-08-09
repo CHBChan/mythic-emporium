@@ -4,6 +4,7 @@ import React from "react";
 import axios from "axios";
 
 import { Label } from "@/components/ui/label";
+import Paginator from "./components/paginator";
 
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
@@ -20,7 +21,7 @@ enum formOpt {
 export default function Home() {
   const [userInfo, setUserInfo] = React.useState<accountInfo>({ user_id: null, username: null, isAdmin: null });
   const [formType, setFormType] = React.useState<formOpt>(formOpt.LogIn);
-  const [showPopup, setShowPopup] = React.useState(false);
+  const [showPopup, setShowPopup] = React.useState<boolean>(false);
   const [filters, setFilters] = React.useState<filterOpt>({
     category: undefined,
     brand: undefined,
@@ -30,6 +31,8 @@ export default function Home() {
     maxPrice: 9999,
   });
   const [productsList, setProductsList] = React.useState<productType[]>([]);
+  const [brandsList, setBrandsList] = React.useState<string[]>([]);
+  const [originsList, setOriginsList] = React.useState<string[]>([]);
 
   const getUserInfo = (user : accountInfo) => {
     setUserInfo(user);
@@ -88,6 +91,25 @@ export default function Home() {
     console.log('Showing/hiding popup')
   };
 
+  const populateFilterOpts = () => {
+    // Populate brands & origins
+    const brands = productsList.reduce((brands, product) => {
+      if(!brands.includes(product.product_brand)) {
+        brands.push(product.product_brand);
+      }
+      return brands;
+    }, [] as string[]);
+    setBrandsList(brands);
+
+    const origins = productsList.reduce((origins, product) => {
+      if(!origins.includes(product.product_origin)) {
+        origins.push(product.product_origin);
+      }
+      return origins;
+    }, [] as string[]);
+    setOriginsList(origins);
+  };
+
   React.useEffect(() => {
     // Retrieve user info from login cookie
     fetchUserFromCookie();
@@ -95,6 +117,10 @@ export default function Home() {
     // Retrieve all products
     fetchAllProducts();
   },[]);
+
+  React.useEffect(() => {
+    populateFilterOpts();
+  }, [productsList]);
 
   const updateFilters = (option : string, value : any) => {
     switch(option) {
@@ -148,8 +174,8 @@ export default function Home() {
   const resetFilters = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      brand: undefined,
-      origin: undefined,
+      brand: 'All',
+      origin: 'All',
       in_stock: false,
       minPrice: 0,
       maxPrice: 9999
@@ -157,21 +183,25 @@ export default function Home() {
   };
 
   const applyFilters = () => {
+    // Retrieve filtered products
     fetchFilteredProducts();
   };
   
   return (
     <>
-    <div className='content h-full max-h-full'>
+    <div className='content flex flex-col h-screen'>
       <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
-      <CategoryNavBar updateFilter={updateFilters} />
-      <section className='inner_content flex row gap-4 p-4 h-full'>
-        <FilterCard filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
-        <section className='product_listing grid grid-cols-2 gap-4 w-full'>
-          {productsList.map((product) => (
-            <ProductCard key={product.product_id + '_card'} product={product} />
-          ))}
-        </section>
+      <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
+      <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
+        <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+        <div className='flex flex-col items-center w-full'>
+          <section className='product_listing flex-grow grid grid-cols-2 gap-4 w-full'>
+            {productsList.map((product) => (
+              <ProductCard key={product.product_id + '_card'} product={product} />
+            ))}
+          </section>
+          <Paginator />
+        </div>
       </section>
     </div>
     { // Show popup

@@ -8,20 +8,30 @@ export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();
         const { category, brand, origin, in_stock, minPrice, maxPrice } = reqBody;
+        console.log(category, brand, origin);
+        const filterQuery : any = {};
 
-        const filterQuery = {
-            product_category: category,
-            product_brand: brand,
-            product_origin: origin,
-            product_price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
-            product_quantity: in_stock? { $gt: 0 } : { $gte: 0 },
+        if(category) {
+            filterQuery.product_category = category;
         }
 
-        const products = await Product.find(filterQuery);
+        if(brand && brand != 'All') {
+            filterQuery.product_brand = brand;
+        }
 
+        if(origin && origin != 'All') {
+            filterQuery.product_origin = origin;
+        }
+
+        filterQuery.product_price = {
+            $gte: minPrice,
+            $lte: maxPrice
+        }
+
+        filterQuery.product_quantity = in_stock? { $gt: 0 } : { $gte: 0 };
+
+        const products = await Product.find(filterQuery);
+        console.log(products);
         return NextResponse.json({
             message: "Filtered inventory fetched successfully",
             success: true,

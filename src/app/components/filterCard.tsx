@@ -1,16 +1,17 @@
 import { Label } from "@/components/ui/label";
 
 import { filterOpt } from "../interface/interface";
-import { brands, origins } from "../data/data";
 
 interface filterProps {
+    brandsList: string[],
+    originsList: string[],
     filters: filterOpt,
     updateFilters: (option : string, value : any) => void,
     resetFilters: () => void,
     applyFilters: () => void
 }
 
-const FilterCard : React.FC<filterProps> = ({ filters, updateFilters, resetFilters, applyFilters }) => {
+const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, updateFilters, resetFilters, applyFilters }) => {
 
     return (
         <div className='filters block order-none shadow rounded text-white bg-violet-500 max-w-fit'>
@@ -20,25 +21,26 @@ const FilterCard : React.FC<filterProps> = ({ filters, updateFilters, resetFilte
               Reset Filters
             </span>
           </div>
-          <div className='availability block'>
-            <div className='block p-3 border-b border-solid border-white'>
+          <div className='availability block my-4'>
+            <div className='block px-3 pb-6 border-b border-solid border-white'>
               <span className='block font-bold mb-2'>Availability:</span>
               <div className='filters'>
                 <div className='stock flex gap-2'>
                   <input type='checkbox' name='stock' checked={filters.in_stock} onChange={() => updateFilters('stock', null)} />
-                  <Label htmlFor='stock'>In stock</Label>
+                  <Label htmlFor='stock'>In stock only</Label>
                 </div>
               </div>
             </div>
           </div>
-          <div className='brand block'>
-            <div className='block p-3 border-b border-solid border-white'>
+          <div className='brand block my-4'>
+            <div className='block px-3 pb-6 border-b border-solid border-white'>
               <span className='block font-bold mb-2'>Brand:</span>
               <div className='filters'>
                 <div className='brand flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[64] h-full cursor-pointer' 
                 value={filters.brand} onChange={(event) => updateFilters('brand', event.target.value)}>
-                    {brands.map((brand) => (
+                    <option value={'All'}>All</option>
+                    {brandsList.map((brand) => (
                         <option key={'option_' + brand} value={brand}>
                             {brand}
                         </option>
@@ -48,14 +50,15 @@ const FilterCard : React.FC<filterProps> = ({ filters, updateFilters, resetFilte
               </div>
             </div>
           </div>
-          <div className='origin block'>
-            <div className='block p-3 border-b border-solid border-white'>
+          <div className='origin block my-4'>
+            <div className='block px-3 pb-6 border-b border-solid border-white'>
               <span className='block font-bold mb-2'>Origin:</span>
               <div className='filters'>
                 <div className='origin flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[64] h-full cursor-pointer' 
                 value={filters.origin} onChange={(event) => updateFilters('origin', event.target.value)}>
-                    {origins.map((origin) => (
+                    <option value={'All'}>All</option>
+                    {originsList.map((origin) => (
                         <option key={'option_' + origin} value={origin}>
                             {origin}
                         </option>
@@ -65,8 +68,8 @@ const FilterCard : React.FC<filterProps> = ({ filters, updateFilters, resetFilte
               </div>
             </div>
           </div>
-          <div className='price block'>
-            <div className='block p-3 border-b border-solid border-white'>
+          <div className='price block my-4'>
+            <div className='block px-3 pb-6 border-b border-solid border-white'>
               <span className='block font-bold mb-2'>Price:</span>
               <div className='filters'>
                 <div className='price flex gap-2'>
@@ -88,7 +91,7 @@ const FilterCard : React.FC<filterProps> = ({ filters, updateFilters, resetFilte
               </div>
             </div>
           </div>
-          <button className='text-violet-500 bg-white rounded m-2 p-2'
+          <button className='text-violet-500 bg-white rounded m-3 p-2'
           onClick={() => {applyFilters(); console.log(filters)}}>
             Apply
           </button>
