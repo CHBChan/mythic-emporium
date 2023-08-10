@@ -23,10 +23,10 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup }) => {
             <div className='header-content flex items-center justify-evenly py-3 gap-8'>
                 <Link className='flex items-center cursor-pointer' href='/'>
                     <Image
-                        src='next.svg'
+                        src='ME_icon.svg'
                         alt='Mythic Emporium'
-                        height={60}
-                        width={160}
+                        height={120}
+                        width={320}
                     />
                 </Link>
                 <SearchBar />
