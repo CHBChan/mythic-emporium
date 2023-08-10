@@ -1,8 +1,7 @@
-import { MongoConnect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
-MongoConnect();
+import { dbConnection } from "@/dbConfig/dbConfig";
 
 export async function POST(request : NextRequest) {
 
@@ -10,7 +9,8 @@ export async function POST(request : NextRequest) {
         const reqBody = await request.json();
         const { product_id } = reqBody;
 
-        const product = await Product.findOne({product_id});
+        const productModel = dbConnection.model('Product', Product.schema);
+        const product = await productModel.findOne({product_id});
         
         if(!product) {
             return NextResponse.json({ Error: 'Product cannnot be found'}, {status: 430});
@@ -20,7 +20,7 @@ export async function POST(request : NextRequest) {
             message: "Product fetched successfully",
             success: true,
             product
-        })
+        });
     }
     catch(error : any) {
         return NextResponse.json({error: error.message}, {status: 530});

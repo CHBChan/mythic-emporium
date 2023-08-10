@@ -1,8 +1,7 @@
-import { MongoConnect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
-MongoConnect();
+import { dbConnection } from "@/dbConfig/dbConfig";
 
 export async function POST(request : NextRequest) {
     try{
@@ -30,13 +29,14 @@ export async function POST(request : NextRequest) {
 
         filterQuery.product_quantity = in_stock? { $gt: 0 } : { $gte: 0 };
 
-        const products = await Product.find(filterQuery);
+        const productModel = dbConnection.model('Product', Product.schema);
+        const products = await productModel.find(filterQuery);
 
         return NextResponse.json({
             message: "Filtered inventory fetched successfully",
             success: true,
             products
-        })
+        });
     }
     catch(error : any) {
         return NextResponse.json({error: error.message}, {status: 580});

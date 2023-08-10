@@ -1,13 +1,13 @@
-import { MongoConnect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
-MongoConnect();
+import { dbConnection } from "@/dbConfig/dbConfig";
 
 export async function GET(request : NextRequest) {
 
     try{
-        const products = await Product.find({});
+        const productModel = dbConnection.model('Product', Product.schema);
+        const products = await productModel.find({});
 
         const clientProducts = products.map((product) => ({
             product_id: product.product_id,
@@ -28,7 +28,7 @@ export async function GET(request : NextRequest) {
             message: "Inventory fetched successfully",
             success: true,
             products: clientProducts
-        })
+        });
     }
     catch(error : any) {
         return NextResponse.json({error: error.message}, {status: 550});

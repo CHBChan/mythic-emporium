@@ -1,17 +1,17 @@
-import { MongoConnect } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-MongoConnect();
+import { dbConnection } from "@/dbConfig/dbConfig";
 
 export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();
         const { username, password } = reqBody; 
 
-        const user = await User.findOne({username});
+        const userModel = dbConnection.model('User', User.schema);
+        const user = await userModel.findOne({username});
 
         if(user) {
             return NextResponse.json({error: "Username already exists"}, {status: 400});
@@ -20,7 +20,7 @@ export async function POST(request : NextRequest) {
         const salt = await bcryptjs.genSalt(10);
         const hashedPassword = await bcryptjs.hash(password, salt);
 
-        const newUser = new User({
+        const newUser = new userModel({
             username,
             password: hashedPassword
         });

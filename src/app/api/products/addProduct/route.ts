@@ -1,8 +1,8 @@
-import { MongoConnect } from "@/dbConfig/dbConfig";
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
+import { dbConnection } from "@/dbConfig/dbConfig";
 
-MongoConnect();
+
 
 export async function POST(request : NextRequest) {
     try{
@@ -16,12 +16,13 @@ export async function POST(request : NextRequest) {
                 product_price, 
                 product_quantity } = reqBody;
         
+        const productModel = dbConnection.model('Product', Product.schema);
         const product = await Product.findOne({product_id});
 
         if(!product) {
             console.log("Product_id does not exist, attempting to add product to database...");
             
-            const newProduct = new Product({
+            const newProduct = new productModel({
                 product_id,
                 product_name,
                 product_desc,
@@ -38,7 +39,7 @@ export async function POST(request : NextRequest) {
                 message: "Product added successfully",
                 success: true,
                 savedProduct
-            })
+            });
         }
     }
     catch(error : any) {

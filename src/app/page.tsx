@@ -3,9 +3,6 @@
 import React from "react";
 import axios from "axios";
 
-import { Label } from "@/components/ui/label";
-import Paginator from "./components/paginator";
-
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
 import { productType, accountInfo, filterOpt } from "./interface/interface";
@@ -55,7 +52,7 @@ export default function Home() {
       setProductsList(response.data.products);
     }
     catch(error : any) {
-      console.error('Failed to fetch products');
+      console.error('Failed to fetch products: ', error.message);
     }
   };
 

@@ -3,25 +3,17 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MongoConnect = async() => {
-    try {
-        mongoose.connect(process.env.MONGO_URI!);
-        
-        const connection = mongoose.connection;
+mongoose.connect(process.env.MONGO_URI!);
 
-        connection.on('connected', () => {
-            console.log('Connected to MongoDB');
-        })
+const dbConnection = mongoose.connection;
 
-        connection.on('error', (err) => {
-            console.log('MongoDB did not connect: ' + err);
-            process.exit();
-        });
-    }
-    catch(error) {
-        console.log('Error');
-        console.log(error);
-    }
-};
+dbConnection.on('connected', () => {
+    console.log('Connected to MongoDB');
+})
 
-export { MongoConnect }
+dbConnection.on('error', (err) => {
+    console.log('MongoDB did not connect: ' + err);
+    process.exit();
+});
+
+export { dbConnection };
