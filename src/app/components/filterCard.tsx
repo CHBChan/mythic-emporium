@@ -14,7 +14,7 @@ interface filterProps {
 const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, updateFilters, resetFilters, applyFilters }) => {
 
     return (
-        <div className='filters block order-none shadow rounded text-white bg-violet-500 max-w-fit'>
+        <div className='filters block order-none shadow rounded text-white bg-violet-500 max-w-fit max-h-fit'>
           <div className='p-3'>
             <span className='underline cursor-pointer hover:no-underline hover:text-indigo-700'
             onClick={() => resetFilters()}>

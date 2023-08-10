@@ -12,6 +12,7 @@ import { productType, accountInfo, filterOpt } from "./interface/interface";
 import CategoryNavBar from "./components/categoryNavBar";
 import FilterCard from "./components/filterCard";
 import ProductCard from "./components/productCard";
+import EmptyCard from "./components/emptyCard";
 
 enum formOpt {
   SignUp,
@@ -110,6 +111,13 @@ export default function Home() {
     setOriginsList(origins);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  };
+
   React.useEffect(() => {
     // Retrieve user info from login cookie
     fetchUserFromCookie();
@@ -185,6 +193,9 @@ export default function Home() {
   const applyFilters = () => {
     // Retrieve filtered products
     fetchFilteredProducts();
+
+    // Scroll to top of page
+    scrollToTop();
   };
   
   return (
@@ -193,14 +204,19 @@ export default function Home() {
       <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
       <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
-        <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+        <div className='sticky left-0 top-10 h-screen'>
+          <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+        </div>
         <div className='flex flex-col items-center w-full'>
-          <section className='product_listing flex-grow grid grid-cols-2 gap-4 w-full'>
+          <section className='product_listing flex-grow w-full'>
             {productsList.map((product) => (
               <ProductCard key={product.product_id + '_card'} product={product} />
             ))}
+            { // If there are no products
+              productsList.length < 1 &&
+              <EmptyCard />
+            }
           </section>
-          <Paginator />
         </div>
       </section>
     </div>

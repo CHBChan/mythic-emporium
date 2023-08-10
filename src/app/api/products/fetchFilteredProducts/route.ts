@@ -8,7 +8,7 @@ export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();
         const { category, brand, origin, in_stock, minPrice, maxPrice } = reqBody;
-        console.log(category, brand, origin);
+
         const filterQuery : any = {};
 
         if(category) {
@@ -31,7 +31,7 @@ export async function POST(request : NextRequest) {
         filterQuery.product_quantity = in_stock? { $gt: 0 } : { $gte: 0 };
 
         const products = await Product.find(filterQuery);
-        console.log(products);
+
         return NextResponse.json({
             message: "Filtered inventory fetched successfully",
             success: true,

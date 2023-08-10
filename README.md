@@ -4,7 +4,7 @@ To do list
 - [x] Implement registration & login system
 - [x] Implement head navigation bar
 - [x] Implement category navigation bar
-- [60%] Implement products grid view
+- [80%] Implement products grid view
 - [ ] Implement products individual page
 - [x] Implement category filter
 - [ ] Implement search bar function
