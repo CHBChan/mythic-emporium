@@ -6,17 +6,26 @@ import Image from "next/image";
 import SearchBar from "./searchBar";
 import { BiUser } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { accountInfo } from '../interface/interface';
+import { accountInfo, productType } from '../interface/interface';
 import { useRouter } from 'next/navigation';
+import { CartCard } from './cartCard';
 
 interface headerProps {
     userInfo: accountInfo,
     signOut: () => void,
-    setPopup: () => void
+    setPopup: () => void,
+    cart: productType[],
+    updateCartQuantity: (id : number, quantity : number) => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, updateCartQuantity }) => {
     const router = useRouter();
+    const [showCart, setShowCart] = React.useState<boolean>(false);
+
+    const toggleShowCart = () => {
+        setShowCart((prevState) => !prevState);
+        console.log('toggle');
+    };
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
@@ -51,9 +60,16 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup }) => {
                                 <BiUser size={24} />
                             </button>
                         }
-                        <button className='border-solid border text-violet-500 border-violet-500 rounded p-1'>
-                            <AiOutlineShoppingCart size={24} />
-                        </button>
+                        <div className='cart_div'>
+                            <button className='border-solid border text-violet-500 border-violet-500 rounded p-1'
+                            onClick={toggleShowCart}>
+                                <AiOutlineShoppingCart size={24} />
+                            </button>
+                            {   // Check if cart is open
+                                showCart &&
+                                <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

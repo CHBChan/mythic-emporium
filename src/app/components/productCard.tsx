@@ -1,16 +1,18 @@
 import { GrCircleQuestion } from "react-icons/gr";
-import { BsHexagonHalf } from "react-icons/bs";
 
 import { productType } from "../interface/interface";
+import { Currency } from "./currency";
 
 interface cardProps {
     product: productType,
+    productCardPressed: (product: productType) => void
 }
 
-const ProductCard : React.FC<cardProps> = ({ product }) => {
+const ProductCard : React.FC<cardProps> = ({ product, productCardPressed }) => {
     
     return (
-        <div className='product_card block cursor-pointer'>
+        <div className='product_card block cursor-pointer'
+        onClick={() => productCardPressed(product)}>
             <div className='relative block rounded h-full overflow-hidden'>
                 <div className='flex flex-row items-center justify-around mx-8 p-3 gap-3 h-full'>
                     <GrCircleQuestion size={72}/>
@@ -18,10 +20,7 @@ const ProductCard : React.FC<cardProps> = ({ product }) => {
                         <span>{product.product_name}</span>
                         <span>{product.product_brand}</span>
                         <span>{product.product_origin}</span>
-                        <div className='flex items-center gap-1'>
-                            <span>{product.product_price}</span>
-                            <BsHexagonHalf />
-                        </div>
+                        <Currency value={product.product_price} />
                         {   // Check availability
                             (product.product_quantity > 0)?
                             <span className='text-green-700'>In Stock</span>

@@ -10,6 +10,7 @@ import CategoryNavBar from "./components/categoryNavBar";
 import FilterCard from "./components/filterCard";
 import ProductCard from "./components/productCard";
 import EmptyCard from "./components/emptyCard";
+import ProductInfoModal from "./components/productInfoModal";
 
 enum formOpt {
   SignUp,
@@ -31,6 +32,20 @@ export default function Home() {
   const [productsList, setProductsList] = React.useState<productType[]>([]);
   const [brandsList, setBrandsList] = React.useState<string[]>([]);
   const [originsList, setOriginsList] = React.useState<string[]>([]);
+
+  const [showProductInfo, setShowProductInfo] = React.useState<boolean>(false);
+  const [displayProduct, setDisplayProduct] = React.useState<productType>({
+    product_id: -1,
+    product_name: 'What?',
+    product_desc: 'Product information failed to be fetched..?',
+    product_category: 'General',
+    product_brand: 'Unknown',
+    product_origin: 'Unknown',
+    product_price: -1,
+    product_quantity: -1
+  });
+
+  const [cart, setCart] = React.useState<productType[]>([]);
 
   const getUserInfo = (user : accountInfo) => {
     setUserInfo(user);
@@ -88,6 +103,56 @@ export default function Home() {
     setShowPopup((prevState) => !prevState);
     console.log('Showing/hiding popup')
   };
+
+  const productCardPressed = (product? : productType) => {
+    // Set displayed product information
+    if(product) {
+      setDisplayProduct(product);
+    }
+
+    // Show / hide product information modal
+    setShowProductInfo((prevState) => !prevState);
+    console.log('Showing/hiding product information')
+  };
+
+  const addToCart = (product : productType) => {
+    // If product exists in cart, increment quantity by 1
+    if(cart.find((item) => item.product_id == product.product_id)) {
+        const updatedCart = cart.map((item) => 
+            item.product_id == product.product_id?
+            {...item, product_quantity: item.product_quantity + 1}
+            :
+            item
+        );
+        setCart(updatedCart);
+    }
+    else {
+        // If product does not exist in cart, add product of quantity 1
+        setCart((prevProducts) => [...prevProducts, {...product, product_quantity: 1}]);
+    }
+  };
+
+  const updateCartQuantity = (id : number, quantity : number) => {
+    // Failsafe
+    if(!cart.find((item) => item.product_id == id)) {
+      console.error('Error: Attempted to update a product with invalid id');
+      return;
+    }
+
+    // Update cart item quantity
+    const updatedCart = cart.map((item) => {
+      if(item.product_id == id) {
+        return {...item, product_quantity: quantity};
+      }
+      return item;
+    }).filter((item) => item.product_quantity > 0);
+    setCart(updatedCart);
+  };
+
+  React.useEffect(() => {
+    console.log('Cart updated!');
+    console.log(cart);
+  },[cart]);
 
   const populateFilterOpts = () => {
     // Populate brands & origins
@@ -198,7 +263,7 @@ export default function Home() {
   return (
     <>
     <div className='content flex flex-col h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} cart={cart} updateCartQuantity={updateCartQuantity} />
       <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
         <div className='sticky left-0 top-10 h-screen'>
@@ -207,7 +272,7 @@ export default function Home() {
         <div className='flex flex-col items-center w-full'>
           <section className='product_listing flex-grow w-full'>
             {productsList.map((product) => (
-              <ProductCard key={product.product_id + '_card'} product={product} />
+              <ProductCard key={product.product_id + '_card'} product={product} productCardPressed={productCardPressed} />
             ))}
             { // If there are no products
               productsList.length < 1 &&
@@ -222,6 +287,13 @@ export default function Home() {
       <div className='popup_content z-[200] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
       onClick={() => setPopup()}>
         <SignUpForm getUserInfo={getUserInfo} formType={formType} switchForm={switchForm} setPopup={setPopup} />
+      </div>
+    }
+    { // Show product information
+      showProductInfo &&
+      <div className='popup_content z-[200] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
+      onClick={() => productCardPressed()}>
+        <ProductInfoModal displayProduct={displayProduct} addToCart={addToCart} />
       </div>
     }
     </>
