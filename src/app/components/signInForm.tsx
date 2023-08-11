@@ -24,7 +24,8 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
         username: '',
         password: ''
     });
-    const [buttonDisabled, setButtonDisabled] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = React.useState<boolean>(false);
+    const [wrongCred, setWrongCred] = React.useState<boolean>(false);
 
     const onSignup = async () => {
         try {
@@ -45,6 +46,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
         }
         catch(error : any) {
             console.log("Login failed", error.message);
+            setWrongCred(true);
         }
     }
 
@@ -54,6 +56,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
 
     React.useEffect(() => {
         if(user.password.length > 0 && user.username.length > 0) {
+            setWrongCred(false);
             if(formType == formOpt.LogIn) {
                 onLogin();
             }
@@ -85,18 +88,24 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
                 }}>
                     <Form 
                         className='flex flex-col gap-2 justify-center text-center border-solid border-2 border-violet-500 bg-white rounded-xl overflow-hidden max-w-[400px] p-4'>
-                        <h1 className='font-bold text-violet-500'>USER LOG IN</h1>
+                        <h1 className='font-bold text-violet-500'>ADMIN LOG IN</h1>
                         <label className='text-violet-500' htmlFor='username'>Credentials</label>
                         <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='text' name='username' />
                         <label className='text-violet-500' htmlFor='password'>Passcode</label>
                         <Field className='border-solid border-2 text-violet-500 border-violet-500 rounded px-2' type='password' name='password' />
+                        {   // Check if credentials are correct
+                            wrongCred &&
+                            <span className='text-sm text-rose-500'>Invalid credentials or passcode</span>
+                        }
                         <button type='submit' className='border-solid border-2 text-violet-500 border-violet-500 rounded'>
                             Log In
                         </button>
+                        {/*
                         <span className='cursor-pointer text-violet-500'
                         onClick={() => switchForm()}>
                             Signup instead
                         </span>
+                        */}
                     </Form>
                 </Formik>
             }
