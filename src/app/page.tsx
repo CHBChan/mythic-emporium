@@ -11,6 +11,8 @@ import FilterCard from "./components/filterCard";
 import ProductCard from "./components/productCard";
 import EmptyCard from "./components/emptyCard";
 import ProductInfoModal from "./components/productInfoModal";
+import ProductListing from "./components/productListing";
+import { CartCard } from "./components/cartCard";
 
 enum formOpt {
   SignUp,
@@ -46,6 +48,7 @@ export default function Home() {
   });
 
   const [cart, setCart] = React.useState<productType[]>([]);
+  const [cartOpen, setCartOpen] = React.useState<boolean>(false);
 
   const getUserInfo = (user : accountInfo) => {
     setUserInfo(user);
@@ -148,6 +151,10 @@ export default function Home() {
     }).filter((item) => item.product_quantity > 0);
     setCart(updatedCart);
   };
+
+  const toggleCart = () => {
+    setCartOpen((prevState) => !prevState);
+};
 
   React.useEffect(() => {
     console.log('Cart updated!');
@@ -263,23 +270,22 @@ export default function Home() {
   return (
     <>
     <div className='content flex flex-col h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} cart={cart} updateCartQuantity={updateCartQuantity} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} cart={cart} updateCartQuantity={updateCartQuantity} toggleCart={toggleCart} />
       <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
+      { // Check if cart is close
+        (!cartOpen)?
+        <>
         <div className='sticky left-0 top-10 h-screen'>
           <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
         </div>
         <div className='flex flex-col items-center w-full'>
-          <section className='product_listing flex-grow w-full'>
-            {productsList.map((product) => (
-              <ProductCard key={product.product_id + '_card'} product={product} productCardPressed={productCardPressed} />
-            ))}
-            { // If there are no products
-              productsList.length < 1 &&
-              <EmptyCard />
-            }
-          </section>
+            <ProductListing productsList={productsList} productCardPressed={productCardPressed}/>
         </div>
+        </>
+        :
+        <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
+      }
       </section>
     </div>
     { // Show popup

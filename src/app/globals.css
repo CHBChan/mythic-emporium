@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39&family=Lora&family=Pangolin&family=Roboto&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -63,4 +65,8 @@
 .product_card:hover {
   transition: box-shadow 0.2s ease-in-out;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.barcode {
+  font-family: 'Libre Barcode 128', cursive;
 }

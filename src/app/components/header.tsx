@@ -15,17 +15,12 @@ interface headerProps {
     signOut: () => void,
     setPopup: () => void,
     cart: productType[],
-    updateCartQuantity: (id : number, quantity : number) => void
+    updateCartQuantity: (id : number, quantity : number) => void,
+    toggleCart: () => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, updateCartQuantity }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, updateCartQuantity, toggleCart }) => {
     const router = useRouter();
-    const [showCart, setShowCart] = React.useState<boolean>(false);
-
-    const toggleShowCart = () => {
-        setShowCart((prevState) => !prevState);
-        console.log('toggle');
-    };
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
@@ -60,16 +55,10 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, upd
                                 <BiUser size={24} />
                             </button>
                         }
-                        <div className='cart_div'>
-                            <button className='border-solid border text-violet-500 border-violet-500 rounded p-1'
-                            onClick={toggleShowCart}>
-                                <AiOutlineShoppingCart size={24} />
-                            </button>
-                            {   // Check if cart is open
-                                showCart &&
-                                <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
-                            }
-                        </div>
+                        <button className='border-solid border text-violet-500 border-violet-500 rounded p-1'
+                        onClick={toggleCart}>
+                            <AiOutlineShoppingCart size={24} />
+                        </button>
                     </div>
                 </div>
             </div>

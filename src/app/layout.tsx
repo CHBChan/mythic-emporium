@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Mythic Emporium',
-  description: 'The best commerce store in the multiverse!',
+  description: 'Your one stop shop for all things exotic!',
 }
 
 export default function RootLayout({
