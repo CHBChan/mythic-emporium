@@ -38,13 +38,15 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                 <>
                 {cart.map((item, index) => (
                     <div key={'cart_item_' + item.product_id} 
-                    className='flex flex-col gap-2 w-[256px]'>
-                        <div className='flex flex-row font-bold gap-4'>
-                            <span className='text-neutral-500'>{item.product_brand}</span>
-                            <span className='mr-4'>{item.product_name}</span>
+                    className='flex flex-col gap-2 w-[256px] md:w-1/4'>
+                        <div className='flex flex-row justify-between font-bold'>
+                            <div className='flex flex-row gap-8'>
+                                <span className='text-neutral-500 italic'>{item.product_brand}</span>
+                                <span className='mr-4'>{item.product_name}</span>
+                            </div>
                             <Currency value={item.product_price} />
                         </div>
-                        <div className='flex flex-row font-semibold gap-2'>
+                        <div className='flex flex-row font-semibold gap-8'>
                             <select className='pl-2 w-[64px]'value={item.product_quantity} 
                             onChange={(event : any) => updateCartQuantity(item.product_id, parseInt(event.target.value))}>
                                 {quantityRange.map((n) => (
