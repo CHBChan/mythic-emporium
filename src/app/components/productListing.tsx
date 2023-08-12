@@ -10,7 +10,7 @@ interface productListingProps {
 const ProductListing : React.FC<productListingProps> = ({ productsList, productCardPressed }) => {
 
     return (
-        <section className='product_listing flex-grow w-full'>
+        <section className='product_listing min-h-[144px] w-full'>
             {productsList.map((product) => (
               <ProductCard key={product.product_id + '_card'} product={product} productCardPressed={productCardPressed} />
             ))}

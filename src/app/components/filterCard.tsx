@@ -37,7 +37,7 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
               <span className='block font-bold mb-2'>Brand:</span>
               <div className='filters'>
                 <div className='brand flex gap-2'>
-                <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[64] h-full cursor-pointer' 
+                <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
                 value={filters.brand} onChange={(event) => updateFilters('brand', event.target.value)}>
                     <option value={'All'}>All</option>
                     {brandsList.map((brand) => (
@@ -55,7 +55,7 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
               <span className='block font-bold mb-2'>Origin:</span>
               <div className='filters'>
                 <div className='origin flex gap-2'>
-                <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[64] h-full cursor-pointer' 
+                <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
                 value={filters.origin} onChange={(event) => updateFilters('origin', event.target.value)}>
                     <option value={'All'}>All</option>
                     {originsList.map((origin) => (

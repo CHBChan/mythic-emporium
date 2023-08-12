@@ -75,7 +75,14 @@ export default function Home() {
 
   const fetchFilteredProducts = async () => {
     try {
-      const response = await axios.post("api/products/fetchFilteredProducts", filters);
+      const response = await axios.post("api/products/fetchFilteredProducts", {
+        category: (filters.category == 'All')? undefined : filters.category,
+        brand: (filters.category == 'All')? undefined : filters.brand,
+        origin: (filters.category == 'All')? undefined : filters.origin,
+        in_stock: filters.in_stock,
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice
+      });
       setProductsList(response.data.products);
     }
     catch(error : any) {
@@ -87,9 +94,9 @@ export default function Home() {
     const filteredProducts = productsList.filter((product) => {
       let passes = true;
 
-      if((filters.category && filters.category !== product.product_category) ||
-         (filters.brand && filters.brand !== product.product_brand) ||
-         (filters.origin && filters.origin !== product.product_origin) ||
+      if(((filters.category && filters.category != 'All') && filters.category !== product.product_category) ||
+         ((filters.brand && filters.brand != 'All') && filters.brand !== product.product_brand) ||
+         ((filters.origin && filters.origin != 'All') && filters.origin !== product.product_origin) ||
          (filters.in_stock && product.product_quantity < 1) ||
          (filters.minPrice > product.product_price) ||
          (filters.maxPrice < product.product_price)) {
@@ -234,21 +241,21 @@ export default function Home() {
       case 'category':
         setFilters((prevFilters) => ({
           ...prevFilters,
-          category: (value === 'All')? undefined : value
+          category: value
         }));
         break;
 
       case 'brand':
         setFilters((prevFilters) => ({
           ...prevFilters,
-          brand: (value === 'All')? undefined : value
+          brand: value
         }));
         break;
 
       case 'origin':
         setFilters((prevFilters) => ({
           ...prevFilters,
-          origin: (value === 'All')? undefined : value
+          origin: value
         }));
         break;
 
@@ -281,8 +288,8 @@ export default function Home() {
   const resetFilters = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      brand: undefined,
-      origin: undefined,
+      brand: 'All',
+      origin: 'All',
       in_stock: false,
       minPrice: 0,
       maxPrice: 9999
