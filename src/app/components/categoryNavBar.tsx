@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from 'react';
-import Link from "next/link";
 import { categories } from '../data/data';
 import { BiCaretDown } from 'react-icons/bi';
 
 interface navBarProps {
     updateFilters: (option : string, value : any) => void,
-    applyFilters: () => void
+    applyFilters: (type : string) => void
 }
 
 const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, applyFilters }) => {
@@ -20,7 +19,7 @@ const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, applyFilters })
 
     React.useEffect(() => {
         if(changeCategory) {
-            applyFilters();
+            applyFilters('fetch');
             setChangeCategory(false);
         }
     }, [changeCategory]);

@@ -8,8 +8,6 @@ import SignUpForm from "./components/signInForm";
 import { productType, accountInfo, filterOpt } from "./interface/interface";
 import CategoryNavBar from "./components/categoryNavBar";
 import FilterCard from "./components/filterCard";
-import ProductCard from "./components/productCard";
-import EmptyCard from "./components/emptyCard";
 import ProductInfoModal from "./components/productInfoModal";
 import ProductListing from "./components/productListing";
 import { CartCard } from "./components/cartCard";
@@ -32,6 +30,7 @@ export default function Home() {
     maxPrice: 9999,
   });
   const [productsList, setProductsList] = React.useState<productType[]>([]);
+  const [displayedList, setDisplayedList] = React.useState<productType[]>([]);
   const [brandsList, setBrandsList] = React.useState<string[]>([]);
   const [originsList, setOriginsList] = React.useState<string[]>([]);
 
@@ -83,6 +82,25 @@ export default function Home() {
       console.error('Failed to fetch products');
     }
   };
+
+  const filterProducts = () => {
+    const filteredProducts = productsList.filter((product) => {
+      let passes = true;
+
+      if((filters.category && filters.category !== product.product_category) ||
+         (filters.brand && filters.brand !== product.product_brand) ||
+         (filters.origin && filters.origin !== product.product_origin) ||
+         (filters.in_stock && product.product_quantity < 1) ||
+         (filters.minPrice > product.product_price) ||
+         (filters.maxPrice < product.product_price)) {
+        passes = false
+      }
+
+      return passes;
+    });
+
+    return filteredProducts;
+  }
 
   const signOut = async () => {
     setUserInfo({
@@ -154,7 +172,11 @@ export default function Home() {
 
   const toggleCart = () => {
     setCartOpen((prevState) => !prevState);
-};
+  };
+
+  const closeCart = () => {
+    setCartOpen(false);
+  };
 
   React.useEffect(() => {
     console.log('Cart updated!');
@@ -197,7 +219,15 @@ export default function Home() {
 
   React.useEffect(() => {
     populateFilterOpts();
+
+    // Display all products
+    setDisplayedList(productsList);
   }, [productsList]);
+
+  React.useEffect(() => {
+    // Close cart
+    closeCart();
+  }, displayedList);
 
   const updateFilters = (option : string, value : any) => {
     switch(option) {
@@ -251,26 +281,50 @@ export default function Home() {
   const resetFilters = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      brand: 'All',
-      origin: 'All',
+      brand: undefined,
+      origin: undefined,
       in_stock: false,
       minPrice: 0,
       maxPrice: 9999
     }));
   };
 
-  const applyFilters = () => {
+  const applyFilters = (type : string) => {
     // Retrieve filtered products
-    fetchFilteredProducts();
+    let filteredProducts = productsList;
+    switch(type) {
+      case 'display':
+        filteredProducts = filterProducts();
+        setDisplayedList(filteredProducts);
+        break;
+      
+      case 'fetch':
+        fetchFilteredProducts();
+        setDisplayedList(productsList);
+        break;
+    }
 
     // Scroll to top of page
     scrollToTop();
+  };
+
+  const searchBarSearch = async (query : string) => {
+    try {
+      const response = await axios.post("api/products/fetchProductsByQuery", {
+        searchQuery: query
+      });
+      console.log(response.data.products);
+      setProductsList(response.data.products);
+    }
+    catch(error : any) {
+      console.error('Failed to fetch products from search query', error.message);
+    }
   };
   
   return (
     <>
     <div className='content flex flex-col h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} cart={cart} updateCartQuantity={updateCartQuantity} toggleCart={toggleCart} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} />
       <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
       { // Check if cart is close
@@ -280,7 +334,7 @@ export default function Home() {
           <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
         </div>
         <div className='flex flex-col items-center w-full'>
-            <ProductListing productsList={productsList} productCardPressed={productCardPressed}/>
+            <ProductListing productsList={displayedList} productCardPressed={productCardPressed}/>
         </div>
         </>
         :

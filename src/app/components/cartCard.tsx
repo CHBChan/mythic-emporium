@@ -32,7 +32,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
 
     return (
         <div className='flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 min-w-full'>
-            <span className='text-rose-600'>Reminder: We currently do not deliver to worlds 32, 35, 46, 321, and 642 due to immenent collapse.</span>
+            <span className='text-rose-600'>Reminder: We currently do not deliver to worlds 32, 35, 46, 321, and 642 due to imminent collapse.</span>
             {   // If there exists item in cart
                 (cart.length > 0)?
                 <>
@@ -51,7 +51,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                                     <option key={'quantity_' + n} value={n}>{n}</option>
                                 ))}
                             </select>
-                            <span className='text-rose-500 text-sm cursor-pointer'
+                            <span className='text-rose-500 hover:text-rose-700 text-sm cursor-pointer'
                             onClick={() => updateCartQuantity(item.product_id, 0)}>
                                 Remove
                             </span>

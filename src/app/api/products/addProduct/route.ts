@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 import { dbConnection } from "@/dbConfig/dbConfig";
 
-
-
 export async function POST(request : NextRequest) {
     try{
         const reqBody = await request.json();

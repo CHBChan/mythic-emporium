@@ -8,7 +8,7 @@ interface filterProps {
     filters: filterOpt,
     updateFilters: (option : string, value : any) => void,
     resetFilters: () => void,
-    applyFilters: () => void
+    applyFilters: (type : string) => void
 }
 
 const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, updateFilters, resetFilters, applyFilters }) => {
@@ -92,7 +92,7 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
             </div>
           </div>
           <button className='text-violet-500 bg-white rounded m-3 p-2'
-          onClick={() => {applyFilters(); console.log(filters)}}>
+          onClick={() => {applyFilters('display'); console.log(filters)}}>
             Apply
           </button>
         </div>

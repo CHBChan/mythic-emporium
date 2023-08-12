@@ -17,9 +17,9 @@ const ProductCard : React.FC<cardProps> = ({ product, productCardPressed }) => {
                 <div className='flex flex-row items-center justify-around mx-8 p-3 gap-3 h-full'>
                     <GrCircleQuestion size={72}/>
                     <div className='product_info flex flex-col'>
-                        <span>{product.product_name}</span>
-                        <span>{product.product_brand}</span>
-                        <span>{product.product_origin}</span>
+                        <span className='font-bold'>{product.product_name}</span>
+                        <span className='text-neutral-500 text-sm'>{product.product_brand}</span>
+                        <span className='text-neutral-500 text-sm mb-2'>{product.product_origin}</span>
                         <Currency value={product.product_price} />
                         {   // Check availability
                             (product.product_quantity > 0)?

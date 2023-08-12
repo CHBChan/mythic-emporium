@@ -19,14 +19,14 @@ const ProductInfoModal : React.FC<modalProps> = ({ displayProduct, addToCart }) 
     };
 
     return (
-        <div className='absolute flex'
+        <div className='flex min-w-[360px] sm:w-2/4'
         onClick={handleFormClick}>1
-            <div className='bg-white flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 min-w-[320px]'>
+            <div className='bg-white flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4'>
                 <GrCircleQuestion size={128}/>
-                <span>{displayProduct!.product_name}</span>
-                <span>{displayProduct!.product_brand}</span>
-                <span>{displayProduct!.product_origin}</span>
-                <span>{displayProduct!.product_desc}</span>
+                <span className='font-bold'>{displayProduct!.product_name}</span>
+                <span className='text-neutral-500 text-sm italic'>{displayProduct!.product_brand}</span>
+                <span className='text-neutral-500 text-sm'>{displayProduct!.product_origin}</span>
+                <span className='text-center'>{displayProduct!.product_desc}</span>
                 <Currency value={displayProduct!.product_price} />
                 {   // Check if item is in stock
                     (displayProduct!.product_quantity > 0)?

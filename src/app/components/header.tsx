@@ -8,18 +8,16 @@ import { BiUser } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { accountInfo, productType } from '../interface/interface';
 import { useRouter } from 'next/navigation';
-import { CartCard } from './cartCard';
 
 interface headerProps {
     userInfo: accountInfo,
     signOut: () => void,
     setPopup: () => void,
-    cart: productType[],
-    updateCartQuantity: (id : number, quantity : number) => void,
-    toggleCart: () => void
+    toggleCart: () => void,
+    searchBarSearch: (query : string) => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, updateCartQuantity, toggleCart }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch }) => {
     const router = useRouter();
 
     return (
@@ -33,7 +31,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, cart, upd
                         width={320}
                     />
                 </Link>
-                <SearchBar />
+                <SearchBar searchBarSearch={searchBarSearch} />
                 <div className='user_actions flex items-center'>
                     <div className='user_btns flex items-center gap-2'>
                         {   // Check if userInfo exists
