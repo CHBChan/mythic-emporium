@@ -21,7 +21,7 @@ const ProductInfoModal : React.FC<modalProps> = ({ displayProduct, addToCart }) 
     return (
         <div className='flex min-w-[360px] sm:w-2/4'
         onClick={handleFormClick}>1
-            <div className='bg-white flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4'>
+            <div className='bg-white flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 w-full'>
                 <GrCircleQuestion size={128}/>
                 <span className='font-bold'>{displayProduct!.product_name}</span>
                 <span className='text-neutral-500 text-sm italic'>{displayProduct!.product_brand}</span>

@@ -252,13 +252,13 @@ function InventoryManagement() {
                             <>
                             <label htmlFor='product'>Product name</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_name' />
-                            <label htmlFor='description'>Production description</label>
+                            <label htmlFor='description'>Product description</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' component='textarea' rows='4' name='product_desc' />
                             <label htmlFor='category'>Product category</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_category' />
                             <label htmlFor='brand'>Product brand</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_brand' />
-                            <label htmlFor='origin'>Production origin</label>
+                            <label htmlFor='origin'>Product origin</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' type='text' name='product_origin' />
                             <label htmlFor='price'>Product price</label>
                             <Field className='p-2 border-solid border-2 border-black rounded' type='number' name='product_price' step='0.01' min='0' />
