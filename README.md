@@ -1,8 +1,12 @@
+Live Demo: https://mythic-emporium.vercel.app/
+
 # Mythic Emporium
 This is the biggest personal project I've done. I learned Typescript and Next.js through this project and got some exposure to MongoDB as well as the general concept behind how user credentials are stored and authenticated in the backend. 
 
+![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/96ed54c3-1a95-48b6-aad2-9c9842f3e5e4)
+
 ### Description
-Users are able to explore the various fictitious products displayed in the website. To grant the users more ease in discovering certain products, a filtering system and a searching function was implemented. 
+Users are able to explore the various fictitious products displayed on the website. To grant the users more ease in discovering certain products, a filtering system and a searching function were implemented. 
 
 As the administrator, I am able to sign in with user authentication from the backend and access a simple inventory management system. The inventory management system features 4 types of operations:
 
@@ -10,6 +14,12 @@ As the administrator, I am able to sign in with user authentication from the bac
 2. Editing the information of an existing product
 3. Removing an existing product
 4. Viewing all the existing products
+
+Here are some images of the inventory management system:
+
+![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/06194e39-437d-405f-9e92-187f670eddfb)
+![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/2d289bbc-edc7-4aaa-b53d-3bc920316b8d)
+
 
 ## Frameworks / Libraries used in the project
 [React.js](https://react.dev/)
@@ -35,5 +45,5 @@ As the administrator, I am able to sign in with user authentication from the bac
 [bcrypt.js](https://github.com/dcodeIO/bcrypt.js)
 
 ### Still to do
-- [ ] Add products to database
+- [ ] Add more products to the database
 - [ ] Stylize for mobile
