@@ -21,17 +21,6 @@
 
 [bcrypt.js](https://github.com/dcodeIO/bcrypt.js)
 
-To do list
-
-- [x] Implement inventory management system
-- [x] Implement registration & login system
-- [x] Implement head navigation bar
-- [x] Implement category navigation bar
-- [x] Implement products grid view
-- [x] Implement products individual page
-- [x] Implement category filter
-- [x] Implement search bar function
-- [x] Implement shopping cart
-- [x] Implement mock payment page
+# Still to do
 - [ ] Add products to database
 - [ ] Stylize for mobile

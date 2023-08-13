@@ -331,7 +331,7 @@ export default function Home() {
   
   return (
     <>
-    <div className='content flex flex-col h-screen'>
+    <div className='content flex flex-col select-none h-screen'>
       <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
       <CategoryNavBar updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
