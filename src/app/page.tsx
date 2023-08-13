@@ -237,6 +237,7 @@ export default function Home() {
   }, displayedList);
 
   const updateFilters = (option : string, value : any) => {
+    // Update filter options
     switch(option) {
       case 'category':
         setFilters((prevFilters) => ({
@@ -331,8 +332,8 @@ export default function Home() {
   return (
     <>
     <div className='content flex flex-col h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} applyFilters={applyFilters} />
-      <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+      <CategoryNavBar updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
       { // Check if cart is close
         (!cartOpen)?

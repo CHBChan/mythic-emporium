@@ -6,14 +6,16 @@ import { BiCaretDown } from 'react-icons/bi';
 
 interface navBarProps {
     updateFilters: (option : string, value : any) => void,
+    resetFilters: () => void,
     applyFilters: (type : string) => void
 }
 
-const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, applyFilters }) => {
+const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, resetFilters, applyFilters }) => {
     const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
     
     const handlePress = (category : string) => {
         updateFilters('category', category);
+        resetFilters();
         setChangeCategory(true);
     };
 

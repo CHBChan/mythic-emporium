@@ -21,7 +21,7 @@ const PaymentCard : React.FC<paymentProps> = ({ cart }) => {
         <>
             <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet"></link>
             <div className='flex flex-col items-center gap-4 border-t border-solid border-black mt-4 p-4'>
-                <span>Scan the follow code with your _placeholder_ to complete the transaction:</span>
+                <span>Scan the following code with your Scourer to complete the transaction:</span>
                 <span className='barcode text-6xl max-w-full'>{encryptCart()}</span>
             </div>
         </>

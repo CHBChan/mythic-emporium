@@ -16,15 +16,17 @@ interface headerProps {
     toggleCart: () => void,
     searchBarSearch: (query : string) => void,
     updateFilters: (option : string, value : any) => void,
+    resetFilters: () => void,
     applyFilters: (type : string) => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, updateFilters, applyFilters }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, updateFilters, resetFilters, applyFilters }) => {
     const router = useRouter();
     const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
     
     const handlePress = () => {
         updateFilters('category', 'All');
+        resetFilters();
         setChangeCategory(true);
     };
 
