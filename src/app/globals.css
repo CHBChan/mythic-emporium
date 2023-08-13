@@ -69,3 +69,10 @@
 .barcode {
   font-family: 'Libre Barcode 128', cursive;
 }
+
+.p-toast-message-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}

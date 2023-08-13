@@ -331,7 +331,7 @@ export default function Home() {
   return (
     <>
     <div className='content flex flex-col h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} />
+      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} applyFilters={applyFilters} />
       <CategoryNavBar updateFilters={updateFilters} applyFilters={applyFilters} />
       <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
       { // Check if cart is close
@@ -341,7 +341,7 @@ export default function Home() {
           <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
         </div>
         <div className='flex flex-col items-center w-full'>
-            <ProductListing productsList={displayedList} productCardPressed={productCardPressed}/>
+            <ProductListing productsList={displayedList} productCardPressed={productCardPressed} />
         </div>
         </>
         :

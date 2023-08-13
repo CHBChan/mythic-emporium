@@ -1,10 +1,14 @@
 'use client';
 
-import React from "react";
+import React, { Children } from "react";
 import { productType } from "../interface/interface";
+
+import { Toast } from 'primereact/toast';
 
 import { GrCircleQuestion } from "react-icons/gr";
 import { Currency } from "./currency";
+
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
 
 interface modalProps {
     displayProduct: productType | undefined,
@@ -12,13 +16,23 @@ interface modalProps {
 };
 
 const ProductInfoModal : React.FC<modalProps> = ({ displayProduct, addToCart }) => {
+    const toast = React.useRef<any>(null);
     const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
     const handleFormClick = (event : any) => {
         event.stopPropagation();
     };
 
+    const showToast = (product : productType) => {
+        toast.current.show({ 
+            severity: 'success',
+            summary: `${product.product_name + ' has been added to the cart'}`,
+            life: 3000
+        });
+    };
+
     return (
+        <>
         <div className='flex min-w-[360px] sm:w-2/4'
         onClick={handleFormClick}>1
             <div className='bg-white flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 w-full'>
@@ -31,7 +45,10 @@ const ProductInfoModal : React.FC<modalProps> = ({ displayProduct, addToCart }) 
                 {   // Check if item is in stock
                     (displayProduct!.product_quantity > 0)?
                     <button className='text-white font-bold bg-violet-500 rounded p-2'
-                    onClick={() => addToCart(displayProduct!)}>
+                    onClick={() => {
+                        addToCart(displayProduct!);
+                        showToast(displayProduct!);
+                    }}>
                         Add to cart
                     </button>
                     :
@@ -39,6 +56,8 @@ const ProductInfoModal : React.FC<modalProps> = ({ displayProduct, addToCart }) 
                 }
             </div>
         </div>
+        <Toast className='fixed flex flex-row items-center top-0 right-0' ref={toast} />
+        </>
     )
 }
 

@@ -14,16 +14,32 @@ interface headerProps {
     signOut: () => void,
     setPopup: () => void,
     toggleCart: () => void,
-    searchBarSearch: (query : string) => void
+    searchBarSearch: (query : string) => void,
+    updateFilters: (option : string, value : any) => void,
+    applyFilters: (type : string) => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, updateFilters, applyFilters }) => {
     const router = useRouter();
+    const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
+    
+    const handlePress = () => {
+        updateFilters('category', 'All');
+        setChangeCategory(true);
+    };
+
+    React.useEffect(() => {
+        if(changeCategory) {
+            applyFilters('fetch');
+            setChangeCategory(false);
+        }
+    }, [changeCategory]);
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
             <div className='header-content flex items-center justify-evenly py-3 gap-8'>
-                <Link className='flex items-center cursor-pointer' href='/'>
+                <Link className='flex items-center cursor-pointer' href='/'
+                onClick={handlePress}>
                     <Image
                         src='ME_icon.svg'
                         alt='Mythic Emporium'
