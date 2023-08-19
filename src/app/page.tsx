@@ -316,6 +316,11 @@ export default function Home() {
 
     // Scroll to top of page
     scrollToTop();
+
+    // Hide filters if using mobile device
+    if(window.innerWidth <= 480) {
+      toggleFilter();
+    }
   };
 
   const searchBarSearch = async (query : string) => {
