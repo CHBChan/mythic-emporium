@@ -319,7 +319,7 @@ export default function Home() {
 
     // Hide filters if using mobile device
     if(window.innerWidth <= 480) {
-      toggleFilter();
+      setFilterOpen(false);
     }
   };
 
