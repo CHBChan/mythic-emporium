@@ -84,6 +84,9 @@
 .nav_start {
   overflow-x: scroll;
   white-space: nowrap; 
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @media only screen and (max-width: 480px) {
