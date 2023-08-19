@@ -83,10 +83,15 @@
 
 .nav_start {
   overflow-x: scroll;
-  white-space: nowrap; 
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
 
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.nav_start::-webkit-scrollbar {
+  display: none;
 }
 
 @media only screen and (max-width: 480px) {
