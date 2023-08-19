@@ -22,10 +22,10 @@ const SearchBar : React.FC<searchBarProps> = ({ searchBarSearch }) => {
     };
 
     return (
-        <div className='flex items-center gap-8 my-4 w-6/12'>
+        <div className='header_item flex items-center gap-8 my-4 w-6/12'>
             <div className='relative flex justify-start z-[99] mb-0 overflow-hidden border-solid border border-violet-500 rounded w-full'>
                 <div className='flex rounded w-full'>
-                    <div className='dropdown relative flex items-center'>
+                    <div className='dropdown relative flex items-center max-w-[128px]'>
                         <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[64] h-full cursor-pointer'>
                             {categories.map((category) => (
                                 <option key={'option_' + category.name} value={category.name}>
@@ -42,7 +42,7 @@ const SearchBar : React.FC<searchBarProps> = ({ searchBarSearch }) => {
                     onClick={clearQuery}>
                         <GiCancel />
                     </button>
-                    <div className='relative flex whitespace-nowrap clear-both text-white bg-violet-500'>
+                    <div className='relative flex whitespace-nowrap clear-both text-white bg-violet-500 max-w-[48px]'>
                         <button className='mx-4'
                         onClick={() => searchBarSearch(searchQuery)}>
                             <PiMagnifyingGlassBold />

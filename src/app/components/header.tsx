@@ -39,7 +39,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
 
     return (
         <header className='header block relative z-[100] max-w-full px-8 bg-white'>
-            <div className='header-content flex items-center justify-evenly py-3 gap-8'>
+            <div className='header_content flex items-center justify-evenly py-3 gap-8'>
                 <Link className='flex items-center cursor-pointer' href='/'
                 onClick={handlePress}>
                     <Image
@@ -50,7 +50,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
                     />
                 </Link>
                 <SearchBar searchBarSearch={searchBarSearch} />
-                <div className='user_actions flex items-center'>
+                <div className='header_item flex items-center'>
                     <div className='user_btns flex items-center gap-2'>
                         {   // Check if userInfo exists
                             (!userInfo.user_id)?

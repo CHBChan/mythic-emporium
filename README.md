@@ -36,4 +36,4 @@ As the administrator, I am able to sign in with user authentication from the bac
 
 ### Still to do
 - [ ] Add products to database
-- [ ] Stylize for mobile
+- [ ] Polish
