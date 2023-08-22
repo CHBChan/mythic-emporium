@@ -67,6 +67,7 @@ export default function Home() {
 
   const fetchAllProducts = async () => {
     try {
+      console.log('fetching products');
       const response = await axios.get("api/products/fetchAllProducts");
       setProductsList(response.data.products);
     }
@@ -219,6 +220,8 @@ export default function Home() {
   };
 
   React.useEffect(() => {
+    console.log('on pageload');
+
     // Retrieve user info from login cookie
     fetchUserFromCookie();
 
