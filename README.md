@@ -15,11 +15,9 @@ As the administrator, I am able to sign in with user authentication from the bac
 3. Removing an existing product
 4. Viewing all the existing products
 
-Here are some images of the inventory management system:
+Here are a gif showing the inventory management system in action:
 
-![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/06194e39-437d-405f-9e92-187f670eddfb)
-![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/2d289bbc-edc7-4aaa-b53d-3bc920316b8d)
-
+![IMS Demo](https://i.imgur.com/ykfA68a.gif)
 
 ## Frameworks / Libraries used in the project
 [React.js](https://react.dev/)
@@ -45,7 +43,6 @@ Here are some images of the inventory management system:
 [bcrypt.js](https://github.com/dcodeIO/bcrypt.js)
 
 ### Still to do
-- [ ] Disable Caching
 - [ ] Add products to database
 - [ ] Complete documentation
 - [ ] Polish
