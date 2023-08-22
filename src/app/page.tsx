@@ -67,9 +67,9 @@ export default function Home() {
 
   const fetchAllProducts = async () => {
     try {
-      console.log('fetching products');
-      const response = await axios.get("api/products/fetchAllProducts");
-      console.log(response.data.products);
+      // Cache busting
+      const timestamp = Date.now();
+      const response = await axios.get(`api/products/fetchAllProducts?cacheBuster=${timestamp}`);
       setProductsList(response.data.products);
     }
     catch(error : any) {
