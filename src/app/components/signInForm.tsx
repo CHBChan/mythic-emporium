@@ -32,7 +32,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
             setPopup();
         }
         catch(error : any) {
-            console.log("Signup failed: " + error.message);
+            console.error("Signup failed: " + error.message);
         }
     }
 
@@ -43,7 +43,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
             setPopup();
         }
         catch(error : any) {
-            console.log("Login failed", error.message);
+            console.error("Login failed", error.message);
             setWrongCred(true);
         }
     }
