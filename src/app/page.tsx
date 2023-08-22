@@ -69,6 +69,7 @@ export default function Home() {
     try {
       console.log('fetching products');
       const response = await axios.get("api/products/fetchAllProducts");
+      console.log(response.data.products);
       setProductsList(response.data.products);
     }
     catch(error : any) {
