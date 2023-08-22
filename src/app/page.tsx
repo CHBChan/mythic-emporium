@@ -69,7 +69,13 @@ export default function Home() {
     try {
       // Cache busting
       const timestamp = Date.now();
-      const response = await axios.get(`api/products/fetchAllProducts?cacheBuster=${timestamp}`);
+      const response = await axios.get(`api/products/fetchAllProducts?cacheBuster=${timestamp}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      });
       setProductsList(response.data.products);
     }
     catch(error : any) {
