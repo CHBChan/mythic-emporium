@@ -73,7 +73,11 @@ function InventoryManagement() {
 
     const fetchAllProduct = async () => {
         try {
-            const response = await axios.get("api/products/fetchAllProducts");
+            // Have to use axios.post() to bypass Vercel caching
+            const timestamp = Date.now();
+            const response = await axios.post('api/products/fetchAllProducts', {
+                time: timestamp,
+            });
             setInventory(response.data.products);
         }
         catch(error : any) {
