@@ -47,4 +47,5 @@ Here are some images of the inventory management system:
 ### Still to do
 - [ ] Disable Caching
 - [ ] Add products to database
+- [ ] Complete documentation
 - [ ] Polish
