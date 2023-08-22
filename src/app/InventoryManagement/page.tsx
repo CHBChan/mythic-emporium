@@ -42,23 +42,21 @@ function InventoryManagement() {
             const response = await axios.get("api/users/roleVerification");
         }
         catch(error : any) {
-            console.log("Verification process failed: " + error.message);
+            console.error("Verification process failed: " + error.message);
             router.push('/');
         }
     }
 
     const updateProductState = (data : any) => {
         setProduct(data);
-        console.log('Product state updated');
     };
 
     const addNewProduct = async () => {
         try {
             const response = await axios.post("api/products/addProduct", product);
-            console.log("Product added successfully", response.data);
         }
         catch(error : any) {
-            console.log("Product failed to be added: " + error.message);
+            console.error("Product failed to be added: " + error.message);
         }
     };
 
@@ -69,43 +67,39 @@ function InventoryManagement() {
             setFetched(true);
         }
         catch(error : any) {
-            console.log("Product failed to be fetched: " + error.message);
+            console.error("Product failed to be fetched: " + error.message);
         }
     }
 
     const fetchAllProduct = async () => {
         try {
             const response = await axios.get("api/products/fetchAllProducts");
-            console.log(response.data.products);
             setInventory(response.data.products);
         }
         catch(error : any) {
-            console.log("Inventory failed to be fetched: "  + error.message);
+            console.error("Inventory failed to be fetched: "  + error.message);
         }
     }
 
     const updateProduct = async (updatedProduct : any) => {
         try {
             const response = await axios.post("api/products/updateProduct", updatedProduct);
-            console.log("Product updated successfully", response.data);
         }
         catch(error : any) {
-            console.log("Product failed to update: " + error.message);
+            console.error("Product failed to update: " + error.message);
         }
     };
 
     const removeProduct = async (product_id : number) => {
         try {
             const response = await axios.post("api/products/removeProduct", { product_id });
-            console.log("Product removed successfully", response.data);
         }
         catch(error : any) {
-            console.log("Product failed to be removed: " + error.message);
+            console.error("Product failed to be removed: " + error.message);
         }
     }
 
     React.useEffect(() => {
-        //console.log('In useEffect');
         adminVerification();
 
         if(submit) {
@@ -124,7 +118,6 @@ function InventoryManagement() {
     }, [product]);
 
     function changeMode(type : modeOpt) {
-        console.log('Changing form type');
         setMode(type);
         setFetched(false);
     };
@@ -221,7 +214,6 @@ function InventoryManagement() {
                     product_quantity: product.product_quantity
                 }}
                 onSubmit={(values) => {
-                    console.log('submit');
                     if(!fetched) {
                         fetchProduct(values.product_id);
                         setSubmit(true);

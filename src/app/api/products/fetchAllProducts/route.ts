@@ -3,7 +3,7 @@ import Product from "@/models/productModel";
 
 import { dbConnection } from "@/dbConfig/dbConfig";
 
-export async function GET(request : NextRequest) {
+export async function POST(request : NextRequest) {
 
     try{
         const productModel = dbConnection.model('Product', Product.schema);

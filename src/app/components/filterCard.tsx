@@ -97,7 +97,7 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
             </div>
           </div>
           <button className='text-violet-500 bg-white rounded m-3 p-2'
-          onClick={() => {applyFilters('display'); console.log(filters)}}>
+          onClick={() => {applyFilters('display');}}>
             Apply
           </button>
         </div>

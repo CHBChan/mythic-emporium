@@ -67,14 +67,10 @@ export default function Home() {
 
   const fetchAllProducts = async () => {
     try {
-      // Cache busting
+      // Have to use axios.post() to bypass Vercel caching
       const timestamp = Date.now();
-      const response = await axios.get(`api/products/fetchAllProducts?cacheBuster=${timestamp}`, {
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-        }
+      const response = await axios.post('api/products/fetchAllProducts', {
+        time: timestamp,
       });
       setProductsList(response.data.products);
     }
@@ -139,7 +135,6 @@ export default function Home() {
 
   const setPopup = () => {
     setShowPopup((prevState) => !prevState);
-    console.log('Showing/hiding popup')
   };
 
   const productCardPressed = (product? : productType) => {
@@ -150,7 +145,6 @@ export default function Home() {
 
     // Show / hide product information modal
     setShowProductInfo((prevState) => !prevState);
-    console.log('Showing/hiding product information')
   };
 
   const addToCart = (product : productType) => {
@@ -195,11 +189,6 @@ export default function Home() {
     setCartOpen(false);
   };
 
-  React.useEffect(() => {
-    console.log('Cart updated!');
-    console.log(cart);
-  },[cart]);
-
   const populateFilterOpts = () => {
     // Populate brands & origins
     const brands = productsList.reduce((brands, product) => {
@@ -227,8 +216,6 @@ export default function Home() {
   };
 
   React.useEffect(() => {
-    console.log('on pageload');
-
     // Retrieve user info from login cookie
     fetchUserFromCookie();
 
@@ -338,7 +325,6 @@ export default function Home() {
       const response = await axios.post("api/products/fetchProductsByQuery", {
         searchQuery: query
       });
-      console.log(response.data.products);
       setProductsList(response.data.products);
     }
     catch(error : any) {
