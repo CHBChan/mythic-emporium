@@ -79,6 +79,31 @@ export default function Home() {
     }
   };
 
+  const fetchAllProductsPeriodically = async () => {
+    console.log('Periodically fetching products...');
+    try {
+      // Have to use axios.post() to bypass Vercel caching
+      const timestamp = Date.now();
+      const response = await axios.post('api/products/fetchAllProducts', {
+        time: timestamp,
+      });
+      const products = response.data.products;
+
+      if(products.length === 0) {
+        // Retry fetch if no products were fetched
+        setTimeout(fetchAllProductsPeriodically, 2000);
+      }
+      else {
+        setProductsList(products);
+      }
+    }
+    catch(error : any) {
+      console.error('Failed to fetch products: ', error.message);
+      // Retry fetch if fetching failed
+      setTimeout(fetchAllProductsPeriodically, 2000);
+    }
+  }
+
   const fetchFilteredProducts = async () => {
     try {
       const response = await axios.post("api/products/fetchFilteredProducts", {
@@ -220,7 +245,7 @@ export default function Home() {
     fetchUserFromCookie();
 
     // Retrieve all products
-    fetchAllProducts();
+    fetchAllProductsPeriodically();
   },[]);
 
   React.useEffect(() => {
