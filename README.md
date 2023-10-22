@@ -1,7 +1,7 @@
 Live Demo: https://mythic-emporium.vercel.app/
 
 # Mythic Emporium
-This is the biggest personal project I've done thus far. I learned Typescript and Next.js through this project and got some exposure to MongoDB as well as the general concept behind how user credentials are stored and authenticated in the backend. 
+This is one of the bigger projects I've done. I learned Typescript and Next.js through this project and got some exposure to MongoDB as well as the general concept behind how user credentials are stored and authenticated in the backend. 
 
 ![image](https://github.com/CHBChan/mythic-emporium/assets/81986429/96ed54c3-1a95-48b6-aad2-9c9842f3e5e4)
 
