@@ -142,7 +142,7 @@ function InventoryManagement() {
             <fieldset className='my-2 p-4 text-l font-bold text-center border-solid border-2 border-black rounded'>
                 <legend>Select management mode:</legend>
 
-                <select className='text-l p-4' name='mode'>
+                <select className='text-l p-4 cursor-pointer' name='mode'>
                     <option value={modeOpt.AddProduct} 
                     onClick={() => {
                         changeMode(modeOpt.AddProduct);
