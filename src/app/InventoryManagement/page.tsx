@@ -13,10 +13,10 @@ import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import { useRouter } from 'next/navigation';
 
 enum modeOpt {
-    AddProduct,
-    UpdateProduct,
-    RemoveProduct,
-    ViewInventory
+    AddProduct = "0",
+    UpdateProduct = "1",
+    RemoveProduct = "2",
+    ViewInventory = "3"
 };
 
 function InventoryManagement() {
@@ -121,10 +121,18 @@ function InventoryManagement() {
         }
     }, [product]);
 
-    function changeMode(type : modeOpt) {
+    const changeMode = (event : React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(event.target.value);
+        let type : modeOpt = event.target.value as modeOpt;
         setMode(type);
-        setFetched(false);
-    };
+
+        if(type === modeOpt.ViewInventory) {
+            fetchAllProduct();
+        }
+        else {
+            setFetched(false);
+        }
+    }
 
     const defaultValues={
         product_id: 0,
@@ -142,24 +150,11 @@ function InventoryManagement() {
             <fieldset className='my-2 p-4 text-l font-bold text-center border-solid border-2 border-black rounded'>
                 <legend>Select management mode:</legend>
 
-                <select className='text-l p-4 cursor-pointer' name='mode'>
-                    <option value={modeOpt.AddProduct} 
-                    onClick={() => {
-                        changeMode(modeOpt.AddProduct);
-                    }}>Add Product</option>
-                    <option value={modeOpt.UpdateProduct} 
-                    onClick={() => {
-                        changeMode(modeOpt.UpdateProduct);
-                    }}>Update Product</option>
-                    <option value={modeOpt.RemoveProduct} 
-                    onClick={() => {
-                        changeMode(modeOpt.RemoveProduct);
-                    }}>Remove Product</option>
-                    <option value={modeOpt.ViewInventory} 
-                    onClick={() => {
-                        changeMode(modeOpt.ViewInventory); 
-                        fetchAllProduct();
-                    }}>View Inventory</option>
+                <select className='text-l p-4 cursor-pointer' name='mode' onChange={changeMode}>
+                    <option value={modeOpt.AddProduct} >Add Product</option>
+                    <option value={modeOpt.UpdateProduct}>Update Product</option>
+                    <option value={modeOpt.RemoveProduct}>Remove Product</option>
+                    <option value={modeOpt.ViewInventory} >View Inventory</option>
                 </select>
             </fieldset>
             { // Add Product Form
