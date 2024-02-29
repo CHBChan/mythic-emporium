@@ -32,11 +32,10 @@ const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, resetFilters, a
                 <div className='nav_menu flex items-stretch grow px-4'>
                     <div className='nav_start flex items-stretch justify-start mr-auto'>
                         {categories.map((category) => (
-                            <div key={category.name + '_menu'} className='relative flex items-stretch grow-0 shrink-0 p-0'>
+                            <div key={category.name + '_menu'} className='relative flex items-stretch grow-0 shrink-0 p-0 my-1 rounded border-2 border-violet-500 hover:border-white'>
                                 <span className='flex items-center  gap-2 font-bold text-white cursor-pointer px-4'
                                 onClick={() => handlePress(category.name)}>
                                     {category.name}
-                                    <BiCaretDown />
                                 </span>
                             </div>
                         ))}

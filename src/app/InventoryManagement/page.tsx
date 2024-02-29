@@ -314,7 +314,7 @@ function InventoryManagement() {
 
             {   // View Inventory Table
                 mode == modeOpt.ViewInventory &&
-                <DataTable className='border-solid border-2 border-black rounded' value={inventory} tableStyle={{ minWidth: '40rem' }}>
+                <DataTable className='border-solid border-2 border-black rounded' value={inventory} tableStyle={{ maxWidth: "100vw" }}>
                     <Column field='product_id' header='ID' />
                     <Column field='product_name' header='Name' />
                     <Column field='product_category' header='Category' />

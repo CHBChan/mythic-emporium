@@ -319,6 +319,8 @@ export default function Home() {
       minPrice: 0,
       maxPrice: 9999
     }));
+    // Work around solution for reset filters not updating in time due to async nature of state management
+    setDisplayedList(productsList);
   };
 
   const applyFilters = (type : string) => {
