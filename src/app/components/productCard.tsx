@@ -20,6 +20,7 @@ const ProductCard : React.FC<cardProps> = ({ product, productCardPressed }) => {
                         <span className='font-bold'>{product.product_name}</span>
                         <span className='text-neutral-500 italic text-sm'>{product.product_brand}</span>
                         <span className='text-neutral-500 text-sm mb-2'>{product.product_origin}</span>
+
                         <Currency value={product.product_price} />
                         {   // Check availability
                             (product.product_quantity > 0)?

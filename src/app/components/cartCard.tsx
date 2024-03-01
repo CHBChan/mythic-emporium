@@ -15,12 +15,6 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
     const Checkout = () => {
         setCheckOut((prevState) => !prevState);
     };
-    
-    const quantityRange : number[] = [];
-    // Populate array
-    for(let i : number = 0; i < 10; i++) {
-        quantityRange.push(i);
-    }
 
     const calcTotal = () => {
         let sum = 0;
@@ -49,7 +43,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                         <div className='flex flex-row font-semibold gap-8'>
                             <select className='pl-2 w-[64px]'value={item.product_quantity} 
                             onChange={(event : any) => updateCartQuantity(item.product_id, parseInt(event.target.value))}>
-                                {quantityRange.map((n) => (
+                                {Array.from({ length: item.product_quantity + 1 }, (v, i) => i).map((n) => (
                                     <option key={'quantity_' + n} value={n}>{n}</option>
                                 ))}
                             </select>

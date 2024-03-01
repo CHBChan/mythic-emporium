@@ -172,20 +172,20 @@ export default function Home() {
     setShowProductInfo((prevState) => !prevState);
   };
 
-  const addToCart = (product : productType) => {
-    // If product exists in cart, increment quantity by 1
+  const addToCart = (product : productType, numCheckoutItems : number) => {
+    // If product exists in cart, increment quantity by numCheckoutItems
     if(cart.find((item) => item.product_id == product.product_id)) {
         const updatedCart = cart.map((item) => 
             item.product_id == product.product_id?
-            {...item, product_quantity: item.product_quantity + 1}
+            {...item, product_quantity: item.product_quantity + numCheckoutItems}
             :
             item
         );
         setCart(updatedCart);
     }
     else {
-        // If product does not exist in cart, add product of quantity 1
-        setCart((prevProducts) => [...prevProducts, {...product, product_quantity: 1}]);
+        // If product does not exist in cart, add product of quantity numCheckoutItems
+        setCart((prevProducts) => [...prevProducts, {...product, product_quantity: numCheckoutItems}]);
     }
   };
 
