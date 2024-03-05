@@ -2,6 +2,8 @@
 
 import React from "react";
 import axios from "axios";
+import { Provider } from "react-redux";
+import { store } from "./states/store";
 
 import Header from "./components/header";
 import SignUpForm from "./components/signInForm";
@@ -365,43 +367,45 @@ export default function Home() {
   
   return (
     <>
-    <div className='content flex flex-col select-none h-screen'>
-      <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
-      <CategoryNavBar updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
-      <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
-      { // Check if cart is close
-        (!cartOpen)?
-        <>
-        <div className={`filters_container ${filterOpen? 'open' : ''}`}>
-          <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} toggleFilter={toggleFilter} />
+      <Provider store={store}>
+        <div className='content flex flex-col select-none h-screen'>
+          <Header userInfo={userInfo} signOut={signOut} setPopup={setPopup} toggleCart={toggleCart} searchBarSearch={searchBarSearch} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+          <CategoryNavBar updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} />
+          <section className='inner_content flex-grow flex flex-row grow gap-4 p-4'>
+          { // Check if cart is close
+            (!cartOpen)?
+            <>
+            <div className={`filters_container ${filterOpen? 'open' : ''}`}>
+              <FilterCard brandsList={brandsList} originsList={originsList} filters={filters} updateFilters={updateFilters} resetFilters={resetFilters} applyFilters={applyFilters} toggleFilter={toggleFilter} />
+            </div>
+            <button className='filters_button absolute hidden z-[500] text-violet-500 text-2xl border-2 border-solid border-violet-500 rounded h-[32px] w-[32px]'
+            onClick={() => toggleFilter()}>
+              &equiv;
+            </button>
+            <div className='flex flex-col items-center w-full'>
+                <ProductListing productsList={displayedList} productCardPressed={productCardPressed} />
+            </div>
+            </>
+            :
+            <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
+          }
+          </section>
         </div>
-        <button className='filters_button absolute hidden z-[500] text-violet-500 text-2xl border-2 border-solid border-violet-500 rounded h-[32px] w-[32px]'
-        onClick={() => toggleFilter()}>
-          &equiv;
-        </button>
-        <div className='flex flex-col items-center w-full'>
-            <ProductListing productsList={displayedList} productCardPressed={productCardPressed} />
-        </div>
-        </>
-        :
-        <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
-      }
-      </section>
-    </div>
-    { // Show popup
-      showPopup &&
-      <div className='popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
-      onClick={() => setPopup()}>
-        <SignUpForm getUserInfo={getUserInfo} formType={formType} switchForm={switchForm} setPopup={setPopup} />
-      </div>
-    }
-    { // Show product information
-      showProductInfo &&
-      <div className='popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
-      onClick={() => productCardPressed()}>
-        <ProductInfoModal displayProduct={displayProduct} addToCart={addToCart} />
-      </div>
-    }
+        { // Show popup
+          showPopup &&
+          <div className='popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
+          onClick={() => setPopup()}>
+            <SignUpForm getUserInfo={getUserInfo} formType={formType} switchForm={switchForm} setPopup={setPopup} />
+          </div>
+        }
+        { // Show product information
+          showProductInfo &&
+          <div className='popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
+          onClick={() => productCardPressed()}>
+            <ProductInfoModal displayProduct={displayProduct} addToCart={addToCart} />
+          </div>
+        }
+      </Provider>
     </>
   )
 }

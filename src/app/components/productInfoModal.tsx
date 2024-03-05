@@ -10,6 +10,9 @@ import { Currency } from "./currency";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 
+import { useDispatch } from "react-redux";
+import { updateProductInCart, addProductToCart} from "../states/cartReducer";
+
 interface modalProps {
   displayProduct: productType | undefined;
   addToCart: (product: productType, numCheckoutItems: number) => void;
@@ -40,6 +43,8 @@ const ProductInfoModal: React.FC<modalProps> = ({
   const handleUpdateNumCheckoutItems = (event : React.ChangeEvent<HTMLSelectElement>) => {
     setNumCheckoutItems(Number(event.target.value));
   };
+
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -94,7 +99,9 @@ const ProductInfoModal: React.FC<modalProps> = ({
                   <button
                     className="text-white font-bold bg-violet-500 rounded p-2"
                     onClick={() => {
-                      addToCart(displayProduct!, numCheckoutItems);
+                      // addToCart(displayProduct!, numCheckoutItems);
+                      const checkoutProduct : productType = {...displayProduct!, product_quantity: numCheckoutItems};
+                      dispatch(addProductToCart(checkoutProduct));
                       showToast(displayProduct!);
                     }}
                   >

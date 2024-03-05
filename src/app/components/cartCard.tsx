@@ -3,6 +3,11 @@ import { productType } from "../interface/interface";
 import { Currency } from "./currency";
 import PaymentCard from "./paymentCard";
 
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../states/store";
+
+import { updateProductInCart, removeFromCart} from "../states/cartReducer";
+
 
 interface cartProps {
     cart: productType[],
@@ -16,7 +21,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
         setCheckOut((prevState) => !prevState);
     };
 
-    const calcTotal = () => {
+    const calcTotal = (cart: productType[]) => {
         let sum = 0;
         cart.map((item) => {
             sum += (item.product_price * item.product_quantity);
@@ -24,13 +29,16 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
         return sum;
     };
 
+    const dispatch = useDispatch();
+    const cart2 = useSelector((state: RootState) => state.cart.productCart);
+
     return (
         <div className='flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 min-w-full'>
             <span className='text-rose-600'>Reminder: We currently do not deliver to worlds 32, 35, 46, 321, and 642 due to imminent collapse.</span>
             {   // If there exists item in cart
-                (cart.length > 0)?
+                (cart2.length > 0)?
                 <>
-                {cart.map((item, index) => (
+                {cart2.map((item, index) => (
                     <div key={'cart_item_' + item.product_id} 
                     className='flex flex-col gap-2 w-[256px] md:w-1/4'>
                         <div className='flex flex-row justify-between font-bold'>
@@ -42,25 +50,29 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                         </div>
                         <div className='flex flex-row font-semibold gap-8'>
                             <select className='pl-2 w-[64px]'value={item.product_quantity} 
-                            onChange={(event : any) => updateCartQuantity(item.product_id, parseInt(event.target.value))}>
+                            onChange={(event : any) => {
+                                dispatch(updateProductInCart({product_id: item.product_id, product_quantity: parseInt(event.target.value)}));
+                                }}>
                                 {Array.from({ length: item.product_quantity + 1 }, (v, i) => i).map((n) => (
                                     <option key={'quantity_' + n} value={n}>{n}</option>
                                 ))}
                             </select>
                             <span className='text-rose-500 hover:text-rose-700 text-sm cursor-pointer'
-                            onClick={() => updateCartQuantity(item.product_id, 0)}>
+                            onClick={() => {
+                                dispatch(removeFromCart(item.product_id));
+                                }}>
                                 Remove
                             </span>
                         </div>
                         {   // Check if item is the last item in cart
-                            !(index == cart.length - 1) &&
+                            !(index == cart2.length - 1) &&
                             <hr/>
                         }
                     </div>
                 ))}
                 <div className='flex flex-row gap-2 font-bold mt-4'>
                     <span>Subtotal: </span>
-                    <Currency value={calcTotal()} />
+                    <Currency value={calcTotal(cart2)} />
                 </div>
                 {   // Check if checked out
                     (!checkOut)?
@@ -69,7 +81,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                         Checkout code
                     </button>
                     :
-                    <PaymentCard cart={cart} />
+                    <PaymentCard cart={cart2} />
                 }
                 </>
                 :
