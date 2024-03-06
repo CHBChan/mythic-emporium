@@ -9,6 +9,18 @@ interface productType {
     product_quantity: number
 };
 
+interface productsListType {
+    [id: number] : productType;
+};
+
+interface brandsDirectory {
+    [id: string] : productType[];
+};
+
+interface originsDirectory {
+    [id: string] : productType[];
+};
+
 interface accountInfo {
     user_id: number | null,
     username: string | null,
@@ -24,4 +36,4 @@ interface filterOpt {
     maxPrice: number,
 }
 
-export type { productType, accountInfo, filterOpt }
+export type { productType, productsListType, brandsDirectory, originsDirectory, accountInfo, filterOpt }
