@@ -48,7 +48,6 @@ export default function Home() {
     product_quantity: -1
   });
 
-  const [cart, setCart] = React.useState<productType[]>([]);
   const [cartOpen, setCartOpen] = React.useState<boolean>(false);
 
   const [filterOpen, setFilterOpen] = React.useState<boolean>(false);
@@ -172,40 +171,6 @@ export default function Home() {
 
     // Show / hide product information modal
     setShowProductInfo((prevState) => !prevState);
-  };
-
-  const addToCart = (product : productType, numCheckoutItems : number) => {
-    // If product exists in cart, increment quantity by numCheckoutItems
-    if(cart.find((item) => item.product_id == product.product_id)) {
-        const updatedCart = cart.map((item) => 
-            item.product_id == product.product_id?
-            {...item, product_quantity: item.product_quantity + numCheckoutItems}
-            :
-            item
-        );
-        setCart(updatedCart);
-    }
-    else {
-        // If product does not exist in cart, add product of quantity numCheckoutItems
-        setCart((prevProducts) => [...prevProducts, {...product, product_quantity: numCheckoutItems}]);
-    }
-  };
-
-  const updateCartQuantity = (id : number, quantity : number) => {
-    // Failsafe
-    if(!cart.find((item) => item.product_id == id)) {
-      console.error('Error: Attempted to update a product with invalid id');
-      return;
-    }
-
-    // Update cart item quantity
-    const updatedCart = cart.map((item) => {
-      if(item.product_id == id) {
-        return {...item, product_quantity: quantity};
-      }
-      return item;
-    }).filter((item) => item.product_quantity > 0);
-    setCart(updatedCart);
   };
 
   const toggleCart = () => {
@@ -387,7 +352,7 @@ export default function Home() {
             </div>
             </>
             :
-            <CartCard cart={cart} updateCartQuantity={updateCartQuantity} />
+            <CartCard />
           }
           </section>
         </div>
@@ -402,7 +367,7 @@ export default function Home() {
           showProductInfo &&
           <div className='popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0'
           onClick={() => productCardPressed()}>
-            <ProductInfoModal displayProduct={displayProduct} addToCart={addToCart} />
+            <ProductInfoModal displayProduct={displayProduct} />
           </div>
         }
       </Provider>

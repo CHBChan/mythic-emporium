@@ -9,12 +9,7 @@ import { RootState } from "../states/store";
 import { updateProductInCart, removeFromCart} from "../states/cartReducer";
 
 
-interface cartProps {
-    cart: productType[],
-    updateCartQuantity: (id : number, quantity : number) => void
-}
-
-const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
+const CartCard : React.FC = () => {
     const [checkOut, setCheckOut] = React.useState<boolean>(false);
 
     const Checkout = () => {
@@ -30,15 +25,15 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
     };
 
     const dispatch = useDispatch();
-    const cart2 = useSelector((state: RootState) => state.cart.productCart);
+    const cart = useSelector((state: RootState) => state.cart.productCart);
 
     return (
         <div className='flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 min-w-full'>
             <span className='text-rose-600'>Reminder: We currently do not deliver to worlds 32, 35, 46, 321, and 642 due to imminent collapse.</span>
             {   // If there exists item in cart
-                (cart2.length > 0)?
+                (cart.length > 0)?
                 <>
-                {cart2.map((item, index) => (
+                {cart.map((item, index) => (
                     <div key={'cart_item_' + item.product_id} 
                     className='flex flex-col gap-2 w-[256px] md:w-1/4'>
                         <div className='flex flex-row justify-between font-bold'>
@@ -65,14 +60,14 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                             </span>
                         </div>
                         {   // Check if item is the last item in cart
-                            !(index == cart2.length - 1) &&
+                            !(index == cart.length - 1) &&
                             <hr/>
                         }
                     </div>
                 ))}
                 <div className='flex flex-row gap-2 font-bold mt-4'>
                     <span>Subtotal: </span>
-                    <Currency value={calcTotal(cart2)} />
+                    <Currency value={calcTotal(cart)} />
                 </div>
                 {   // Check if checked out
                     (!checkOut)?
@@ -81,7 +76,7 @@ const CartCard : React.FC<cartProps> = ({ cart, updateCartQuantity }) => {
                         Checkout code
                     </button>
                     :
-                    <PaymentCard cart={cart2} />
+                    <PaymentCard cart={cart} />
                 }
                 </>
                 :

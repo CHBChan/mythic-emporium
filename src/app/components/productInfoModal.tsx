@@ -11,19 +11,16 @@ import { Currency } from "./currency";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 
 import { useDispatch } from "react-redux";
-import { updateProductInCart, addProductToCart} from "../states/cartReducer";
+import { addProductToCart } from "../states/cartReducer";
 
 interface modalProps {
   displayProduct: productType | undefined;
-  addToCart: (product: productType, numCheckoutItems: number) => void;
 }
 
 const ProductInfoModal: React.FC<modalProps> = ({
   displayProduct,
-  addToCart,
 }) => {
   const toast = React.useRef<any>(null);
-  const [buttonDisabled, setButtonDisabled] = React.useState(false);
 
   const handleFormClick = (event: any) => {
     event.stopPropagation();
@@ -36,7 +33,7 @@ const ProductInfoModal: React.FC<modalProps> = ({
       life: 3000,
     });
   };
-  //   const [numAvailableitems, setNumAvailableItems] = React.useState(product);
+
   const [numCheckoutItems, setNumCheckoutItems] = React.useState<number>(1);
   const maxCheckoutItems: number = 20;
 
@@ -93,13 +90,12 @@ const ProductInfoModal: React.FC<modalProps> = ({
                       },
                       (v, i) => i
                     ).map((i: number) => (
-                      <option value={i+1}>{i+1}</option>
+                      <option key={i+1 + '_option'} value={i+1}>{i+1}</option>
                     ))}
                   </select>
                   <button
                     className="text-white font-bold bg-violet-500 rounded p-2"
                     onClick={() => {
-                      // addToCart(displayProduct!, numCheckoutItems);
                       const checkoutProduct : productType = {...displayProduct!, product_quantity: numCheckoutItems};
                       dispatch(addProductToCart(checkoutProduct));
                       showToast(displayProduct!);
