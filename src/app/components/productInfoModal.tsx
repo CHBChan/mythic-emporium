@@ -40,8 +40,9 @@ const ProductInfoModal: React.FC<modalProps> = ({
   const cart = useSelector((state: RootState) => state.cart.productsInCart);
 
   const [numCheckoutItems, setNumCheckoutItems] = React.useState<number>(1);
-  const maxCheckoutItems: number = Math.min(20, productsList[displayProduct!.product_id].product_quantity);
 
+  const stockInCart = cart[displayProduct!.product_id] ? cart[displayProduct!.product_id].product_quantity : 0;
+  const maxCheckoutItems: number = Math.min(20, productsList[displayProduct!.product_id].product_quantity - stockInCart);
 
   
     // const [maxCheckoutItems, setMaxCheckoutItems] = React.useState<number>(20);
@@ -74,7 +75,7 @@ const ProductInfoModal: React.FC<modalProps> = ({
             {displayProduct!.product_quantity > 0 ? (
               <>
                 <div className="text-green-700">
-                  {displayProduct!.product_quantity} available at
+                  {displayProduct!.product_quantity - stockInCart} available at
                 </div>
                 <Currency value={displayProduct!.product_price} />
                 <div className="text-green-700">each</div>
