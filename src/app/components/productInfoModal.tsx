@@ -11,7 +11,9 @@ import { Currency } from "./currency";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { addProductToCart } from "../states/cartReducer";
+import { RootState } from "../states/store";
 
 interface modalProps {
   displayProduct: productType | undefined;
@@ -34,8 +36,20 @@ const ProductInfoModal: React.FC<modalProps> = ({
     });
   };
 
+  const productsList = useSelector((state: RootState) => state.productsDirectory.productsList);
+  const cart = useSelector((state: RootState) => state.cart.productsInCart);
+
   const [numCheckoutItems, setNumCheckoutItems] = React.useState<number>(1);
-  const maxCheckoutItems: number = 20;
+  const maxCheckoutItems: number = Math.min(20, productsList[displayProduct!.product_id].product_quantity);
+
+
+  
+    // const [maxCheckoutItems, setMaxCheckoutItems] = React.useState<number>(20);
+
+  // React.useEffect(() => {
+  //   setMaxCheckoutItems(Math.min(20, ( producsList[displayProduct?].quantity - cart.product.quanitity)));
+  // }, [cart]);
+
 
   const handleUpdateNumCheckoutItems = (event : React.ChangeEvent<HTMLSelectElement>) => {
     setNumCheckoutItems(Number(event.target.value));

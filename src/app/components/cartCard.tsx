@@ -1,5 +1,5 @@
 import React from "react";
-import { productType } from "../interface/interface";
+import { productType, productsListType } from "../interface/interface";
 import { Currency } from "./currency";
 import PaymentCard from "./paymentCard";
 
@@ -16,24 +16,24 @@ const CartCard : React.FC = () => {
         setCheckOut((prevState) => !prevState);
     };
 
-    const calcTotal = (cart: productType[]) => {
+    const calcTotal = (cart: productsListType) => {
         let sum = 0;
-        cart.map((item) => {
+        Object.values(cart).map((item) => {
             sum += (item.product_price * item.product_quantity);
         });
         return sum;
     };
 
     const dispatch = useDispatch();
-    const cart = useSelector((state: RootState) => state.cart.productCart);
+    const cart = useSelector((state: RootState) => state.cart.productsInCart);
 
     return (
         <div className='flex flex-col gap-2 items-center border-2 border-solid border-violet-500 rounded-xl p-4 min-w-full'>
             <span className='text-rose-600'>Reminder: We currently do not deliver to worlds 32, 35, 46, 321, and 642 due to imminent collapse.</span>
             {   // If there exists item in cart
-                (cart.length > 0)?
+                (Object.keys(cart).length > 0)?
                 <>
-                {cart.map((item, index) => (
+                {Object.values(cart).map((item, index) => (
                     <div key={'cart_item_' + item.product_id} 
                     className='flex flex-col gap-2 w-[256px] md:w-1/4'>
                         <div className='flex flex-row justify-between font-bold'>
@@ -46,11 +46,17 @@ const CartCard : React.FC = () => {
                         <div className='flex flex-row font-semibold gap-8'>
                             <select className='pl-2 w-[64px]'value={item.product_quantity} 
                             onChange={(event : any) => {
-                                dispatch(updateProductInCart({product_id: item.product_id, product_quantity: parseInt(event.target.value)}));
+                                const updatedValue = event.target.value;
+                                if(updatedValue > 0) {
+                                    dispatch(updateProductInCart({product_id: item.product_id, product_quantity: parseInt(event.target.value)}));
+                                }
+                                else {
+                                    dispatch(removeFromCart(item.product_id));
+                                }
                                 }}>
-                                {Array.from({ length: item.product_quantity + 1 }, (v, i) => i).map((n) => (
-                                    <option key={'quantity_' + n} value={n}>{n}</option>
-                                ))}
+                            {Array.from({ length: item.product_quantity + 1 }, (v, i) => i).map((n) => (
+                                <option key={'quantity_' + n} value={n}>{n}</option>
+                            ))}
                             </select>
                             <span className='text-rose-500 hover:text-rose-700 text-sm cursor-pointer'
                             onClick={() => {
@@ -60,7 +66,7 @@ const CartCard : React.FC = () => {
                             </span>
                         </div>
                         {   // Check if item is the last item in cart
-                            !(index == cart.length - 1) &&
+                            !(index == Object.keys(cart).length - 1) &&
                             <hr/>
                         }
                     </div>
@@ -76,7 +82,7 @@ const CartCard : React.FC = () => {
                         Checkout code
                     </button>
                     :
-                    <PaymentCard cart={cart} />
+                    <> </>
                 }
                 </>
                 :
