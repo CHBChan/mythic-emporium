@@ -6,6 +6,7 @@ export interface productsDirectoryType {
   productsList: productsListType;
   brandsList: brandsDirectory;
   originsList: originsDirectory;
+  
 }
 
 export interface initialProductsDirectory extends productsDirectoryType {

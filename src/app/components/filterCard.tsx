@@ -1,24 +1,27 @@
 import { Label } from "@/components/ui/label";
 
 import { filterOpt } from "../interface/interface";
+import { useDispatch, useSelector } from "react-redux";
+import { setBrand, setOrigin, setIn_Stock, setMinPrice, setMaxPrice, resetFilter } from "../states/filterReducer";
+import { RootState } from "../states/store";
 
 interface filterProps {
-    brandsList: string[],
-    originsList: string[],
-    filters: filterOpt,
-    updateFilters: (option : string, value : any) => void,
-    resetFilters: () => void,
     applyFilters: (type : string) => void,
     toggleFilter: () => void
 }
 
-const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, updateFilters, resetFilters, applyFilters, toggleFilter }) => {
+const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
+
+    const dispatch = useDispatch();
+    const filter = useSelector((state: RootState) => state.filterOpt.filter);
+    const brandsList = useSelector((state: RootState) => state.productsDirectory.brandsList);
+    const originsList = useSelector((state: RootState) => state.productsDirectory.originsList);
 
     return (
         <div className='filters sticky top-4 left-0 flex flex-col order-none shadow rounded text-white bg-violet-500 max-w-full max-h-fit'>
           <div className='flex flex-row justify-between p-3'>
             <span className='underline cursor-pointer hover:no-underline hover:text-indigo-700'
-            onClick={() => resetFilters()}>
+            onClick={() => dispatch(resetFilter())}>
               Reset Filters
             </span>
             <span className='filter_close hidden cursor-pointer hover:text-indigo-700'
@@ -31,7 +34,7 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
               <span className='block font-bold mb-2'>Availability:</span>
               <div className=''>
                 <div className='stock flex gap-2'>
-                  <input type='checkbox' name='stock' checked={filters.in_stock} onChange={() => updateFilters('stock', null)} />
+                  <input type='checkbox' name='stock' checked={filter.in_stock} onChange={() => dispatch(setIn_Stock())} />
                   <Label htmlFor='stock'>In stock only</Label>
                 </div>
               </div>
@@ -43,9 +46,9 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
               <div className=''>
                 <div className='brand flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={filters.brand} onChange={(event) => updateFilters('brand', event.target.value)}>
+                value={filter.brand} onChange={(event) => dispatch(setBrand(event.target.value))}>
                     <option value={'All'}>All</option>
-                    {brandsList.map((brand) => (
+                    {Object.keys(brandsList).map((brand) => (
                         <option key={'option_' + brand} value={brand}>
                             {brand}
                         </option>
@@ -61,9 +64,9 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
               <div className=''>
                 <div className='origin flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={filters.origin} onChange={(event) => updateFilters('origin', event.target.value)}>
+                value={filter.origin} onChange={(event) => dispatch(setOrigin(event.target.value))}>
                     <option value={'All'}>All</option>
-                    {originsList.map((origin) => (
+                    {Object.keys(originsList).map((origin) => (
                         <option key={'option_' + origin} value={origin}>
                             {origin}
                         </option>
@@ -82,15 +85,15 @@ const FilterCard : React.FC<filterProps> = ({ brandsList, originsList, filters, 
                     <Label htmlFor='min_price'>Min</Label>
                     <input className='max-w-[100px] text-violet-500 px-2'
                     type='number' name='min_price' 
-                    onChange={(event) => updateFilters('min_price', parseInt(event.target.value))} 
-                    value={filters.minPrice} min={0} max={9999} />
+                    onChange={(event) => dispatch(setMinPrice(parseInt(event.target.value)))} 
+                    value={filter.minPrice} min={0} max={9999} />
                   </div>
                   <div className='flex flex-col gap-2'>
                     <Label htmlFor='max_price'>Max</Label>
                     <input className='max-w-[100px] text-violet-500 px-2'
                     type='number' name='max_price' 
-                    onChange={(event) => updateFilters('max_price', parseInt(event.target.value))} 
-                    value={filters.maxPrice} min={0} max={9999} />
+                    onChange={(event) => dispatch(setMaxPrice(parseInt(event.target.value)))} 
+                    value={filter.maxPrice} min={0} max={9999} />
                   </div>
                 </div>
               </div>

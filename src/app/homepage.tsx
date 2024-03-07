@@ -25,6 +25,9 @@ import { useDispatch } from "react-redux";
 import { setProductsDirectory } from "../app/states/productsListReducer";
 import { productsDirectoryType } from "../app/states/productsListReducer";
 
+import { useSelector } from "react-redux";
+import { RootState } from "./states/store";
+
 enum formOpt {
   SignUp,
   LogIn,
@@ -48,8 +51,6 @@ export default function Homepage() {
   });
   const [productsList, setProductsList] = React.useState<productType[]>([]);
   const [displayedList, setDisplayedList] = React.useState<productType[]>([]);
-  const [brandsList, setBrandsList] = React.useState<string[]>([]);
-  const [originsList, setOriginsList] = React.useState<string[]>([]);
 
   const [showProductInfo, setShowProductInfo] = React.useState<boolean>(false);
   const [displayProduct, setDisplayProduct] = React.useState<productType>({
@@ -153,10 +154,42 @@ export default function Homepage() {
     }
   };
 
+  const filterObject: filterOpt = useSelector(
+    (state: RootState) => state.filterOpt.filter
+  );
+  const productsDirectory = useSelector;
+  const brandsList = useSelector(
+    (state: RootState) => state.productsDirectory.brandsList
+  );
+  const originsList = useSelector(
+    (state: RootState) => state.productsDirectory.originsList
+  );
+
   const filterProducts = () => {
     const filteredProducts = productsList.filter((product) => {
       let passes = true;
 
+      //get list of products
+      const productsWithFilterBrand: productType[] = brandsList[filterObject.brand!];
+      const productsWithFilterOrigin: productType[] = originsList[filterObject.origin!];
+
+      //get intersection between these two lists
+      const subsetOfFilterProducts: productType[] =
+        productsWithFilterBrand.filter((brandProduct) =>
+          productsWithFilterOrigin.some(
+            (originProduct) =>
+              brandProduct.product_id === originProduct.product_id
+          )
+        );
+
+      const finalFilteredProducts = subsetOfFilterProducts.map(
+        (product) =>
+          product.product_price >= filterObject.minPrice &&
+          product.product_price <= filterObject.maxPrice
+      );
+
+
+      
       if (
         (filters.category &&
           filters.category != "All" &&
@@ -219,25 +252,6 @@ export default function Homepage() {
     setCartOpen(false);
   };
 
-  const populateFilterOpts = () => {
-    // Populate brands & origins
-    const brands = productsList.reduce((brands, product) => {
-      if (!brands.includes(product.product_brand)) {
-        brands.push(product.product_brand);
-      }
-      return brands;
-    }, [] as string[]);
-    setBrandsList(brands);
-
-    const origins = productsList.reduce((origins, product) => {
-      if (!origins.includes(product.product_origin)) {
-        origins.push(product.product_origin);
-      }
-      return origins;
-    }, [] as string[]);
-    setOriginsList(origins);
-  };
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -254,8 +268,6 @@ export default function Homepage() {
   }, []);
 
   React.useEffect(() => {
-    populateFilterOpts();
-
     // Display all products
     setDisplayedList(productsList);
   }, [productsList]);
@@ -264,69 +276,6 @@ export default function Homepage() {
     // Close cart
     closeCart();
   }, displayedList);
-
-  const updateFilters = (option: string, value: any) => {
-    // Update filter options
-    switch (option) {
-      case "category":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          category: value,
-        }));
-        break;
-
-      case "brand":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          brand: value,
-        }));
-        break;
-
-      case "origin":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          origin: value,
-        }));
-        break;
-
-      case "stock":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          in_stock: !prevFilters.in_stock,
-        }));
-        break;
-
-      case "min_price":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          minPrice: value,
-        }));
-        break;
-
-      case "max_price":
-        setFilters((prevFilters) => ({
-          ...prevFilters,
-          maxPrice: value,
-        }));
-        break;
-
-      default:
-        console.error("What?");
-    }
-  };
-
-  const resetFilters = () => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      brand: "All",
-      origin: "All",
-      in_stock: false,
-      minPrice: 0,
-      maxPrice: 9999,
-    }));
-    // Work around solution for reset filters not updating in time due to async nature of state management
-    setDisplayedList(productsList);
-  };
 
   const applyFilters = (type: string) => {
     // Retrieve filtered products
@@ -372,86 +321,75 @@ export default function Homepage() {
 
   return (
     <>
-    <div className="content flex flex-col select-none h-screen">
+      <div className="content flex flex-col select-none h-screen">
         <Header
-        userInfo={userInfo}
-        signOut={signOut}
-        setPopup={setPopup}
-        toggleCart={toggleCart}
-        searchBarSearch={searchBarSearch}
-        updateFilters={updateFilters}
-        resetFilters={resetFilters}
-        applyFilters={applyFilters}
+          userInfo={userInfo}
+          signOut={signOut}
+          setPopup={setPopup}
+          toggleCart={toggleCart}
+          searchBarSearch={searchBarSearch}
+          applyFilters={applyFilters}
         />
-        <CategoryNavBar
-        updateFilters={updateFilters}
-        resetFilters={resetFilters}
-        applyFilters={applyFilters}
-        />
+        <CategoryNavBar applyFilters={applyFilters} />
         <section className="inner_content flex-grow flex flex-row grow gap-4 p-4">
-        {
+          {
             // Check if cart is close
             !cartOpen ? (
-            <>
+              <>
                 <div
-                className={`filters_container ${filterOpen ? "open" : ""}`}
+                  className={`filters_container ${filterOpen ? "open" : ""}`}
                 >
-                <FilterCard
-                    brandsList={brandsList}
-                    originsList={originsList}
-                    filters={filters}
-                    updateFilters={updateFilters}
-                    resetFilters={resetFilters}
+                  <FilterCard
                     applyFilters={applyFilters}
                     toggleFilter={toggleFilter}
-                />
+                  />
                 </div>
                 <button
-                className="filters_button absolute hidden z-[500] text-violet-500 text-2xl border-2 border-solid border-violet-500 rounded h-[32px] w-[32px]"
-                onClick={() => toggleFilter()}
+                  className="filters_button absolute hidden z-[500] text-violet-500 text-2xl border-2 border-solid border-violet-500 rounded h-[32px] w-[32px]"
+                  onClick={() => toggleFilter()}
                 >
-                &equiv;
+                  &equiv;
                 </button>
                 <div className="flex flex-col items-center w-full">
-                <ProductListing
+                  <ProductListing
                     productsList={displayedList}
                     productCardPressed={productCardPressed}
-                />
+                  />
                 </div>
-            </>
+              </>
             ) : (
-            <CartCard />
+              <CartCard />
             )
-        }
+          }
         </section>
-    </div>
-    {
+      </div>
+      {
         // Show popup
         showPopup && (
-        <div
+          <div
             className="popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0"
             onClick={() => setPopup()}
-        >
+          >
             <SignUpForm
-            getUserInfo={getUserInfo}
-            formType={formType}
-            switchForm={switchForm}
-            setPopup={setPopup}
+              getUserInfo={getUserInfo}
+              formType={formType}
+              switchForm={switchForm}
+              setPopup={setPopup}
             />
-        </div>
+          </div>
         )
-    }
-    {
+      }
+      {
         // Show product information
         showProductInfo && (
-        <div
+          <div
             className="popup_content z-[1000] fixed flex items-center justify-center bg-black/80 w-full h-full top-0 left-0"
             onClick={() => productCardPressed()}
-        >
+          >
             <ProductInfoModal displayProduct={displayProduct} />
-        </div>
+          </div>
         )
-    }
+      }
     </>
   );
 }

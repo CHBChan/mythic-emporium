@@ -9,24 +9,26 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { accountInfo, productType } from '../interface/interface';
 import { useRouter } from 'next/navigation';
 
+import { resetFilter } from '../states/filterReducer';
+import { useDispatch } from 'react-redux';
+
 interface headerProps {
     userInfo: accountInfo,
     signOut: () => void,
     setPopup: () => void,
     toggleCart: () => void,
     searchBarSearch: (query : string) => void,
-    updateFilters: (option : string, value : any) => void,
-    resetFilters: () => void,
     applyFilters: (type : string) => void
 }
 
-const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, updateFilters, resetFilters, applyFilters }) => {
+const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, applyFilters }) => {
     const router = useRouter();
     const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
     
+    const dispatch = useDispatch();
+
     const handlePress = () => {
-        updateFilters('category', 'All');
-        resetFilters();
+        dispatch(resetFilter());
         setChangeCategory(true);
     };
 

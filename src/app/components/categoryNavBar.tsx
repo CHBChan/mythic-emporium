@@ -2,20 +2,20 @@
 
 import * as React from 'react';
 import { categories } from '../data/data';
-import { BiCaretDown } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
+import { setCategory } from '../states/filterReducer';
 
 interface navBarProps {
-    updateFilters: (option : string, value : any) => void,
-    resetFilters: () => void,
     applyFilters: (type : string) => void
 }
 
-const CategoryNavBar : React.FC<navBarProps> = ({ updateFilters, resetFilters, applyFilters }) => {
+const CategoryNavBar : React.FC<navBarProps> = ({ applyFilters }) => {
     const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
     
+    const dispatch = useDispatch();
+
     const handlePress = (category : string) => {
-        updateFilters('category', category);
-        resetFilters();
+        dispatch(setCategory(category));
         setChangeCategory(true);
     };
 
