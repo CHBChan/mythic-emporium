@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { filterOpt } from "../interface/interface";
 import { initialCart } from "./cartReducer";
 
+
 export interface initialFilterOpt {
     filter: filterOpt;
 }
@@ -13,7 +14,7 @@ const initialState: initialFilterOpt = {
     origin: undefined,
     in_stock: false,
     minPrice: 0,
-    maxPrice: 9999,
+    maxPrice: 999999,
   }
 };
 

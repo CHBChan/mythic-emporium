@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { filterOpt } from "../interface/interface";
 import { useDispatch, useSelector } from "react-redux";
 import { setBrand, setOrigin, setIn_Stock, setMinPrice, setMaxPrice, resetFilter } from "../states/filterReducer";
+import { resetDisplayProductsList } from "../states/productsListReducer";
 import { RootState } from "../states/store";
 
 interface filterProps {
@@ -21,7 +22,10 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
         <div className='filters sticky top-4 left-0 flex flex-col order-none shadow rounded text-white bg-violet-500 max-w-full max-h-fit'>
           <div className='flex flex-row justify-between p-3'>
             <span className='underline cursor-pointer hover:no-underline hover:text-indigo-700'
-            onClick={() => dispatch(resetFilter())}>
+            onClick={() => {
+              dispatch(resetFilter());
+              dispatch(resetDisplayProductsList());
+              }}>
               Reset Filters
             </span>
             <span className='filter_close hidden cursor-pointer hover:text-indigo-700'
@@ -46,7 +50,7 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
               <div className=''>
                 <div className='brand flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={filter.brand} onChange={(event) => dispatch(setBrand(event.target.value))}>
+                value={(!filter.brand ? 'All' : filter.brand)} onChange={(event) => dispatch(setBrand(event.target.value))}>
                     <option value={'All'}>All</option>
                     {Object.keys(brandsList).map((brand) => (
                         <option key={'option_' + brand} value={brand}>
@@ -64,7 +68,7 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
               <div className=''>
                 <div className='origin flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={filter.origin} onChange={(event) => dispatch(setOrigin(event.target.value))}>
+                value={(!filter.origin ? 'All' : filter.origin)} onChange={(event) => dispatch(setOrigin(event.target.value))}>
                     <option value={'All'}>All</option>
                     {Object.keys(originsList).map((origin) => (
                         <option key={'option_' + origin} value={origin}>

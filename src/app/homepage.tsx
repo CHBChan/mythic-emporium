@@ -22,11 +22,12 @@ import ProductListing from "./components/productListing";
 import { CartCard } from "./components/cartCard";
 
 import { useDispatch } from "react-redux";
-import { setProductsDirectory } from "../app/states/productsListReducer";
+import { setProductsDirectory, setDisplayProductsList } from "../app/states/productsListReducer";
 import { productsDirectoryType } from "../app/states/productsListReducer";
 
 import { useSelector } from "react-redux";
 import { RootState } from "./states/store";
+import { setMaxPrice, setMinPrice } from "./states/filterReducer";
 
 enum formOpt {
   SignUp,
@@ -49,9 +50,8 @@ export default function Homepage() {
     minPrice: 0,
     maxPrice: 9999,
   });
-  const [productsList, setProductsList] = React.useState<productType[]>([]);
   const [displayedList, setDisplayedList] = React.useState<productType[]>([]);
-
+  const [productsList, setProductsList] = React.useState<productType[]>([]);
   const [showProductInfo, setShowProductInfo] = React.useState<boolean>(false);
   const [displayProduct, setDisplayProduct] = React.useState<productType>({
     product_id: -1,
@@ -157,7 +157,9 @@ export default function Homepage() {
   const filterObject: filterOpt = useSelector(
     (state: RootState) => state.filterOpt.filter
   );
-  const productsDirectory = useSelector;
+  const directoryProductsList = useSelector(
+    (state: RootState) => state.productsDirectory.productsList
+  );
   const brandsList = useSelector(
     (state: RootState) => state.productsDirectory.brandsList
   );
@@ -166,53 +168,56 @@ export default function Homepage() {
   );
 
   const filterProducts = () => {
-    const filteredProducts = productsList.filter((product) => {
-      let passes = true;
+    
+    if (
+      filterObject.minPrice > 0 &&
+      filterObject.maxPrice == 0
+    ) {
+      dispatch(setMaxPrice(999999));
+    } else if (filterObject.minPrice > filterObject.maxPrice) {
+      dispatch(setMinPrice(0));
+      dispatch(setMaxPrice(999999));
+    }
 
-      //get list of products
-      const productsWithFilterBrand: productType[] = brandsList[filterObject.brand!];
-      const productsWithFilterOrigin: productType[] = originsList[filterObject.origin!];
+    //get list of products
+    let productsWithFilterBrand: productType[] = [];
+    let productsWithFilterOrigin: productType[] = [];
 
-      //get intersection between these two lists
-      const subsetOfFilterProducts: productType[] =
-        productsWithFilterBrand.filter((brandProduct) =>
-          productsWithFilterOrigin.some(
-            (originProduct) =>
-              brandProduct.product_id === originProduct.product_id
-          )
-        );
+    if (!filterObject.brand) {
+      productsWithFilterBrand = Object.values(directoryProductsList);
+    } else {
+      productsWithFilterBrand = Object.values(brandsList[filterObject.brand]);
+    }
 
-      const finalFilteredProducts = subsetOfFilterProducts.map(
-        (product) =>
-          product.product_price >= filterObject.minPrice &&
-          product.product_price <= filterObject.maxPrice
+    if(!filterObject.origin) {
+      productsWithFilterOrigin = Object.values(directoryProductsList);
+    } else {
+      productsWithFilterOrigin = originsList[filterObject.origin];
+    }
+
+    //get intersection between these two lists
+    const subsetOfFilterProducts: productType[] =
+      productsWithFilterBrand.filter((brandProduct) =>
+        productsWithFilterOrigin.some(
+          (originProduct) =>
+            brandProduct.product_id === originProduct.product_id
+        )
       );
 
-
-      
-      if (
-        (filters.category &&
-          filters.category != "All" &&
-          filters.category !== product.product_category) ||
-        (filters.brand &&
-          filters.brand != "All" &&
-          filters.brand !== product.product_brand) ||
-        (filters.origin &&
-          filters.origin != "All" &&
-          filters.origin !== product.product_origin) ||
-        (filters.in_stock && product.product_quantity < 1) ||
-        filters.minPrice > product.product_price ||
-        filters.maxPrice < product.product_price
-      ) {
-        passes = false;
-      }
-
-      return passes;
+    const finalFilteredProducts = subsetOfFilterProducts.filter((product) => {
+        return (
+          product.product_price >= filterObject.minPrice &&
+          product.product_price <= filterObject.maxPrice &&
+          (filterObject.in_stock == true ? product.product_quantity > 0 : true)
+        )
     });
 
-    return filteredProducts;
+    dispatch(setDisplayProductsList(finalFilteredProducts));
+
+    return finalFilteredProducts;
   };
 
+  
   const signOut = async () => {
     setUserInfo({
       user_id: null,

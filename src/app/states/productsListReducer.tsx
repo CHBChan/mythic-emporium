@@ -6,7 +6,7 @@ export interface productsDirectoryType {
   productsList: productsListType;
   brandsList: brandsDirectory;
   originsList: originsDirectory;
-  
+  displayProductsList: productType[];
 }
 
 export interface initialProductsDirectory extends productsDirectoryType {
@@ -17,6 +17,7 @@ const initialState: initialProductsDirectory = {
   productsList: {},
   brandsList: {},
   originsList: {},
+  displayProductsList: [],
   loading: true,
 };
 
@@ -31,11 +32,23 @@ export const productsDirectorySlice = createSlice({
       state.productsList = action.payload.productsList;
       state.brandsList = action.payload.brandsList;
       state.originsList = action.payload.originsList;
+      state.displayProductsList = Object.values(action.payload.productsList);
 
       state.loading = false;
+    },
+    setDisplayProductsList: (
+      state,
+      action: PayloadAction<productType[]>
+    ) => {
+      state.displayProductsList = action.payload;
+    },
+    resetDisplayProductsList: (
+      state,
+    ) => {
+      state.displayProductsList = Object.values(state.productsList);
     },
   },
 });
 
-export const { setProductsDirectory } = productsDirectorySlice.actions;
+export const { setProductsDirectory, setDisplayProductsList, resetDisplayProductsList } = productsDirectorySlice.actions;
 export default productsDirectorySlice.reducer;
