@@ -32,7 +32,7 @@
     "next": "13.4.12",
     "nodemailer": "^6.9.4",
     "postcss": "8.4.27",
-    "primereact": "^9.6.1",
+    "primereact": "^9.6.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
