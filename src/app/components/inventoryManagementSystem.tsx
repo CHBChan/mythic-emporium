@@ -1,19 +1,22 @@
 "use client";
 
+import { useCallback, useRef } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-import { PrimeReactProvider } from "primereact/api";
-import { twMerge } from 'tailwind-merge';
-import { Button } from "primereact/button";
-import { DataTable } from "primereact/datatable";
+import '@ag-grid-community/styles/ag-grid.css';
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import { AgGridReact } from "ag-grid-react";
 
-import { Provider, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "../states/store";
-import { Column } from "primereact/column";
+import { brandsDirectory, originsDirectory, productType, productsListType } from "../interface/interface";
+import { productsDirectoryType, setProductsDirectory } from "../states/productsListReducer";
+import { ProductEditButton } from "./productEditButton";
 
-function UpdatedInventoryManagement() {
+function UpdatedInventoryManagement(this: any) {
   const router = useRouter();
+  const tableRef = useRef<AgGridReact<productType>>(null);
 
   async function adminVerification() {
     try {
@@ -28,7 +31,71 @@ function UpdatedInventoryManagement() {
     (state: RootState) => state.productsDirectory.productsList
   );
 
-  console.log(Object.values(productsList));
+  const dispatch = useDispatch();
+
+  const colDefs: any[] = [
+    { 
+      headerName: "ID", 
+      valueGetter: (p: any) => p.data.product_id,
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+      filter: 'agNumberColumnFilter',
+      minWidth: 60,
+      maxWidth: 100,
+    },
+    { 
+      headerName: "Name", 
+      valueGetter: (p: any) => p.data.product_name,
+      filter: 'agTextColumnFilter',
+      minWidth: 240,
+    },
+    { 
+      headerName: "Category", 
+      valueGetter: (p: any) => p.data.product_category,
+      filter: 'agTextColumnFilter',
+    },
+    { 
+      headerName: "Brand", 
+      valueGetter: (p: any) => p.data.product_brand,
+      filter: 'agTextColumnFilter',
+    },
+    { 
+      headerName: "Origin", 
+      valueGetter: (p: any) => p.data.product_origin,
+      filter: 'agTextColumnFilter',
+    },
+    { 
+      headerName: "Price", 
+      valueGetter: (p: any) => p.data.product_price,
+      filter: 'agNumberColumnFilter',
+      maxWidth: 160,
+    },
+    { 
+      headerName: "Quantity", 
+      valueGetter: (p: any) => p.data.product_quantity,
+      filter: 'agNumberColumnFilter',
+      maxWidth: 160,
+    },
+    {
+      headerName: "Edit",
+      sortable: false,
+      cellRenderer: ProductEditButton,
+      cellRendererParams: {
+        // This is the callback function for the Edit button press
+        onClick: (product_id : number) => {
+          console.log(`Editing product[${product_id}]`);
+        }
+      }
+    }
+  ]
+
+  // This triggers when the checkbox of row(s) is/are checked
+  const onSelectionChanged = useCallback(() => {
+    const selectedRows = tableRef.current!.api.getSelectedRows();
+    selectedRows?.forEach((row) => {
+      console.log(`Product of ID[${row.product_id}] selected`);
+    })
+  }, []);
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -46,24 +113,15 @@ function UpdatedInventoryManagement() {
           </button>
         </div>
       </div>
-      <div className="flex flex-col items-center bg-slate-100 p-4 w-full">
-          <DataTable
-            value={Object.values(productsList)}
-            size={'small'}
-            showGridlines
-            paginator
-            rows={10}
-            rowsPerPageOptions={[10, 20, 30, 40]}
-            tableStyle={{}}
-          >
-            <Column field="product_id" header="ID" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_name" header="Name" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_category" header="Category" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_brand" header="Brand" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_origin" header="Origin" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_price" header="Price" sortable style={{ width: '25%' }}></Column>
-            <Column field="product_quantity" header="Quantity" sortable style={{ width: '25%' }}></Column>
-          </DataTable>
+      <div className="bg-slate-100 p-4 w-full h-[500px] ag-theme-quartz">
+          <AgGridReact 
+            ref={tableRef}
+            rowData={Object.values(productsList)} 
+            columnDefs={colDefs}
+            rowSelection={"multiple"}
+            suppressRowClickSelection={true}
+            onSelectionChanged={onSelectionChanged}
+          />
       </div>
       <div className="flex-start w-full">
         <button className="rounded-full bg-red px-4 py-2">
