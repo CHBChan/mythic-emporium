@@ -97,6 +97,11 @@ function UpdatedInventoryManagement(this: any) {
     })
   }, []);
 
+  const pagination = true;
+  const paginationPageSize = 10;
+  const paginationPageSizeSelector = [10, 20, 30];
+  
+
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex-start w-full">
@@ -121,6 +126,9 @@ function UpdatedInventoryManagement(this: any) {
             rowSelection={"multiple"}
             suppressRowClickSelection={true}
             onSelectionChanged={onSelectionChanged}
+            pagination={pagination}
+            paginationPageSize={paginationPageSize}
+            paginationPageSizeSelector={paginationPageSizeSelector}
           />
       </div>
       <div className="flex-start w-full">
