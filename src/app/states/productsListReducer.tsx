@@ -36,6 +36,32 @@ export const productsDirectorySlice = createSlice({
 
       state.loading = false;
     },
+    removeProductFromDirectory: (
+      state,
+      action: PayloadAction<number>
+    ) => {
+      state.productsList = Object.values(state.productsList).filter((product) => { return product.product_id !== action.payload });
+
+      const updatedBrandsList = { ...state.brandsList };
+
+      Object.keys(updatedBrandsList).forEach((brand) => {
+        updatedBrandsList[brand] = updatedBrandsList[brand].filter((product) => {
+          return product.product_id != action.payload;
+        });
+      })
+
+      state.brandsList = updatedBrandsList;
+
+      const updatedOriginsList = { ...state.originsList };
+
+      Object.keys(updatedOriginsList).forEach((origin) => {
+        updatedOriginsList[origin] = updatedOriginsList[origin].filter((product) => {
+          return product.product_id != action.payload;
+        })
+      })
+
+      state.originsList = updatedOriginsList;
+    },
     setDisplayProductsList: (
       state,
       action: PayloadAction<productType[]>
@@ -50,5 +76,5 @@ export const productsDirectorySlice = createSlice({
   },
 });
 
-export const { setProductsDirectory, setDisplayProductsList, resetDisplayProductsList } = productsDirectorySlice.actions;
+export const { setProductsDirectory, removeProductFromDirectory, setDisplayProductsList, resetDisplayProductsList } = productsDirectorySlice.actions;
 export default productsDirectorySlice.reducer;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "../states/store";
 import { brandsDirectory, originsDirectory, productType, productsListType } from "../interface/interface";
-import { productsDirectoryType, setProductsDirectory } from "../states/productsListReducer";
+import { productsDirectoryType, removeProductFromDirectory, setProductsDirectory } from "../states/productsListReducer";
 import { ProductEditButton } from "./productEditButton";
 
 function UpdatedInventoryManagement(this: any) {
@@ -97,10 +97,27 @@ function UpdatedInventoryManagement(this: any) {
     })
   }, []);
 
+  const removeProduct = async (product_id: number) => {
+    try {
+        dispatch(removeProductFromDirectory(product_id));
+        //const response = await axios.post("api/products/removeProduct", { product_id });
+    }
+    catch (error: any) {
+        console.error("Product failed to be removed: " + error.message);
+    }
+  }
+
+  const handleRemoveProducts = () => {
+    const selectedRows = tableRef.current!.api.getSelectedRows();
+    selectedRows.forEach((row) => {
+      console.log(`Removing product[${row.product_id}]`);
+      removeProduct(row.product_id);
+    })
+  };
+
   const pagination = true;
   const paginationPageSize = 10;
   const paginationPageSizeSelector = [10, 20, 30];
-  
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -131,8 +148,11 @@ function UpdatedInventoryManagement(this: any) {
             paginationPageSizeSelector={paginationPageSizeSelector}
           />
       </div>
-      <div className="flex-start w-full">
-        <button className="rounded-full bg-red px-4 py-2">
+      <div className="flex-start w-full my-4">
+        <button 
+          className="rounded-full bg-red-600 px-4 py-2"
+          onClick={() => handleRemoveProducts()}
+        >
           Remove Selected Products
         </button>
       </div>
