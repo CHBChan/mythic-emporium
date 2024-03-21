@@ -183,7 +183,7 @@ export default function Homepage() {
     let productsWithFilterBrand: productType[] = [];
     let productsWithFilterOrigin: productType[] = [];
 
-    if (!filterObject.brand) {
+    if(!filterObject.brand) {
       productsWithFilterBrand = Object.values(directoryProductsList);
     } else {
       productsWithFilterBrand = Object.values(brandsList[filterObject.brand]);
@@ -194,7 +194,7 @@ export default function Homepage() {
     } else {
       productsWithFilterOrigin = originsList[filterObject.origin];
     }
-
+    /*
     //get intersection between these two lists
     const subsetOfFilterProducts: productType[] =
       productsWithFilterBrand.filter((brandProduct) =>
@@ -203,6 +203,37 @@ export default function Homepage() {
             brandProduct.product_id === originProduct.product_id
         )
       );
+    */
+    
+    let subsetOfFilterProducts: productType[] = [];
+
+    if(!filterObject.brand) {
+      subsetOfFilterProducts = productsWithFilterOrigin;
+    }
+    else if(!filterObject.origin) {
+      subsetOfFilterProducts = productsWithFilterBrand;
+    }
+    else if(filterObject.brand && filterObject.origin) {
+      let i = 0, j = 0;
+      
+      while(i < productsWithFilterBrand.length && j < productsWithFilterOrigin.length) {
+        console.log(`i: ${i}, j: ${j}`);
+        const brandProductId = productsWithFilterBrand[i].product_id;
+        const originProductId = productsWithFilterOrigin[j].product_id;
+  
+        if(brandProductId === originProductId) {
+          subsetOfFilterProducts.push(productsWithFilterBrand[i]);
+          i++;
+          j++;
+        }
+        else if(brandProductId < originProductId) {
+          i++;
+        }
+        else {
+          j++;
+        }
+      }
+    }
 
     const finalFilteredProducts = subsetOfFilterProducts.filter((product) => {
         return (
