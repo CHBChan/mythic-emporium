@@ -13,6 +13,7 @@ import { RootState, store } from "../states/store";
 import { brandsDirectory, originsDirectory, productType, productsListType } from "../interface/interface";
 import { productsDirectoryType, removeProductFromDirectory, setProductsDirectory } from "../states/productsListReducer";
 import { ProductEditButton } from "./productEditButton";
+import ImageUpload from "./imageUpload";
 
 function UpdatedInventoryManagement(this: any) {
   const router = useRouter();
@@ -119,6 +120,12 @@ function UpdatedInventoryManagement(this: any) {
   const paginationPageSize = 10;
   const paginationPageSizeSelector = [10, 20, 30];
 
+
+  const handleFileChange = (uploadedFile: File) => {
+    console.log('Handle file uploaded here.');
+    console.log(uploadedFile);
+  };
+
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex-start w-full">
@@ -148,6 +155,9 @@ function UpdatedInventoryManagement(this: any) {
         >
           Remove Selected Products
         </button>
+      </div>
+      <div>
+        <ImageUpload onFileChange={handleFileChange} />
       </div>
     </div>
   );
