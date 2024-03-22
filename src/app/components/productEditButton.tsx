@@ -6,8 +6,8 @@ interface CustomCellRendererProps {
 export const ProductEditButton : React.FC<CustomCellRendererProps> = ({ node, onClick }) => {
     
     const handleOnClick = () => {
-        const product_id = node.data.product_id;
-        onClick(product_id);
+        const product = node.data;
+        onClick(product);
     }
 
     return (
