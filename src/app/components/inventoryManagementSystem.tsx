@@ -122,18 +122,11 @@ function UpdatedInventoryManagement(this: any) {
   return (
     <div className="flex flex-col items-center p-4">
       <div className="flex-start w-full">
-        <button className="rounded-full bg-violet-500 px-4 py-2">Back</button>
-      </div>
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex mr-4">Discount Search Bar</div>
-        <div className="flex">
-          <button className="p-4 bg-gray-400 rounded-full border border-gra">
-            Category Filter
-          </button>
-          <button className="p-4 bg-violet-700 rounded-full">
-            Add New Product
-          </button>
-        </div>
+        <button 
+          className="rounded-full bg-violet-500 px-4 py-2"
+          onClick={() => router.back()}
+        >Back
+        </button>
       </div>
       <div className="bg-slate-100 p-4 w-full h-[500px] ag-theme-quartz">
           <AgGridReact 
