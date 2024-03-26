@@ -44,14 +44,6 @@ const ProductInfoModal: React.FC<modalProps> = ({
   const stockInCart = cart[displayProduct!.product_id] ? cart[displayProduct!.product_id].product_quantity : 0;
   const maxCheckoutItems: number = Math.min(20, productsList[displayProduct!.product_id].product_quantity - stockInCart);
 
-  
-    // const [maxCheckoutItems, setMaxCheckoutItems] = React.useState<number>(20);
-
-  // React.useEffect(() => {
-  //   setMaxCheckoutItems(Math.min(20, ( producsList[displayProduct?].quantity - cart.product.quanitity)));
-  // }, [cart]);
-
-
   const handleUpdateNumCheckoutItems = (event : React.ChangeEvent<HTMLSelectElement>) => {
     setNumCheckoutItems(Number(event.target.value));
   };
@@ -87,7 +79,7 @@ const ProductInfoModal: React.FC<modalProps> = ({
 
           {
             // Check if item is in stock
-            displayProduct!.product_quantity > 0 ? (
+            (displayProduct!.product_quantity - stockInCart > 0) ? (
               <>
                 <div className="flex flex-row gap-2">
                   <select
@@ -111,7 +103,7 @@ const ProductInfoModal: React.FC<modalProps> = ({
                   <button
                     className="text-white font-bold bg-violet-500 rounded p-2"
                     onClick={() => {
-                      const checkoutProduct : productType = {...displayProduct!, product_quantity: numCheckoutItems};
+                      const checkoutProduct : productType = {...displayProduct!, product_quantity: Math.min(numCheckoutItems, displayProduct!.product_quantity - stockInCart)};
                       dispatch(addProductToCart(checkoutProduct));
                       showToast(displayProduct!);
                     }}

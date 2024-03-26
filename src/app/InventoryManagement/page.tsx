@@ -10,7 +10,7 @@ export default function InventoryHome() {
         <>
           <Provider store={store}>
             <PrimeReactProvider> 
-            <UpdatedInventoryManagement />
+              <UpdatedInventoryManagement />
             </PrimeReactProvider>
           </Provider>
         </>

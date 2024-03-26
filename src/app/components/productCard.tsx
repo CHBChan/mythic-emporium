@@ -2,6 +2,8 @@ import { GrCircleQuestion } from "react-icons/gr";
 
 import { productType } from "../interface/interface";
 import { Currency } from "./currency";
+import { useSelector } from "react-redux";
+import { RootState } from "../states/store";
 
 interface cardProps {
     product: productType,
@@ -9,6 +11,9 @@ interface cardProps {
 }
 
 const ProductCard : React.FC<cardProps> = ({ product, productCardPressed }) => {
+    const cart = useSelector((state: RootState) => state.cart.productsInCart);
+
+    const stockInCart = cart[product!.product_id] ? cart[product!.product_id].product_quantity : 0;
     
     return (
         <div className='product_card block cursor-pointer'
@@ -20,10 +25,9 @@ const ProductCard : React.FC<cardProps> = ({ product, productCardPressed }) => {
                         <span className='font-bold'>{product.product_name}</span>
                         <span className='text-neutral-500 italic text-sm'>{product.product_brand}</span>
                         <span className='text-neutral-500 text-sm mb-2'>{product.product_origin}</span>
-
                         <Currency value={product.product_price} />
                         {   // Check availability
-                            (product.product_quantity > 0)?
+                            (product.product_quantity - stockInCart > 0)?
                             <span className='text-green-700'>In Stock</span>
                             :
                             <span className='text-rose-700'>Out of Stock</span>
