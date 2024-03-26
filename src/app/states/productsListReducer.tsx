@@ -36,6 +36,31 @@ export const productsDirectorySlice = createSlice({
 
       state.loading = false;
     },
+    addProductToDirectory: (
+      state,
+      action: PayloadAction<productType>
+    ) => {
+
+      const newProduct = action.payload;
+      const productId = newProduct.product_id;
+
+      state.productsList[productId] = newProduct;
+      state.displayProductsList.push(newProduct);
+
+      const brand = newProduct.product_brand;
+      if (!state.brandsList[brand]) {
+        state.brandsList[brand] = [];
+      }
+      state.brandsList[brand].push(newProduct);
+
+      const origin = newProduct.product_origin;
+      if (!state.originsList[origin]) {
+        state.originsList[origin] = [];
+      }
+      state.originsList[origin].push(newProduct);
+
+    },
+
     removeProductFromDirectory: (
       state,
       action: PayloadAction<number>
@@ -61,6 +86,7 @@ export const productsDirectorySlice = createSlice({
       })
 
       state.originsList = updatedOriginsList;
+
     },
 
     updateProductInDirectory: (
@@ -69,9 +95,9 @@ export const productsDirectorySlice = createSlice({
     ) => {
       const updatedProduct = action.payload;
       const productId = updatedProduct.product_id;
-    
+
       state.productsList[productId] = updatedProduct;
-    
+
       // updating product in the brandsList
       Object.keys(state.brandsList).forEach(brand => {
         state.brandsList[brand] = state.brandsList[brand].map(product => {
@@ -81,7 +107,7 @@ export const productsDirectorySlice = createSlice({
           return product;
         });
       });
-    
+
       // removing product in the originsList
       Object.keys(state.originsList).forEach(origin => {
         state.originsList[origin] = state.originsList[origin].map(product => {
@@ -92,7 +118,7 @@ export const productsDirectorySlice = createSlice({
         });
       });
     },
-    
+
     setDisplayProductsList: (
       state,
       action: PayloadAction<productType[]>
@@ -107,5 +133,5 @@ export const productsDirectorySlice = createSlice({
   },
 });
 
-export const { setProductsDirectory, removeProductFromDirectory, updateProductInDirectory, setDisplayProductsList, resetDisplayProductsList } = productsDirectorySlice.actions;
+export const { setProductsDirectory, removeProductFromDirectory, updateProductInDirectory, setDisplayProductsList, resetDisplayProductsList, addProductToDirectory } = productsDirectorySlice.actions;
 export default productsDirectorySlice.reducer;

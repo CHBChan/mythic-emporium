@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -11,7 +11,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "../states/store";
 import { brandsDirectory, originsDirectory, productType, productsListType } from "../interface/interface";
-import { productsDirectoryType, removeProductFromDirectory, updateProductInDirectory, setProductsDirectory } from "../states/productsListReducer";
+import { productsDirectoryType, removeProductFromDirectory, updateProductInDirectory, setProductsDirectory, addProductToDirectory } from "../states/productsListReducer";
 import { ProductEditButton } from "./productEditButton";
 import Modal from 'react-modal';
 
@@ -46,7 +46,32 @@ function UpdatedInventoryManagement(this: any) {
     (state: RootState) => state.productsDirectory.productsList
   );
 
+  // useEffect(() => {
+
+  // }, [])
+
   const dispatch = useDispatch();
+
+  const handleUpdateProductPress = (product: productType) => {
+    setAddingProductFlag(false);
+    setSelectedProduct(product);
+    toggleUpdateModal();
+  }
+  const handleAddProductPress = () => {
+    const emptyProduct: productType = {
+      product_id: Object.values(productsList).length + 1,
+      product_name: '',
+      product_desc: '',
+      product_category: '',
+      product_brand: '',
+      product_origin: '',
+      product_price: -1,
+      product_quantity: -1
+    }
+    setSelectedProduct(emptyProduct);
+    setAddingProductFlag(true);
+    toggleUpdateModal();
+  }
 
   const colDefs: any[] = [
     {
@@ -98,13 +123,12 @@ function UpdatedInventoryManagement(this: any) {
       cellRendererParams: {
         // This is the callback function for the Edit button press
         onClick: (product: productType) => {
-          console.log(`Editing product[${product}]`);
-          console.log(`product id ${product.product_id}`);
-          console.log(`product name: ${product.product_name}`);
-          console.log(`product quanitity: ${product.product_quantity}`);
+          // console.log(`Editing product[${product}]`);
+          // console.log(`product id ${product.product_id}`);
+          // console.log(`product name: ${product.product_name}`);
+          // console.log(`product quanitity: ${product.product_quantity}`);
 
-          setSelectedProduct(product);
-          toggleUpdateModal();
+          handleUpdateProductPress(product);
         }
       }
     }
@@ -147,7 +171,14 @@ function UpdatedInventoryManagement(this: any) {
   const handleUpdateProduct = () => {
     try {
       if (selectedProduct !== null) {
-        dispatch(updateProductInDirectory(selectedProduct));
+        if (selectedProduct.product_name === '') {
+          setMissingRequiredFields(true);
+          return;
+        } else {
+          dispatch(updateProductInDirectory(selectedProduct));
+          setMissingRequiredFields(false);
+          toggleUpdateModal();
+        }
       } else {
         //TODO: user notice here
         console.log("Attempted to update a product with nothing. To delete use remove feature.")
@@ -160,35 +191,60 @@ function UpdatedInventoryManagement(this: any) {
     }
   }
 
-  //**********************************MODAL CODE***********************************/
+  const [missingRequiredFields, setMissingRequiredFields] = useState(false);
 
+  const handleAddProduct = () => {
+    try {
+      if (selectedProduct !== null) {
+        if (selectedProduct.product_quantity === -1 ||
+          selectedProduct.product_price === -1 ||
+          selectedProduct.product_name === '') {
+          setMissingRequiredFields(true);
+          return;
+        } else {
+          dispatch(addProductToDirectory(selectedProduct));
+          setMissingRequiredFields(false);
+          toggleUpdateModal();
+        }
+      } else {
+        //TODO: user notice here
+        console.log("Attempted to add a product with nothing. To delete use remove feature.")
+      }
+    } catch (error: any) {
+      console.error("Product failed to be added: " + error.message);
+    }
+  }
+
+
+
+  //**********************************MODAL CODE***********************************/
+  //flag true when user is adding a product through the modal, false in all other cases
+  //assuming false case = user updating product through modal
+  const [addingProductFlag, setAddingProductFlag] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<productType | null>(null);
 
   const updateSelectedProduct = (updatedProps: Partial<productType>) => {
     setSelectedProduct(prevProduct => {
       if (!prevProduct) return null;
-      
+
       // Create a new object with only the properties that exist in productType
       const updatedProduct: productType = {
         ...prevProduct,
         ...updatedProps
       };
-  
+
       return updatedProduct;
     });
   };
-  
+
 
   const handleProductDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const parsedValue = name === 'product_price' || name === 'product_quantity' ? parseFloat(value) || 0 : value;
-  
+
     updateSelectedProduct({ [name]: parsedValue });
   };
-  
-  
-  
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -210,7 +266,7 @@ function UpdatedInventoryManagement(this: any) {
           </button>
           <button
             className="rounded-full bg-red-600 px-4 py-2"
-            onClick={() => toggleUpdateModal()}
+            onClick={handleAddProductPress}
           >
             Add New Product
           </button>
@@ -221,7 +277,7 @@ function UpdatedInventoryManagement(this: any) {
             className="modal bg-white rounded-lg shadow-lg"
             overlayClassName="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center"
           >
-            <h2 className="text-lg font-semibold mb-4">Update Product</h2>
+            <h2 className="text-lg font-semibold mb-4">{addingProductFlag ? "Add Product" : "Update Product"}</h2>
             <div className="flex flex-col space-y-4">
               <div className="flex items-center">
                 <label className="mr-2">Product Name:</label>
@@ -282,9 +338,9 @@ function UpdatedInventoryManagement(this: any) {
                 <input
                   type="number"
                   className="input-text"
-                  placeholder={`${selectedProduct?.product_price}`}
+                  placeholder={selectedProduct?.product_price !== -1 ? `${selectedProduct?.product_price}` : ''}
                   name="product_price"
-                  value={selectedProduct?.product_price}
+                  value={selectedProduct?.product_price !== -1 ? `${selectedProduct?.product_price}` : ''}
                   onChange={handleProductDataChange}
                 />
               </div>
@@ -293,15 +349,20 @@ function UpdatedInventoryManagement(this: any) {
                 <input
                   type="number"
                   className="input-text"
-                  placeholder={`${selectedProduct?.product_quantity}`}
+                  placeholder={selectedProduct?.product_quantity !== -1 ? `${selectedProduct?.product_quantity}` : ''}
                   name="product_quantity"
-                  value={selectedProduct?.product_quantity}
+                  value={selectedProduct?.product_quantity !== -1 ? `${selectedProduct?.product_quantity}` : ''}
                   onChange={handleProductDataChange}
                 />
               </div>
             </div>
-
-            <button onClick={handleUpdateProduct} className="bg-red-500 text-white px-4 py-2 rounded mt-4">Update Product</button>
+            {/* TODO: add red border around missing fields */}
+            {missingRequiredFields && (
+              <div className='text-sm text-rose-500'>Please fill in all required fields</div>
+            )}
+            <button onClick={addingProductFlag ? handleAddProduct : handleUpdateProduct} className="bg-red-500 text-white px-4 py-2 rounded mt-4">
+              {addingProductFlag ? "Add Product" : "Update Product"}
+            </button>
           </Modal>
         </div>
       </div>
