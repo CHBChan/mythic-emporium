@@ -268,7 +268,6 @@ function UpdatedInventoryManagement(this: any) {
           onClick={() => router.back()}
         >Back
         </button>
-        <button className="rounded-full bg-violet-500 px-4 py-2">Back</button>
       </div>
       <div className="flex flex-row justify-between items-center">
         <div className="flex mr-4">Discount Search Bar</div>
