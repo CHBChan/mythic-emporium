@@ -24,10 +24,13 @@ import { CartCard } from "./components/cartCard";
 import { useDispatch } from "react-redux";
 import { setProductsDirectory, setDisplayProductsList } from "../app/states/productsListReducer";
 import { productsDirectoryType } from "../app/states/productsListReducer";
+import { setUserData, signOutUser} from "./states/userReducer";
 
 import { useSelector } from "react-redux";
 import { RootState } from "./states/store";
 import { setMaxPrice, setMinPrice } from "./states/filterReducer";
+import { supabase } from "@/dbConfig/dbConfig";
+import { Dispatch } from "@reduxjs/toolkit";
 
 enum formOpt {
   SignUp,
@@ -248,14 +251,13 @@ export default function Homepage() {
     return finalFilteredProducts;
   };
 
-  
   const signOut = async () => {
-    setUserInfo({
-      user_id: null,
-      username: null,
-      isAdmin: null,
-    });
-    const response = await axios.get("api/users/logout");
+    dispatch(signOutUser());
+    const { error } = await supabase.auth.signOut();
+
+    if(error) {
+      console.error(`Sign-out error for supabase: ${error.message}`);
+    }
   };
 
   const switchForm = () => {
@@ -295,12 +297,26 @@ export default function Homepage() {
     });
   };
 
+
   React.useEffect(() => {
-    // Retrieve user info from login cookie
-    fetchUserFromCookie();
+    // // Retrieve user info from login cookie
+    // fetchUserFromCookie();
+    const checkAuth = async () => {
+      const userData = await supabase.auth.getUser();
+
+      if(!userData.data.user) {
+        console.log('No user detected');
+      }
+      else {
+        dispatch(setUserData(userData));
+      }
+    }
+
+    // Retrieve user info from login cookie?
+    checkAuth();
 
     // Retrieve all products
-    fetchAllProductsPeriodically();
+    // fetchAllProductsPeriodically();
   }, []);
 
   React.useEffect(() => {

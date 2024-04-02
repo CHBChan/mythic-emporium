@@ -4,6 +4,8 @@ import React from "react";
 import axios from "axios";
 import { Field, Form, Formik } from "formik";
 import { accountInfo } from "../interface/interface";
+import { useDispatch } from "react-redux";
+import { setUserData } from "../states/userReducer";
 
 enum formOpt {
     SignUp,
@@ -18,6 +20,9 @@ interface formProps {
 };
 
 const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, setPopup }) => {
+
+    const dispatch = useDispatch();
+
     const [user, setUser] = React.useState({
         username: '',
         password: ''
@@ -40,6 +45,8 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
         try {
             const response = await axios.post("api/users/login", user);
             getUserInfo(response.data.userInfo);
+            console.log(response.data);
+            dispatch(setUserData(response.data.userData));
             setPopup();
         }
         catch(error : any) {

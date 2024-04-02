@@ -10,7 +10,8 @@ import { accountInfo, productType } from '../interface/interface';
 import { useRouter } from 'next/navigation';
 
 import { resetFilter } from '../states/filterReducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../states/store';
 
 interface headerProps {
     userInfo: accountInfo,
@@ -25,13 +26,13 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
     const router = useRouter();
     const [changeCategory, setChangeCategory] = React.useState<boolean>(false);
     
+    const user = useSelector((state: RootState) => state.userData.userData);
     const dispatch = useDispatch();
 
     const handlePress = () => {
         dispatch(resetFilter());
         setChangeCategory(true);
     };
-
     React.useEffect(() => {
         if(changeCategory) {
             applyFilters('fetch');
@@ -55,7 +56,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
                 <div className='header_item flex items-center'>
                     <div className='user_btns flex items-center gap-2'>
                         {   // Check if userInfo exists
-                            (!userInfo.user_id)?
+                            (!user?.user)?
                             <button className='text-white bg-violet-500 border-solid border border-violet-500 rounded p-1 max-h-full'
                             onClick={() => setPopup()}>
                                 Sign In
@@ -67,7 +68,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
                             </button>
                         }
                         {   // Check if user is an admin
-                            userInfo.isAdmin && 
+                            (user?.user?.role === 'authenticated') && 
                             <button className='border-solid border text-rose-700 border-rose-700 rounded p-1'
                             onClick={() => router.push('InventoryManagement')}>
                                 <BiUser size={24} />
