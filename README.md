@@ -1,3 +1,5 @@
+# This project is currently being worked on, so some functionalities may not work as intended!
+
 Live Demo: https://mythic-emporium.vercel.app/
 
 # Mythic Emporium
