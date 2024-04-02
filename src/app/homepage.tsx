@@ -252,11 +252,15 @@ export default function Homepage() {
   };
 
   const signOut = async () => {
+    console.log('signOut called');
     dispatch(signOutUser());
     const { error } = await supabase.auth.signOut();
 
     if(error) {
       console.error(`Sign-out error for supabase: ${error.message}`);
+    }
+    else {
+      console.log('Signed out');
     }
   };
 
@@ -302,13 +306,16 @@ export default function Homepage() {
     // // Retrieve user info from login cookie
     // fetchUserFromCookie();
     const checkAuth = async () => {
-      const userData = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getUser();
 
-      if(!userData.data.user) {
-        console.log('No user detected');
+      // const { data, error } = await supabase.auth.getSession();
+      
+      if(error) {
+        console.log(`No user detected: ${error.message}`);
       }
       else {
-        dispatch(setUserData(userData));
+        console.log(data);
+        // dispatch(setUserData(data));
       }
     }
 

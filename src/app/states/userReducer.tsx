@@ -23,7 +23,7 @@ export const userDataSlice = createSlice({
         state.userData = action.payload;
     },
     signOutUser: (state) => {
-      state = initialState;
+      state.userData = null;
     },
   },
 });
