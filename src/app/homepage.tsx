@@ -80,7 +80,7 @@ export default function Homepage() {
   const fetchUserFromCookie = async () => {
     try {
       const response = await axios.get("api/users/fetchUser");
-      setUserInfo(response.data.userInfo);
+      dispatch(setUserData(response.data.userData));
     } catch (error: any) {
       console.error("Failed to fetch user info from cookie");
     }
@@ -304,23 +304,23 @@ export default function Homepage() {
 
   React.useEffect(() => {
     // // Retrieve user info from login cookie
-    // fetchUserFromCookie();
-    const checkAuth = async () => {
-      const { data, error } = await supabase.auth.getUser();
+    fetchUserFromCookie();
+    // const checkAuth = async () => {
+    //   const { data, error } = await supabase.auth.getUser();
 
-      // const { data, error } = await supabase.auth.getSession();
+    //   // const { data, error } = await supabase.auth.getSession();
       
-      if(error) {
-        console.log(`No user detected: ${error.message}`);
-      }
-      else {
-        console.log(data);
-        // dispatch(setUserData(data));
-      }
-    }
+    //   if(error) {
+    //     console.log(`No user detected: ${error.message}`);
+    //   }
+    //   else {
+    //     console.log(data);
+    //     // dispatch(setUserData(data));
+    //   }
+    // }
 
-    // Retrieve user info from login cookie?
-    checkAuth();
+    // // Retrieve user info from login cookie?
+    // checkAuth();
 
     // Retrieve all products
     // fetchAllProductsPeriodically();

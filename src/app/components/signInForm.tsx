@@ -33,7 +33,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
     const onSignup = async () => {
         try {
             const response = await axios.post("api/users/signup", user);
-            getUserInfo(response.data.userInfo);
+            // getUserInfo(response.data.userInfo);
             setPopup();
         }
         catch(error : any) {
@@ -44,7 +44,7 @@ const SignUpForm : React.FC<formProps> = ({ getUserInfo, formType, switchForm, s
     const onLogin = async () => {
         try {
             const response = await axios.post("api/users/login", user);
-            getUserInfo(response.data.userInfo);
+            // getUserInfo(response.data.userInfo);
             console.log(response.data);
             dispatch(setUserData(response.data.userData));
             setPopup();
