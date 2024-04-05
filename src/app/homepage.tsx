@@ -22,9 +22,12 @@ import ProductListing from "./components/productListing";
 import { CartCard } from "./components/cartCard";
 
 import { useDispatch } from "react-redux";
-import { setProductsDirectory, setDisplayProductsList } from "../app/states/productsListReducer";
+import {
+  setProductsDirectory,
+  setDisplayProductsList,
+} from "../app/states/productsListReducer";
 import { productsDirectoryType } from "../app/states/productsListReducer";
-import { setUserData, signOutUser} from "./states/userReducer";
+import { setUserData, signOutUser } from "./states/userReducer";
 
 import { useSelector } from "react-redux";
 import { RootState } from "./states/store";
@@ -171,11 +174,7 @@ export default function Homepage() {
   );
 
   const filterProducts = () => {
-    
-    if (
-      filterObject.minPrice > 0 &&
-      filterObject.maxPrice == 0
-    ) {
+    if (filterObject.minPrice > 0 && filterObject.maxPrice == 0) {
       dispatch(setMaxPrice(999999));
     } else if (filterObject.minPrice > filterObject.maxPrice) {
       dispatch(setMinPrice(0));
@@ -186,13 +185,13 @@ export default function Homepage() {
     let productsWithFilterBrand: productType[] = [];
     let productsWithFilterOrigin: productType[] = [];
 
-    if(!filterObject.brand) {
+    if (!filterObject.brand) {
       productsWithFilterBrand = Object.values(directoryProductsList);
     } else {
       productsWithFilterBrand = Object.values(brandsList[filterObject.brand]);
     }
 
-    if(!filterObject.origin) {
+    if (!filterObject.origin) {
       productsWithFilterOrigin = Object.values(directoryProductsList);
     } else {
       productsWithFilterOrigin = originsList[filterObject.origin];
@@ -207,43 +206,43 @@ export default function Homepage() {
         )
       );
     */
-    
+
     let subsetOfFilterProducts: productType[] = [];
 
-    if(!filterObject.brand) {
+    if (!filterObject.brand) {
       subsetOfFilterProducts = productsWithFilterOrigin;
-    }
-    else if(!filterObject.origin) {
+    } else if (!filterObject.origin) {
       subsetOfFilterProducts = productsWithFilterBrand;
-    }
-    else if(filterObject.brand && filterObject.origin) {
-      let i = 0, j = 0;
-      
-      while(i < productsWithFilterBrand.length && j < productsWithFilterOrigin.length) {
+    } else if (filterObject.brand && filterObject.origin) {
+      let i = 0,
+        j = 0;
+
+      while (
+        i < productsWithFilterBrand.length &&
+        j < productsWithFilterOrigin.length
+      ) {
         console.log(`i: ${i}, j: ${j}`);
         const brandProductId = productsWithFilterBrand[i].product_id;
         const originProductId = productsWithFilterOrigin[j].product_id;
-  
-        if(brandProductId === originProductId) {
+
+        if (brandProductId === originProductId) {
           subsetOfFilterProducts.push(productsWithFilterBrand[i]);
           i++;
           j++;
-        }
-        else if(brandProductId < originProductId) {
+        } else if (brandProductId < originProductId) {
           i++;
-        }
-        else {
+        } else {
           j++;
         }
       }
     }
 
     const finalFilteredProducts = subsetOfFilterProducts.filter((product) => {
-        return (
-          product.product_price >= filterObject.minPrice &&
-          product.product_price <= filterObject.maxPrice &&
-          (filterObject.in_stock == true ? product.product_quantity > 0 : true)
-        )
+      return (
+        product.product_price >= filterObject.minPrice &&
+        product.product_price <= filterObject.maxPrice &&
+        (filterObject.in_stock == true ? product.product_quantity > 0 : true)
+      );
     });
 
     dispatch(setDisplayProductsList(finalFilteredProducts));
@@ -252,15 +251,15 @@ export default function Homepage() {
   };
 
   const signOut = async () => {
-    console.log('signOut called');
+    console.log("signOut called");
     dispatch(signOutUser());
-    const { error } = await supabase.auth.signOut();
+    const response = await axios.get("api/users/logout");
 
-    if(error) {
-      console.error(`Sign-out error for supabase: ${error.message}`);
+    if(response.data.success) {
+      console.log("Signed out");
     }
     else {
-      console.log('Signed out');
+      console.log("Sign out failed");
     }
   };
 
@@ -301,7 +300,6 @@ export default function Homepage() {
     });
   };
 
-
   React.useEffect(() => {
     // // Retrieve user info from login cookie
     fetchUserFromCookie();
@@ -309,7 +307,7 @@ export default function Homepage() {
     //   const { data, error } = await supabase.auth.getUser();
 
     //   // const { data, error } = await supabase.auth.getSession();
-      
+
     //   if(error) {
     //     console.log(`No user detected: ${error.message}`);
     //   }

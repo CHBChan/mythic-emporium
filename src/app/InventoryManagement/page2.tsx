@@ -145,6 +145,7 @@ function InventoryManagement() {
         product_quantity: 1
     };
 
+
     return (
         <div className='flex flex-col items-center'>
             <fieldset className='my-2 p-4 text-l font-bold text-center border-solid border-2 border-black rounded'>

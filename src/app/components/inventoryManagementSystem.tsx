@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useLayoutEffect} from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -33,24 +33,30 @@ const customStyles = {
 function UpdatedInventoryManagement(this: any) {
   const router = useRouter();
   const tableRef = useRef<AgGridReact<productType>>(null);
+  
 
   async function adminVerification() {
     try {
       const response = await axios.get("api/users/roleVerification");
+      if(response.data.role != 'authenticated') {
+        console.log(response.data.role);
+        router.push("/");
+        console.log('RRRRRRRR');
+      }
     } catch (error: any) {
       console.error("Verification process failed: " + error.message);
       router.push("/");
     }
   }
 
+  useLayoutEffect(() => {
+    // Verify that the user is authenticated
+    adminVerification();
+  }, [])
+
   const productsList = useSelector(
     (state: RootState) => state.productsDirectory.productsList
   );
-
-  // useEffect(() => {
-
-  // }, [])
-
   const dispatch = useDispatch();
 
   const handleUpdateProductPress = (product: productType) => {
