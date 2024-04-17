@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-import { dbConnection } from "@/dbConfig/dbConfig";
+import { dbConnection } from "@/utils/dbConfig";
 
 export async function POST(request : NextRequest) {
     try{

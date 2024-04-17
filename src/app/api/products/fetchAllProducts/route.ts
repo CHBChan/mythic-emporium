@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
-import { dbConnection } from "@/dbConfig/dbConfig";
+import { dbConnection } from "@/utils/dbConfig";
 
 export async function POST(request : NextRequest) {
 
     try{
         const productModel = dbConnection.model('Product', Product.schema);
         const products = await productModel.find({});
-
+        
         const clientProducts = products.map((product) => ({
             product_id: product.product_id,
             product_name: product.product_name,

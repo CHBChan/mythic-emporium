@@ -6,6 +6,9 @@ import { Field, Form, Formik } from "formik";
 import { accountInfo } from "../interface/interface";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../states/userReducer";
+import { login } from "../login/actions";
+
+
 
 enum formOpt {
     SignUp,

@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/dbConfig/dbConfig';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request : NextRequest) {
     try {
@@ -19,7 +19,7 @@ export async function GET(request : NextRequest) {
         // if(!decodedToken.isAdmin) {
         //     return NextResponse.json({error: 'User is not an admin'}, {status: 461});
         // }
-        
+        const supabase = createClient();
 
         const { data: { user }, error} = await supabase.auth.getUser()
         

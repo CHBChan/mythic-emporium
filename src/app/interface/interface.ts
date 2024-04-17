@@ -6,7 +6,9 @@ interface productType {
     product_brand: string,
     product_origin: string,
     product_price: number,
-    product_quantity: number
+    product_quantity: number,
+    product_image: string | null,
+    product_disclaimers: string[],
 };
 
 interface productsListType {

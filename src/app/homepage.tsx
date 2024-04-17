@@ -32,7 +32,7 @@ import { setUserData, signOutUser } from "./states/userReducer";
 import { useSelector } from "react-redux";
 import { RootState } from "./states/store";
 import { setMaxPrice, setMinPrice } from "./states/filterReducer";
-import { supabase } from "@/dbConfig/dbConfig";
+import { supabase } from "@/utils/dbConfig";
 import { Dispatch } from "@reduxjs/toolkit";
 
 enum formOpt {
@@ -68,6 +68,8 @@ export default function Homepage() {
     product_origin: "Unknown",
     product_price: -1,
     product_quantity: -1,
+    product_image: null,
+    product_disclaimers: [],
   });
 
   const [cartOpen, setCartOpen] = React.useState<boolean>(false);

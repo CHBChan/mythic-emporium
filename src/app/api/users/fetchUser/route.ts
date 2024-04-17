@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/dbConfig/dbConfig';
+import { createClient } from '@/utils/supabase/server';
 
 export async function GET(request : NextRequest) {
+    const supabase = createClient();
+
     try {
         const { data, error } = await supabase.auth.refreshSession();
         

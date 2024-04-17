@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/dbConfig/dbConfig";
+import { createClient } from '@/utils/supabase/server'
 // import User from "@/models/userModel";
 // import bcryptjs from "bcryptjs";
 // import jwt from "jsonwebtoken";
@@ -8,6 +8,8 @@ import { supabase } from "@/dbConfig/dbConfig";
 
 export async function POST(request : NextRequest) {
     try{
+        const supabase = createClient();
+        
         const reqBody = await request.json();
         const { username, password } = reqBody;
 

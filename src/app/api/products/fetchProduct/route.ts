@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
-import { dbConnection } from "@/dbConfig/dbConfig";
+import { dbConnection } from "@/utils/dbConfig";
 
 export async function POST(request : NextRequest) {
 

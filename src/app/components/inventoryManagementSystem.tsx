@@ -39,9 +39,7 @@ function UpdatedInventoryManagement(this: any) {
     try {
       const response = await axios.get("api/users/roleVerification");
       if(response.data.role != 'authenticated') {
-        console.log(response.data.role);
         router.push("/");
-        console.log('RRRRRRRR');
       }
     } catch (error: any) {
       console.error("Verification process failed: " + error.message);
@@ -51,6 +49,7 @@ function UpdatedInventoryManagement(this: any) {
 
   useLayoutEffect(() => {
     // Verify that the user is authenticated
+    console.log('Checking admin verificaiton.');
     adminVerification();
   }, [])
 
@@ -73,7 +72,9 @@ function UpdatedInventoryManagement(this: any) {
       product_brand: '',
       product_origin: '',
       product_price: -1,
-      product_quantity: -1
+      product_quantity: -1,
+      product_image: null,
+      product_disclaimers: [],
     }
     setSelectedProduct(emptyProduct);
     setAddingProductFlag(true);
@@ -200,7 +201,7 @@ function UpdatedInventoryManagement(this: any) {
 
   const [missingRequiredFields, setMissingRequiredFields] = useState(false);
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     try {
       if (selectedProduct !== null) {
         if (selectedProduct.product_quantity === -1 ||
@@ -209,9 +210,21 @@ function UpdatedInventoryManagement(this: any) {
           setMissingRequiredFields(true);
           return;
         } else {
-          dispatch(addProductToDirectory(selectedProduct));
-          setMissingRequiredFields(false);
-          toggleUpdateModal();
+          console.log('REACHED pre api response');
+          //call the api here to send product to supabase
+          const response1 = await axios.get("api/users/roleVerification");
+          const response = await axios.post("api/products/addProduct", selectedProduct);
+          console.log('REACHED post api response');
+          if(response.data.message) {
+            console.log(response.data.message);
+          }
+          if (response.data.success) {
+            dispatch(addProductToDirectory(selectedProduct));
+            setMissingRequiredFields(false);
+            toggleUpdateModal();
+          } else {
+            //user message about failed adding to server - pls fill out help form 
+          }
         }
       } else {
         //TODO: user notice here
@@ -264,6 +277,8 @@ function UpdatedInventoryManagement(this: any) {
   const handleFileChange = (uploadedFile: File) => {
     console.log('Handle file uploaded here.');
     console.log(uploadedFile);
+
+    //update state variable with file here
   };
 
   return (
@@ -287,6 +302,8 @@ function UpdatedInventoryManagement(this: any) {
           >
             Add New Product
           </button>
+
+          {/* Add Product Form */}
           <Modal
             isOpen={isModalOpen}
             onRequestClose={toggleUpdateModal}
@@ -372,6 +389,13 @@ function UpdatedInventoryManagement(this: any) {
                   onChange={handleProductDataChange}
                 />
               </div>
+              <div className="flex items-center">
+                <ImageUpload onFileChange={handleFileChange} />
+              </div>
+              <div className="flex items-center">
+                <label className="mr-2">Product Disclaimers:</label>
+                
+              </div>
             </div>
             {/* TODO: add red border around missing fields */}
             {missingRequiredFields && (
@@ -381,6 +405,7 @@ function UpdatedInventoryManagement(this: any) {
               {addingProductFlag ? "Add Product" : "Update Product"}
             </button>
           </Modal>
+
         </div>
       </div>
       <div className="bg-slate-100 p-4 w-full h-[500px] ag-theme-quartz">
@@ -403,9 +428,6 @@ function UpdatedInventoryManagement(this: any) {
         >
           Remove Selected Products
         </button>
-      </div>
-      <div>
-        <ImageUpload onFileChange={handleFileChange} />
       </div>
     </div>
   );
