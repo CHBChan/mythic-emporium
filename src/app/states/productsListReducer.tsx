@@ -43,30 +43,43 @@ export const productsDirectorySlice = createSlice({
       state,
       action: PayloadAction<productType>
     ) => {
+      console.log('payload: ');
+      console.log(action.payload);
+
+      console.log('=============================================');
+      console.log('product list in state reduxer: ');
+      console.log( state.productsList );
+      console.log('=============================================');
+      const updatedProductsList = { ...state.productsList };
+      const updatedDisplayProductsList = { ...state.displayProductsList };
 
       const newProduct = action.payload;
       const productId = newProduct.product_id;
 
-      state.productsList[productId!] = newProduct;
-      state.displayProductsList[productId!] = newProduct;
+      updatedProductsList[productId!] = newProduct;
+      updatedDisplayProductsList[productId!] = newProduct;
 
+      console.log('reached!');
       const brand = newProduct.product_brand;
       if (!state.brandsList[brand]) {
         state.brandsList[brand] = [];
       }
       state.brandsList[brand].push(newProduct);
+      console.log('reached!');
 
       const category = newProduct.product_category;
       if (!state.categoriesList[category]) {
         state.categoriesList[category] = [];
       }
       state.categoriesList[category].push(newProduct);
+      console.log('reached!');
 
       const origin = newProduct.product_origin;
       if (!state.originsList[origin]) {
         state.originsList[origin] = [];
       }
       state.originsList[origin].push(newProduct);
+      console.log('reached!');
 
     },
 

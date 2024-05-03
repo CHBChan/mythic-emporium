@@ -326,7 +326,7 @@ export default function Homepage() {
         break;
 
       case "fetch":
-        fetchFilteredProducts();
+        //fetchFilteredProducts();
         // setDisplayedList(productsList);
         break;
     }

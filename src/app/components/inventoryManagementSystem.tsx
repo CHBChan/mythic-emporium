@@ -56,6 +56,13 @@ function UpdatedInventoryManagement(this: any) {
   const productsList = useSelector(
     (state: RootState) => state.productsDirectory.productsList
   );
+
+  useEffect(() => {
+    console.log('change detected!: ');
+    console.log(Object.values(productsList));
+  }, [productsList]);
+
+
   const dispatch = useDispatch();
 
   const handleUpdateProductPress = (product: productType) => {
@@ -153,8 +160,14 @@ function UpdatedInventoryManagement(this: any) {
 
   const removeProduct = async (product_id: string) => {
     try {
-      dispatch(removeProductFromDirectory(product_id));
-      //const response = await axios.post("api/products/removeProduct", { product_id });
+      const response = await axios.post("api/products/removeProduct", { product_id });
+
+      if (response.data.success) {
+        dispatch(removeProductFromDirectory(product_id));
+      } else {
+        // TODO: add an alert to here
+        console.error('removeProduct from database failed', response.data.error);
+      }
     }
     catch (error: any) {
       console.error("Product failed to be removed: " + error.message);
@@ -213,16 +226,27 @@ function UpdatedInventoryManagement(this: any) {
           console.log('REACHED pre api response');
           //call the api here to send product to supabase
           const response1 = await axios.get("api/users/roleVerification");
+          if(response1.data.message) {
+            console.log(response1.data.message);
+          }
+
           const response = await axios.post("api/products/addProduct", selectedProduct);
           console.log('REACHED post api response');
           if(response.data.message) {
+            console.log('!!!!!!!!!!!!!!!!!!!!');
             console.log(response.data.message);
+            console.log('!!!!!!!!!!!!!!!!!!!!');
           }
+          console.log('tf is going on');
           if (response.data.success) {
-            dispatch(addProductToDirectory(selectedProduct));
+            console.log('its the dispatcher. selected product below.');
+            console.log(selectedProduct);
+            //dispatch(addProductToDirectory(selectedProduct));
+            console.log('its NOT the dispatcher');
             setMissingRequiredFields(false);
             toggleUpdateModal();
           } else {
+            console.log('RRRRRRRRR error');
             //user message about failed adding to server - pls fill out help form 
           }
         }
