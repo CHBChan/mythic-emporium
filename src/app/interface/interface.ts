@@ -1,5 +1,5 @@
 interface productType {
-    product_id: string,
+    product_id: string | null,
     product_name: string,
     product_desc: string,
     product_category: string,

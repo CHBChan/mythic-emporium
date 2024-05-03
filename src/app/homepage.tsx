@@ -221,7 +221,7 @@ export default function Homepage() {
     });
 
     const finalFilteredProducts: productsListType = secondaryFilteredProducts.reduce((displayProductsList: productsListType, product: productType) => {
-      displayProductsList[product.product_id] = product;
+      displayProductsList[product.product_id!] = product;
       return displayProductsList;
     }, {});
 

@@ -65,7 +65,7 @@ function UpdatedInventoryManagement(this: any) {
   }
   const handleAddProductPress = () => {
     const emptyProduct: productType = {
-      product_id: Object.values(productsList).length + 1,
+      product_id: null,
       product_name: '',
       product_desc: '',
       product_category: '',
@@ -151,7 +151,7 @@ function UpdatedInventoryManagement(this: any) {
     })
   }, []);
 
-  const removeProduct = async (product_id: number) => {
+  const removeProduct = async (product_id: string) => {
     try {
       dispatch(removeProductFromDirectory(product_id));
       //const response = await axios.post("api/products/removeProduct", { product_id });
@@ -165,7 +165,7 @@ function UpdatedInventoryManagement(this: any) {
     const selectedRows = tableRef.current!.api.getSelectedRows();
     selectedRows.forEach((row) => {
       console.log(`Removing product[${row.product_id}]`);
-      removeProduct(row.product_id);
+      removeProduct(row.product_id!);
     })
   };
 

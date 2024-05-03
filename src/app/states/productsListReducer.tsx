@@ -47,8 +47,8 @@ export const productsDirectorySlice = createSlice({
       const newProduct = action.payload;
       const productId = newProduct.product_id;
 
-      state.productsList[productId] = newProduct;
-      state.displayProductsList[productId] = newProduct;
+      state.productsList[productId!] = newProduct;
+      state.displayProductsList[productId!] = newProduct;
 
       const brand = newProduct.product_brand;
       if (!state.brandsList[brand]) {
@@ -108,7 +108,7 @@ export const productsDirectorySlice = createSlice({
       const updatedProduct = action.payload;
       const productId = updatedProduct.product_id;
 
-      state.productsList[productId] = updatedProduct;
+      state.productsList[productId!] = updatedProduct;
 
       // updating product in the brandsList
       Object.keys(state.brandsList).forEach(brand => {

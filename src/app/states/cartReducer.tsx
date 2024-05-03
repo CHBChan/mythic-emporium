@@ -14,13 +14,13 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addProductToCart: (state, action: PayloadAction<productType>) => {
-      if (!state.productsInCart[action.payload.product_id]) {
-        state.productsInCart[action.payload.product_id] = action.payload;
+      if (!state.productsInCart[action.payload.product_id!]) {
+        state.productsInCart[action.payload.product_id!] = action.payload;
       } else {
-        const updatedProduct = state.productsInCart[action.payload.product_id];
+        const updatedProduct = state.productsInCart[action.payload.product_id!];
         updatedProduct.product_quantity += action.payload.product_quantity;
 
-        state.productsInCart[action.payload.product_id] = updatedProduct;
+        state.productsInCart[action.payload.product_id!] = updatedProduct;
       }
     },
     updateProductInCart: (state, action: PayloadAction<any>) => {

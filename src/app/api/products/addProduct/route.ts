@@ -24,8 +24,8 @@ export async function POST(request : NextRequest) {
         try {
             const { data, error } = await supabase
                 .from('Categories')
-                .select('id')
-                .eq('name', product_category)
+                .select('product_id')
+                .eq('product_category', product_category)
 
             if(error) {
                 console.log(`Error inserting category: ${error.message}`);
@@ -36,7 +36,7 @@ export async function POST(request : NextRequest) {
             }
             else if(data.length === 0) {
                 const newCategory = {
-                    name: product_category,
+                    product_category: product_category,
                 };
 
                 const { data, error } = await supabase
@@ -55,14 +55,12 @@ export async function POST(request : NextRequest) {
             }
         }
         finally {}
-        
-
 
         try {
             const {data, error } = await supabase
                 .from('Brands')
-                .select('id')
-                .eq('name', product_brand)
+                .select('product_id')
+                .eq('product_brand', product_brand)
 
 
             if (error) {
@@ -74,7 +72,7 @@ export async function POST(request : NextRequest) {
             }
             else if(data.length === 0) {
                 const newBrand = {
-                    name: product_brand,
+                    product_brand: product_brand,
                 }
                 
                 const { data, error } = await supabase
@@ -101,8 +99,8 @@ export async function POST(request : NextRequest) {
         try {
             const { data, error } = await supabase
                 .from('Origins')
-                .select('id')
-                .eq('name', product_origin)
+                .select('product_id')
+                .eq('product_origin', product_origin)
 
             if(error) {
                 console.log(`Error inserting origin: ${error.message}`);
@@ -113,7 +111,7 @@ export async function POST(request : NextRequest) {
             }
             else if(data.length === 0) {
                 const newOrigin = {
-                    name: product_origin,
+                    product_origin: product_origin,
                 };
 
                 const { data, error } = await supabase
@@ -138,10 +136,10 @@ export async function POST(request : NextRequest) {
         try {
             const { data, error } = await supabase
                 .from('Inventory')
-                .select('id')
-                .eq('name', product_name)
-                .eq('brand', product_brand)
-                .eq('origin', product_origin)
+                .select('product_id')
+                .eq('product_name', product_name)
+                .eq('product_brand', product_brand)
+                .eq('product_origin', product_origin)
 
             if(error) {
                 console.log(`Error inserting product: ${error.message}`);
@@ -152,15 +150,15 @@ export async function POST(request : NextRequest) {
             }
             else if(data.length === 0) {
                 const newProduct = {
-                    name: product_name,
-                    description: product_desc,
-                    category: product_category,
-                    brand: product_brand,
-                    origin: product_origin,
-                    price: product_price,
-                    quantity: product_quantity,
-                    image: product_image,
-                    disclaimers: product_disclaimers
+                    product_name: product_name,
+                    product_desc: product_desc,
+                    product_category: product_category,
+                    product_brand: product_brand,
+                    product_origin: product_origin,
+                    product_price: product_price,
+                    product_quantity: product_quantity,
+                    product_image: product_image,
+                    product_disclaimers: product_disclaimers
                 };
 
                 // Insert new product if no duplicate found in database
