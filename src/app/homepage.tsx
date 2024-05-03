@@ -14,6 +14,7 @@ import {
   brandsDirectory,
   originsDirectory,
   productsListType,
+  categoriesDirectory,
 } from "./interface/interface";
 import CategoryNavBar from "./components/categoryNavBar";
 import FilterCard from "./components/filterCard";
@@ -32,7 +33,6 @@ import { setUserData, signOutUser } from "./states/userReducer";
 import { useSelector } from "react-redux";
 import { RootState } from "./states/store";
 import { setMaxPrice, setMinPrice } from "./states/filterReducer";
-import { supabase } from "@/utils/dbConfig";
 import { Dispatch } from "@reduxjs/toolkit";
 
 enum formOpt {
@@ -60,7 +60,7 @@ export default function Homepage() {
   const [productsList, setProductsList] = React.useState<productType[]>([]);
   const [showProductInfo, setShowProductInfo] = React.useState<boolean>(false);
   const [displayProduct, setDisplayProduct] = React.useState<productType>({
-    product_id: -1,
+    product_id: "00000000-0000-0000-0000-000000000000",
     product_name: "What?",
     product_desc: "Product information failed to be fetched..?",
     product_category: "General",
@@ -107,37 +107,41 @@ export default function Homepage() {
   const fetchAllProductsPeriodically = async () => {
     try {
       // Have to use axios.post() to bypass Vercel caching
-      const response = await axios.post("api/products/fetchAllProducts");
-      const products = response.data.products;
-      if (products.length === 0) {
+      const response = await axios.post("api/products/fetchInventoryDirectory");
+
+      // checking if productsList has been
+      if (response.data.productsList.length === 0) {
         // Retry fetch if no products were fetched
         setTimeout(fetchAllProductsPeriodically, 2000);
       } else {
         console.log("Periodically fetching products...");
         let updatedProductsDirectory = {} as productsDirectoryType;
-        let updatedProductsList = {} as productsListType;
-        let updatedBrandsList = {} as brandsDirectory;
-        let updatedOriginsList = {} as originsDirectory;
+        // let updatedProductsList = {} as productsListType;
+        // let updatedCategoriesList = {} as categoriesDirectory;
+        // let updatedBrandsList = {} as brandsDirectory;
+        // let updatedOriginsList = {} as originsDirectory;
 
-        products.forEach((product: productType) => {
-          //adds product to list
-          updatedProductsList[product.product_id] = product;
-          //check if product.brand is in list, if not add
-          updatedBrandsList[product.product_brand] ??= [];
-          updatedBrandsList[product.product_brand].push(product);
-          //check if product.origin is in list, if not add
-          updatedOriginsList[product.product_origin] ??= [];
-          updatedOriginsList[product.product_origin].push(product);
-        });
-        updatedProductsDirectory.productsList = updatedProductsList;
-        updatedProductsDirectory.brandsList = updatedBrandsList;
-        updatedProductsDirectory.originsList = updatedOriginsList;
+        // products.forEach((product: productType) => {
+        //   //adds product to list
+        //   updatedProductsList[product.product_id] = product;
+        //   //check if product.category is in list, if not add
+        //   updatedCategoriesList[product.product_category] ??= [];
+        //   updatedCategoriesList[product.product_category].push(product);
+        //   //check if product.brand is in list, if not add
+        //   updatedBrandsList[product.product_brand] ??= [];
+        //   updatedBrandsList[product.product_brand].push(product);
+        //   //check if product.origin is in list, if not add
+        //   updatedOriginsList[product.product_origin] ??= [];
+        //   updatedOriginsList[product.product_origin].push(product);
+        // });
+        console.log(response.data);
+        //update reducers directly from supabase
+        updatedProductsDirectory.productsList = response.data.productsList;
+        updatedProductsDirectory.categoriesList = response.data.categoriesList;
+        updatedProductsDirectory.brandsList = response.data.brandsList;
+        updatedProductsDirectory.originsList = response.data.originsList;
 
         dispatch(setProductsDirectory(updatedProductsDirectory));
-
-        {
-          /* setProductsList(products); */
-        }
       }
     } catch (error: any) {
       console.error("Failed to fetch products: ", error.message);
@@ -198,7 +202,7 @@ export default function Homepage() {
     } else {
       productsWithFilterOrigin = originsList[filterObject.origin];
     }
-    /*
+    
     //get intersection between these two lists
     const subsetOfFilterProducts: productType[] =
       productsWithFilterBrand.filter((brandProduct) =>
@@ -207,45 +211,21 @@ export default function Homepage() {
             brandProduct.product_id === originProduct.product_id
         )
       );
-    */
 
-    let subsetOfFilterProducts: productType[] = [];
-
-    if (!filterObject.brand) {
-      subsetOfFilterProducts = productsWithFilterOrigin;
-    } else if (!filterObject.origin) {
-      subsetOfFilterProducts = productsWithFilterBrand;
-    } else if (filterObject.brand && filterObject.origin) {
-      let i = 0,
-        j = 0;
-
-      while (
-        i < productsWithFilterBrand.length &&
-        j < productsWithFilterOrigin.length
-      ) {
-        console.log(`i: ${i}, j: ${j}`);
-        const brandProductId = productsWithFilterBrand[i].product_id;
-        const originProductId = productsWithFilterOrigin[j].product_id;
-
-        if (brandProductId === originProductId) {
-          subsetOfFilterProducts.push(productsWithFilterBrand[i]);
-          i++;
-          j++;
-        } else if (brandProductId < originProductId) {
-          i++;
-        } else {
-          j++;
-        }
-      }
-    }
-
-    const finalFilteredProducts = subsetOfFilterProducts.filter((product) => {
+    const secondaryFilteredProducts = subsetOfFilterProducts.filter((product) => {
       return (
         product.product_price >= filterObject.minPrice &&
         product.product_price <= filterObject.maxPrice &&
         (filterObject.in_stock == true ? product.product_quantity > 0 : true)
       );
     });
+
+    const finalFilteredProducts: productsListType = secondaryFilteredProducts.reduce((displayProductsList: productsListType, product: productType) => {
+      displayProductsList[product.product_id] = product;
+      return displayProductsList;
+    }, {});
+
+    //iteratie over finalFilteredProducts and for each entry corresponding entry in data object
 
     dispatch(setDisplayProductsList(finalFilteredProducts));
 
@@ -323,7 +303,7 @@ export default function Homepage() {
     // checkAuth();
 
     // Retrieve all products
-    // fetchAllProductsPeriodically();
+    fetchAllProductsPeriodically();
   }, []);
 
   React.useEffect(() => {
@@ -334,20 +314,20 @@ export default function Homepage() {
   React.useEffect(() => {
     // Close cart
     closeCart();
-  }, displayedList);
+  }, [displayedList]);
 
   const applyFilters = (type: string) => {
     // Retrieve filtered products
-    let filteredProducts = productsList;
+    // let filteredProducts = productsList;
     switch (type) {
       case "display":
-        filteredProducts = filterProducts();
-        setDisplayedList(filteredProducts);
+        // filteredProducts = filterProducts();
+        // setDisplayedList(filteredProducts);
         break;
 
       case "fetch":
         fetchFilteredProducts();
-        setDisplayedList(productsList);
+        // setDisplayedList(productsList);
         break;
     }
 

@@ -17,7 +17,7 @@ const ProductListing : React.FC<productListingProps> = ({ productCardPressed }) 
     return (
         <section className='product_listing min-h-[144px] w-full'>
             {
-              displayProductsList.map((product) => (
+              Object.values(displayProductsList).map((product) => (
                 <ProductCard key={product.product_id + '_card'} product={product} productCardPressed={productCardPressed} />
               ))
             }

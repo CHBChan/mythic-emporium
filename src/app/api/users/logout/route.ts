@@ -1,8 +1,10 @@
-import { supabase } from "@/utils/dbConfig";
+import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
     try{
+        const supabase = createClient();
+        
         const { error } = await supabase.auth.signOut();
 
         if(error) {

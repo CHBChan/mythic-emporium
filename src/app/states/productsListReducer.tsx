@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { brandsDirectory, originsDirectory, productsListType, productType } from "../interface/interface";
+import { brandsDirectory, categoriesDirectory, originsDirectory, productsListType, productType } from "../interface/interface";
 
 
 export interface productsDirectoryType {
   productsList: productsListType;
+  categoriesList: categoriesDirectory;
   brandsList: brandsDirectory;
   originsList: originsDirectory;
-  displayProductsList: productType[];
+  displayProductsList: productsListType;
 }
 
 export interface initialProductsDirectory extends productsDirectoryType {
@@ -15,9 +16,10 @@ export interface initialProductsDirectory extends productsDirectoryType {
 
 const initialState: initialProductsDirectory = {
   productsList: {},
+  categoriesList: {},
   brandsList: {},
   originsList: {},
-  displayProductsList: [],
+  displayProductsList: {},
   loading: true,
 };
 
@@ -30,9 +32,10 @@ export const productsDirectorySlice = createSlice({
       action: PayloadAction<productsDirectoryType>
     ) => {
       state.productsList = action.payload.productsList;
+      state.categoriesList = action.payload.categoriesList;
       state.brandsList = action.payload.brandsList;
       state.originsList = action.payload.originsList;
-      state.displayProductsList = Object.values(action.payload.productsList);
+      state.displayProductsList = action.payload.productsList;
 
       state.loading = false;
     },
@@ -45,13 +48,19 @@ export const productsDirectorySlice = createSlice({
       const productId = newProduct.product_id;
 
       state.productsList[productId] = newProduct;
-      state.displayProductsList.push(newProduct);
+      state.displayProductsList[productId] = newProduct;
 
       const brand = newProduct.product_brand;
       if (!state.brandsList[brand]) {
         state.brandsList[brand] = [];
       }
       state.brandsList[brand].push(newProduct);
+
+      const category = newProduct.product_category;
+      if (!state.categoriesList[category]) {
+        state.categoriesList[category] = [];
+      }
+      state.categoriesList[category].push(newProduct);
 
       const origin = newProduct.product_origin;
       if (!state.originsList[origin]) {
@@ -63,9 +72,12 @@ export const productsDirectorySlice = createSlice({
 
     removeProductFromDirectory: (
       state,
-      action: PayloadAction<number>
+      action: PayloadAction<string>
     ) => {
-      state.productsList = Object.values(state.productsList).filter((product) => { return product.product_id !== action.payload });
+      // state.productsList = Object.values(state.productsList).filter((product) => { return product.product_id !== action.payload });
+      const updatedProductsList = { ...state.productsList };
+      delete updatedProductsList[action.payload];
+      state.productsList = updatedProductsList;
 
       const updatedBrandsList = { ...state.brandsList };
 
@@ -121,14 +133,14 @@ export const productsDirectorySlice = createSlice({
 
     setDisplayProductsList: (
       state,
-      action: PayloadAction<productType[]>
+      action: PayloadAction<productsListType>
     ) => {
       state.displayProductsList = action.payload;
     },
     resetDisplayProductsList: (
       state,
     ) => {
-      state.displayProductsList = Object.values(state.productsList);
+      state.displayProductsList = state.productsList;
     },
   },
 });

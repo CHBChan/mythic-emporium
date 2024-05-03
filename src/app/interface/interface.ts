@@ -1,5 +1,5 @@
 interface productType {
-    product_id: number,
+    product_id: string,
     product_name: string,
     product_desc: string,
     product_category: string,
@@ -12,8 +12,12 @@ interface productType {
 };
 
 interface productsListType {
-    [id: number] : productType;
+    [id: string] : productType;
 };
+
+interface categoriesDirectory {
+    [id: string] : productType[];
+}
 
 interface brandsDirectory {
     [id: string] : productType[];
@@ -38,4 +42,4 @@ interface filterOpt {
     maxPrice: number,
 }
 
-export type { productType, productsListType, brandsDirectory, originsDirectory, accountInfo, filterOpt }
+export type { productType, productsListType, categoriesDirectory, brandsDirectory, originsDirectory, accountInfo, filterOpt }

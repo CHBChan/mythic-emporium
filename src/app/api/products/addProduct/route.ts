@@ -19,24 +19,120 @@ export async function POST(request : NextRequest) {
                 product_image,
                 product_disclaimers
             } = reqBody;
-        // const productModel = dbConnection.model('Product', Product.schema);
-        // const product = await Product.findOne({product_id});
+        
+        // Check if category exists and if not add it
+        try {
+            const { data, error } = await supabase
+                .from('Categories')
+                .select('id')
+                .eq('name', product_category)
 
-        // if(!product) {
-        //     console.log("Product_id does not exist, attempting to add product to database...");
-            
-        //     const newProduct = new productModel({
-        //         product_id,
-        //         product_name,
-        //         product_desc,
-        //         product_category,
-        //         product_brand,
-        //         product_origin,
-        //         product_price,
-        //         product_quantity
-        //     });
+            if(error) {
+                console.log(`Error inserting category: ${error.message}`);
+                return NextResponse.json({
+                    message: `Category fetch failed: ${error.message}`,
+                    success: false,
+                });
+            }
+            else if(data.length === 0) {
+                const newCategory = {
+                    name: product_category,
+                };
 
-        //     const savedProduct = await newProduct.save();
+                const { data, error } = await supabase
+                    .from('Categories')
+                    .insert([newCategory])
+
+                if(error) {
+                    return NextResponse.json({
+                        message: `Category insert failed: ${error.message}`,
+                        success: false,
+                    });
+                }
+            }
+            else {
+                console.log(`${product_category} already exists in category table`);
+            }
+        }
+        finally {}
+        
+
+
+        try {
+            const {data, error } = await supabase
+                .from('Brands')
+                .select('id')
+                .eq('name', product_brand)
+
+
+            if (error) {
+                console.log(`Error inserting brand: `);
+                return NextResponse.json({
+                    message: `brand fetch failed: ${error.message}`,
+                    success: false,
+                });
+            }
+            else if(data.length === 0) {
+                const newBrand = {
+                    name: product_brand,
+                }
+                
+                const { data, error } = await supabase
+                .from('Brands')
+                .insert([newBrand])
+
+                
+                if(error) {
+                    return NextResponse.json({
+                        message: `Brand insert failed: ${error.message}`,
+                        success: false,
+                    });
+                }
+            }
+
+            else {
+                console.log(`${product_brand} already exists in brand table`);
+            }
+
+        }
+        finally {}
+
+        // Check if brand exists and if not add it
+        try {
+            const { data, error } = await supabase
+                .from('Origins')
+                .select('id')
+                .eq('name', product_origin)
+
+            if(error) {
+                console.log(`Error inserting origin: ${error.message}`);
+                return NextResponse.json({
+                    message: `Origin fetch failed: ${error.message}`,
+                    success: false,
+                });
+            }
+            else if(data.length === 0) {
+                const newOrigin = {
+                    name: product_origin,
+                };
+
+                const { data, error } = await supabase
+                    .from('Origins')
+                    .insert([newOrigin])
+
+                if(error) {
+                    return NextResponse.json({
+                        message: `Origin insert failed: ${error.message}`,
+                        success: false,
+                    });
+                }
+            }
+            else {
+                console.log(`${product_origin} already exists in origin table`);
+            }
+        }
+        finally {}
+
         
         // Check if product exists and if not it adds it in supabase
         try {
