@@ -59,28 +59,26 @@ export const productsDirectorySlice = createSlice({
       updatedProductsList[productId!] = newProduct;
       updatedDisplayProductsList[productId!] = newProduct;
 
-      console.log('reached!');
       const brand = newProduct.product_brand;
       if (!state.brandsList[brand]) {
         state.brandsList[brand] = [];
       }
       state.brandsList[brand].push(newProduct);
-      console.log('reached!');
 
       const category = newProduct.product_category;
       if (!state.categoriesList[category]) {
         state.categoriesList[category] = [];
       }
       state.categoriesList[category].push(newProduct);
-      console.log('reached!');
 
       const origin = newProduct.product_origin;
       if (!state.originsList[origin]) {
         state.originsList[origin] = [];
       }
       state.originsList[origin].push(newProduct);
-      console.log('reached!');
 
+      state.productsList = updatedProductsList;
+      state.displayProductsList = updatedDisplayProductsList;
     },
 
     removeProductFromDirectory: (
@@ -91,6 +89,12 @@ export const productsDirectorySlice = createSlice({
       const updatedProductsList = { ...state.productsList };
       delete updatedProductsList[action.payload];
       state.productsList = updatedProductsList;
+
+      const updatedDisplayProductsList = { ...state.displayProductsList };
+      delete updatedDisplayProductsList[action.payload];
+      state.displayProductsList = updatedDisplayProductsList;
+
+
 
       const updatedBrandsList = { ...state.brandsList };
 
@@ -112,6 +116,17 @@ export const productsDirectorySlice = createSlice({
 
       state.originsList = updatedOriginsList;
 
+
+      const updatedCategoriesList = { ...state.categoriesList };
+
+      Object.keys(updatedCategoriesList).forEach((category) => {
+        updatedCategoriesList[category] = updatedCategoriesList[category].filter((product) => {
+          return product.product_id != action.payload;
+        })
+      })
+
+      state.categoriesList = updatedCategoriesList;
+
     },
 
     updateProductInDirectory: (
@@ -122,6 +137,10 @@ export const productsDirectorySlice = createSlice({
       const productId = updatedProduct.product_id;
 
       state.productsList[productId!] = updatedProduct;
+
+      if (state.displayProductsList[productId!]) {
+        state.displayProductsList[productId!] = updatedProduct;
+      }
 
       // updating product in the brandsList
       Object.keys(state.brandsList).forEach(brand => {
@@ -136,6 +155,16 @@ export const productsDirectorySlice = createSlice({
       // removing product in the originsList
       Object.keys(state.originsList).forEach(origin => {
         state.originsList[origin] = state.originsList[origin].map(product => {
+          if (product.product_id === productId) {
+            return updatedProduct;
+          }
+          return product;
+        });
+      });
+
+      // updating product in the categoriesList
+      Object.keys(state.categoriesList).forEach(category => {
+        state.brandsList[category] = state.categoriesList[category].map(product => {
           if (product.product_id === productId) {
             return updatedProduct;
           }

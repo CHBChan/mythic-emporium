@@ -15,6 +15,7 @@ import { productsDirectoryType, removeProductFromDirectory, updateProductInDirec
 import { ProductEditButton } from "./productEditButton";
 import ImageUpload from "./imageUpload";
 import Modal from 'react-modal';
+import { v4 as uuidv4 } from 'uuid'
 
 //if errors with modal occur see this - https://reactcommunity.org/react-modal/accessibility/
 // Modal.setAppElement('#root');
@@ -70,9 +71,10 @@ function UpdatedInventoryManagement(this: any) {
     setSelectedProduct(product);
     toggleUpdateModal();
   }
+
   const handleAddProductPress = () => {
     const emptyProduct: productType = {
-      product_id: null,
+      product_id: uuidv4(),
       product_name: '',
       product_desc: '',
       product_category: '',
@@ -189,16 +191,29 @@ function UpdatedInventoryManagement(this: any) {
 
 
 
-  const handleUpdateProduct = () => {
+  const handleUpdateProduct = async () => {
     try {
       if (selectedProduct !== null) {
         if (selectedProduct.product_name === '') {
           setMissingRequiredFields(true);
           return;
         } else {
-          dispatch(updateProductInDirectory(selectedProduct));
-          setMissingRequiredFields(false);
-          toggleUpdateModal();
+          console.log('==============================================');
+          console.log('selected product id: ');
+          console.log(selectedProduct.product_id);
+          console.log('==============================================');
+
+          const response = await axios.post("api/products/updateProduct", { selectedProduct });
+          if(response.data.message) {
+            console.log(response.data.message);
+          }
+          if (response.data.success) {
+            dispatch(updateProductInDirectory(selectedProduct));
+            setMissingRequiredFields(false);
+            toggleUpdateModal();
+          } else {
+            console.error('handleUpdateProduct failed due to api response success fail');
+          }
         }
       } else {
         //TODO: user notice here
@@ -223,26 +238,13 @@ function UpdatedInventoryManagement(this: any) {
           setMissingRequiredFields(true);
           return;
         } else {
-          console.log('REACHED pre api response');
-          //call the api here to send product to supabase
-          const response1 = await axios.get("api/users/roleVerification");
-          if(response1.data.message) {
-            console.log(response1.data.message);
-          }
 
           const response = await axios.post("api/products/addProduct", selectedProduct);
-          console.log('REACHED post api response');
           if(response.data.message) {
-            console.log('!!!!!!!!!!!!!!!!!!!!');
             console.log(response.data.message);
-            console.log('!!!!!!!!!!!!!!!!!!!!');
           }
-          console.log('tf is going on');
           if (response.data.success) {
-            console.log('its the dispatcher. selected product below.');
-            console.log(selectedProduct);
-            //dispatch(addProductToDirectory(selectedProduct));
-            console.log('its NOT the dispatcher');
+            dispatch(addProductToDirectory(selectedProduct));
             setMissingRequiredFields(false);
             toggleUpdateModal();
           } else {

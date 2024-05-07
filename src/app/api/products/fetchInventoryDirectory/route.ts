@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import Product from "@/models/productModel";
 
 import { createClient } from "@/utils/supabase/server";
-import { brandsDirectory, categoriesDirectory, originsDirectory, productType } from "@/app/interface/interface";
+import { brandsDirectory, categoriesDirectory, originsDirectory, productType, productsListType } from "@/app/interface/interface";
 
 export async function POST(request : NextRequest) {
     const supabase = createClient();
-    let inventoryProducts: productType[] = [];
+    let inventoryProducts: productsListType = {};
     let inventoryCategories: categoriesDirectory = {};
     let inventoryBrands: brandsDirectory = {};
     let inventoryOrigins: originsDirectory = {};
@@ -24,7 +24,9 @@ export async function POST(request : NextRequest) {
         }
 
         if(data.length > 0) {
-            inventoryProducts = data;
+            data.forEach((productObject) => {
+                inventoryProducts[productObject.product_id] = productObject;
+            });
         }
     }
     catch(error : any) {

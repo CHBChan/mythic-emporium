@@ -9,6 +9,7 @@ export async function POST(request : NextRequest) {
 
         const reqBody = await request.json();
         const { 
+                product_id,
                 product_name,
                 product_desc,
                 product_category,
@@ -131,7 +132,6 @@ export async function POST(request : NextRequest) {
         }
         finally {}
 
-        
         // Check if product exists and if not it adds it in supabase
         try {
             const { data, error } = await supabase
@@ -150,6 +150,7 @@ export async function POST(request : NextRequest) {
             }
             else if(data.length === 0) {
                 const newProduct = {
+                    product_id: product_id,
                     product_name: product_name,
                     product_desc: product_desc,
                     product_category: product_category,
