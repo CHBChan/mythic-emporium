@@ -203,7 +203,7 @@ function UpdatedInventoryManagement(this: any) {
           console.log(selectedProduct.product_id);
           console.log('==============================================');
 
-          const response = await axios.post("api/products/updateProduct", { selectedProduct });
+          const response = await axios.post("api/products/updateProduct", selectedProduct);
           if(response.data.message) {
             console.log(response.data.message);
           }

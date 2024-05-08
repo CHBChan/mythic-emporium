@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { brandsDirectory, categoriesDirectory, originsDirectory, productsListType, productType } from "../interface/interface";
-
+import {
+  brandsDirectory,
+  categoriesDirectory,
+  originsDirectory,
+  productsListType,
+  productType,
+} from "../interface/interface";
 
 export interface productsDirectoryType {
   productsList: productsListType;
@@ -39,17 +44,14 @@ export const productsDirectorySlice = createSlice({
 
       state.loading = false;
     },
-    addProductToDirectory: (
-      state,
-      action: PayloadAction<productType>
-    ) => {
-      console.log('payload: ');
+    addProductToDirectory: (state, action: PayloadAction<productType>) => {
+      console.log("payload: ");
       console.log(action.payload);
 
-      console.log('=============================================');
-      console.log('product list in state reduxer: ');
-      console.log( state.productsList );
-      console.log('=============================================');
+      console.log("=============================================");
+      console.log("product list in state reduxer: ");
+      console.log(state.productsList);
+      console.log("=============================================");
       const updatedProductsList = { ...state.productsList };
       const updatedDisplayProductsList = { ...state.displayProductsList };
 
@@ -81,10 +83,7 @@ export const productsDirectorySlice = createSlice({
       state.displayProductsList = updatedDisplayProductsList;
     },
 
-    removeProductFromDirectory: (
-      state,
-      action: PayloadAction<string>
-    ) => {
+    removeProductFromDirectory: (state, action: PayloadAction<string>) => {
       // state.productsList = Object.values(state.productsList).filter((product) => { return product.product_id !== action.payload });
       const updatedProductsList = { ...state.productsList };
       delete updatedProductsList[action.payload];
@@ -94,83 +93,115 @@ export const productsDirectorySlice = createSlice({
       delete updatedDisplayProductsList[action.payload];
       state.displayProductsList = updatedDisplayProductsList;
 
-
-
       const updatedBrandsList = { ...state.brandsList };
 
       Object.keys(updatedBrandsList).forEach((brand) => {
-        updatedBrandsList[brand] = updatedBrandsList[brand].filter((product) => {
-          return product.product_id != action.payload;
-        });
-      })
+        updatedBrandsList[brand] = updatedBrandsList[brand].filter(
+          (product) => {
+            return product.product_id != action.payload;
+          }
+        );
+      });
 
       state.brandsList = updatedBrandsList;
 
       const updatedOriginsList = { ...state.originsList };
 
       Object.keys(updatedOriginsList).forEach((origin) => {
-        updatedOriginsList[origin] = updatedOriginsList[origin].filter((product) => {
-          return product.product_id != action.payload;
-        })
-      })
+        updatedOriginsList[origin] = updatedOriginsList[origin].filter(
+          (product) => {
+            return product.product_id != action.payload;
+          }
+        );
+      });
 
       state.originsList = updatedOriginsList;
-
 
       const updatedCategoriesList = { ...state.categoriesList };
 
       Object.keys(updatedCategoriesList).forEach((category) => {
-        updatedCategoriesList[category] = updatedCategoriesList[category].filter((product) => {
+        updatedCategoriesList[category] = updatedCategoriesList[
+          category
+        ].filter((product) => {
           return product.product_id != action.payload;
-        })
-      })
+        });
+      });
 
       state.categoriesList = updatedCategoriesList;
-
     },
 
-    updateProductInDirectory: (
-      state,
-      action: PayloadAction<productType>
-    ) => {
+    updateProductInDirectory: (state, action: PayloadAction<productType>) => {
+      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR~");
+
       const updatedProduct = action.payload;
       const productId = updatedProduct.product_id;
 
-      state.productsList[productId!] = updatedProduct;
+      // state.productsList[productId!] = updatedProduct;
 
+      const updatedProductsList = { ...state.productsList };
+      updatedProductsList[productId!] = updatedProduct;
+      state.productsList = updatedProductsList;
+
+      //checks to see if product is in the displayProductList before updating it (to not accidentally add it in)
       if (state.displayProductsList[productId!]) {
         state.displayProductsList[productId!] = updatedProduct;
       }
 
-      // updating product in the brandsList
-      Object.keys(state.brandsList).forEach(brand => {
-        state.brandsList[brand] = state.brandsList[brand].map(product => {
-          if (product.product_id === productId) {
-            return updatedProduct;
-          }
-          return product;
-        });
-      });
+      //TODO: make below more efficient by removing reduntant searches
 
-      // removing product in the originsList
-      Object.keys(state.originsList).forEach(origin => {
-        state.originsList[origin] = state.originsList[origin].map(product => {
-          if (product.product_id === productId) {
-            return updatedProduct;
+      //removing product from brandsList
+      const updatedBrandsList = { ...state.brandsList };
+      Object.keys(updatedBrandsList).forEach((brand) => {
+        updatedBrandsList[brand] = updatedBrandsList[brand].filter(
+          (product) => {
+            return product.product_id != updatedProduct.product_id;
           }
-          return product;
-        });
+        );
       });
+      // updating product into the brandsList
+      if (updatedBrandsList[updatedProduct.product_brand]) {
+        updatedBrandsList[updatedProduct.product_brand].push(updatedProduct);
+      } else {
+        updatedBrandsList[updatedProduct.product_brand] = [updatedProduct];
+      }
+      //updating the brand state with the updated list
+      state.brandsList = updatedBrandsList;
 
-      // updating product in the categoriesList
-      Object.keys(state.categoriesList).forEach(category => {
-        state.brandsList[category] = state.categoriesList[category].map(product => {
-          if (product.product_id === productId) {
-            return updatedProduct;
+      //removing product from originsList
+      const updatedOriginsList = { ...state.originsList };
+      Object.keys(updatedOriginsList).forEach((origin) => {
+        updatedOriginsList[origin] = updatedOriginsList[origin].filter(
+          (product) => {
+            return product.product_id != updatedProduct.product_id;
           }
-          return product;
+        );
+      });
+      // updating product into the brandsList
+      if (updatedOriginsList[updatedProduct.product_origin]) {
+        updatedOriginsList[updatedProduct.product_origin].push(updatedProduct);
+      } else {
+        updatedOriginsList[updatedProduct.product_origin] = [updatedProduct];
+      }
+      //updating the origin state with the updated list
+      state.originsList = updatedOriginsList;
+
+
+      //removing product from categoriesList
+      const updatedCategoriesList = { ...state.categoriesList };
+      Object.keys(updatedCategoriesList).forEach((category) => {
+        updatedCategoriesList[category] = updatedCategoriesList[category].filter(
+          (product) => {
+          return product.product_id != updatedProduct.product_id;
         });
       });
+      // updating product into the categories list
+      if (updatedCategoriesList[updatedProduct.product_category]) {
+        updatedCategoriesList[updatedProduct.product_category].push(updatedProduct);
+      } else {
+        updatedCategoriesList[updatedProduct.product_category] = [updatedProduct];
+      }
+      //updating the origin state with the updated list
+      state.categoriesList = updatedCategoriesList;
     },
 
     setDisplayProductsList: (
@@ -179,13 +210,18 @@ export const productsDirectorySlice = createSlice({
     ) => {
       state.displayProductsList = action.payload;
     },
-    resetDisplayProductsList: (
-      state,
-    ) => {
+    resetDisplayProductsList: (state) => {
       state.displayProductsList = state.productsList;
     },
   },
 });
 
-export const { setProductsDirectory, removeProductFromDirectory, updateProductInDirectory, setDisplayProductsList, resetDisplayProductsList, addProductToDirectory } = productsDirectorySlice.actions;
+export const {
+  setProductsDirectory,
+  removeProductFromDirectory,
+  updateProductInDirectory,
+  setDisplayProductsList,
+  resetDisplayProductsList,
+  addProductToDirectory,
+} = productsDirectorySlice.actions;
 export default productsDirectorySlice.reducer;

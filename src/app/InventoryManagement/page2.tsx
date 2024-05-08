@@ -19,6 +19,7 @@ enum modeOpt {
     ViewInventory = "3"
 };
 
+
 function InventoryManagement() {
     const router = useRouter();
 
