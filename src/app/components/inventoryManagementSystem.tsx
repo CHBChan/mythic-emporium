@@ -248,7 +248,6 @@ function UpdatedInventoryManagement(this: any) {
             setMissingRequiredFields(false);
             toggleUpdateModal();
           } else {
-            console.log('RRRRRRRRR error');
             //user message about failed adding to server - pls fill out help form 
           }
         }

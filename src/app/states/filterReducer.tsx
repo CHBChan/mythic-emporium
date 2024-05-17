@@ -24,19 +24,19 @@ export const filterSlice = createSlice({
   reducers: {
     setCategory: (
         state,
-        action: PayloadAction<string>
+        action: PayloadAction<string | undefined>
     ) => {
         state.filter = {...state.filter, category: action.payload};
     },
     setBrand: (
         state,
-        action: PayloadAction<string>
+        action: PayloadAction<string | undefined>
     ) => {
         state.filter = {...state.filter, brand: action.payload};
     },
     setOrigin: (
         state,
-        action: PayloadAction<string>
+        action: PayloadAction<string | undefined>
     ) => {
         state.filter = {...state.filter, origin: action.payload};
     },

@@ -178,6 +178,9 @@ export default function Homepage() {
   const originsList = useSelector(
     (state: RootState) => state.productsDirectory.originsList
   );
+  const categoriesList = useSelector(
+    (state: RootState) => state.productsDirectory.categoriesList
+  );
 
   const filterProducts = () => {
     if (filterObject.minPrice > 0 && filterObject.maxPrice == 0) {
@@ -190,10 +193,12 @@ export default function Homepage() {
     //get list of products
     let productsWithFilterBrand: productType[] = [];
     let productsWithFilterOrigin: productType[] = [];
+    let productsWithFilterCategory: productType[] = [];
 
     if (!filterObject.brand) {
       productsWithFilterBrand = Object.values(directoryProductsList);
     } else {
+      console.log(filterObject.brand);
       productsWithFilterBrand = Object.values(brandsList[filterObject.brand]);
     }
 
@@ -202,28 +207,47 @@ export default function Homepage() {
     } else {
       productsWithFilterOrigin = originsList[filterObject.origin];
     }
-    
+
+
+    if (!filterObject.category) {
+      productsWithFilterCategory = Object.values(directoryProductsList);
+    } else {
+      productsWithFilterCategory = categoriesList[filterObject.category];
+    }
+
+
     //get intersection between these two lists
     const subsetOfFilterProducts: productType[] =
       productsWithFilterBrand.filter((brandProduct) =>
         productsWithFilterOrigin.some(
           (originProduct) =>
             brandProduct.product_id === originProduct.product_id
+        ) && 
+        productsWithFilterCategory.some(
+          (categoryProduct) =>
+            brandProduct.product_id === categoryProduct.product_id
         )
       );
 
-    const secondaryFilteredProducts = subsetOfFilterProducts.filter((product) => {
-      return (
-        product.product_price >= filterObject.minPrice &&
-        product.product_price <= filterObject.maxPrice &&
-        (filterObject.in_stock == true ? product.product_quantity > 0 : true)
-      );
-    });
+    const secondaryFilteredProducts = subsetOfFilterProducts.filter(
+      (product) => {
+        return (
+          product.product_price >= filterObject.minPrice &&
+          product.product_price <= filterObject.maxPrice &&
+          (filterObject.in_stock == true ? product.product_quantity > 0 : true)
+        );
+      }
+    );
 
-    const finalFilteredProducts: productsListType = secondaryFilteredProducts.reduce((displayProductsList: productsListType, product: productType) => {
-      displayProductsList[product.product_id!] = product;
-      return displayProductsList;
-    }, {});
+
+    const finalFilteredProducts: productsListType =
+      secondaryFilteredProducts.reduce(
+        (displayProductsList: productsListType, product: productType) => {
+          displayProductsList[product.product_id!] = product;
+          return displayProductsList;
+        },
+        {}
+      );
 
     //iteratie over finalFilteredProducts and for each entry corresponding entry in data object
 
@@ -237,10 +261,9 @@ export default function Homepage() {
     dispatch(signOutUser());
     const response = await axios.get("api/users/logout");
 
-    if(response.data.success) {
+    if (response.data.success) {
       console.log("Signed out");
-    }
-    else {
+    } else {
       console.log("Sign out failed");
     }
   };
@@ -316,20 +339,22 @@ export default function Homepage() {
     closeCart();
   }, [displayedList]);
 
-  const applyFilters = (type: string) => {
+  const applyFilters = () => {
     // Retrieve filtered products
-    // let filteredProducts = productsList;
-    switch (type) {
-      case "display":
-        // filteredProducts = filterProducts();
-        // setDisplayedList(filteredProducts);
-        break;
+    let filteredProducts = {};
+    filteredProducts = filterProducts();
 
-      case "fetch":
-        //fetchFilteredProducts();
-        // setDisplayedList(productsList);
-        break;
-    }
+    // switch (type) {
+    //   case "display":
+    //     filteredProducts = filterProducts();
+    //     // setDisplayedList(filteredProducts);
+    //     break;
+
+    //   case "fetch":
+    //     fetchFilteredProducts();
+    //     // setDisplayedList(productsList);
+    //     break;
+    // }
 
     // Scroll to top of page
     scrollToTop();

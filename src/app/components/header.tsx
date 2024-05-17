@@ -19,7 +19,7 @@ interface headerProps {
     setPopup: () => void,
     toggleCart: () => void,
     searchBarSearch: (query : string) => void,
-    applyFilters: (type : string) => void
+    applyFilters: () => void
 }
 
 const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCart, searchBarSearch, applyFilters }) => {
@@ -35,7 +35,7 @@ const Header : React.FC<headerProps> = ({ userInfo, signOut, setPopup, toggleCar
     };
     React.useEffect(() => {
         if(changeCategory) {
-            applyFilters('fetch');
+            applyFilters();
             setChangeCategory(false);
         }
     }, [changeCategory]);

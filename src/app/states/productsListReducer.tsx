@@ -131,7 +131,6 @@ export const productsDirectorySlice = createSlice({
     },
 
     updateProductInDirectory: (state, action: PayloadAction<productType>) => {
-      console.log("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR~");
 
       const updatedProduct = action.payload;
       const productId = updatedProduct.product_id;

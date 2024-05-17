@@ -7,7 +7,7 @@ import { resetDisplayProductsList } from "../states/productsListReducer";
 import { RootState } from "../states/store";
 
 interface filterProps {
-    applyFilters: (type : string) => void,
+    applyFilters: () => void,
     toggleFilter: () => void
 }
 
@@ -50,8 +50,8 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
               <div className=''>
                 <div className='brand flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={(!filter.brand ? 'All' : filter.brand)} onChange={(event) => dispatch(setBrand(event.target.value))}>
-                    <option value={'All'}>All</option>
+                value={(filter.brand)} onChange={(event) => dispatch(setBrand(event.target.value === "" ? undefined: event.target.value))}>
+                    <option value={''}>All</option>
                     {Object.keys(brandsList).map((brand) => (
                         <option key={'option_' + brand} value={brand}>
                             {brand}
@@ -68,8 +68,8 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
               <div className=''>
                 <div className='origin flex gap-2'>
                 <select className='relative z-[0] whitespace-nowrap text-violet-500 border-violet-500 border-e px-2 bg-white w-[160px] h-full cursor-pointer' 
-                value={(!filter.origin ? 'All' : filter.origin)} onChange={(event) => dispatch(setOrigin(event.target.value))}>
-                    <option value={'All'}>All</option>
+                value={(filter.origin)} onChange={(event) => dispatch(setOrigin(event.target.value === "" ? undefined: event.target.value))}>
+                    <option value={''}>All</option>
                     {Object.keys(originsList).map((origin) => (
                         <option key={'option_' + origin} value={origin}>
                             {origin}
@@ -104,7 +104,7 @@ const FilterCard : React.FC<filterProps> = ({ applyFilters, toggleFilter }) => {
             </div>
           </div>
           <button className='text-violet-500 bg-white rounded m-3 p-2'
-          onClick={() => {applyFilters('display');}}>
+          onClick={() => {applyFilters();}}>
             Apply
           </button>
         </div>
